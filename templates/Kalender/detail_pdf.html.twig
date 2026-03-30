@@ -1,0 +1,70 @@
+{% extends 'Kalender/base_pdf.html.twig' %}
+{% block dfx_termin_detail %}
+<style>
+  page{
+  	font-size: 11pt;
+  	color: #333;
+  }
+  a{
+  	color: #999;
+  }
+
+
+  .pdf-subtitel, .pdf-datumszeile, .pdf-locationzeile, .pdf-lead {
+  	font-weight: bold;
+  	line-height: 1.75;
+  }
+
+  .blockende{
+  	margin-bottom: 12pt;
+  }
+  .pdf-beschreibung, .pdf-lead, .pdf-bu{
+    text-align: justify;
+    line-height: 1.75;
+  }
+  .pdf-adresse{
+    vertical-align: bottom;
+  	font-size: 10pt;
+  	text-align: right;
+  	width: 35%;
+  }
+
+  .pdf-logo{
+    vertical-valign: top;
+    max-width: 50%;
+  }
+  .dfx-detail-image{
+      max-width: 100%;
+  }
+</style>
+<page backbottom="10mm">
+    <table style="width: 100%">
+    	<tr>
+    	<td class="pdf-logo">{{ strLogo|raw }}</td>
+    	<td class="pdf-adresse">{{ strAdresse|raw }}</td>
+    	</tr>
+    </table>
+
+    <h1 class="pdf-titel" style="margin-top:8mm">{{ termin.titel|raw }}</h1>
+	{% if termin.subtitel != NULL %}
+		<h3 class="pdf-subtitel blockende">{{'subtitel-fe'|trans}}{{ termin.subtitel }}</h3>
+	{% endif %}
+	<div class="pdf-datumszeile">{% if strDate !='' %}<span class="pdf-datum">{{ strDate }}</span>{% endif %}{% if strTime !='' %}<span class="pdf-zeit">{% if strDate !='' %}{{ tz }}{% endif %} {{ strTime }}</span>{% endif %}</div>
+	<div class="pdf-locationzeile blockende">{% if strLokal !='' %}<span class="pdf-lokal">{{ strLokal|raw }}</span>{% endif %}{% if strOrt !='' and strLokal !='' %} {{ tz }} {% endif %}{% if strOrt !='' %}<span class="pdf-ort">  {{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="pdf-strasse">, {{ strStrasse|raw }}</span>{% endif %}</div>
+	{% if strLead != NULL %}<div class="pdf-lead blockende">{{ strLead|raw }}</div> {% endif %}
+    {% if strText != NULL %}<div class="pdf-beschreibung blockende">{{ strText|raw }}<br></div> {% endif %}
+    {% if strEintritt != NULL %}<div class="pdf-eintritt blockende">{{ strEintritt|raw }}</div> {% endif %}
+    {% if ticketlink != NULL %}<div class="pdf-ticketlink blockende"> {{ ticketlink|raw }}</div>{% endif %}
+    {% if ticketlink2 != NULL %}<div class="pdf-ticketlink blockende"> {{ ticketlink2|raw }}</div>{% endif %}
+    {% if anmeldelink != NULL %}<div class="pdf-ticketlink blockende"> {{ anmeldelink|raw }}</div>{% endif %}
+    {% if strVeranstalter != NULL %}
+		<div class="pdf-veranstalter blockende">{{ 'veranstalter'|trans }}:<br>{{ strVeranstalter|raw }}<br>
+		{% if strVeranstalterAdr != NULL %}<div class="pdf-veranstalter-adr"> {{ strVeranstalterAdr|raw }}</div>{% endif %}
+		{% if strVeranstalterKom != NULL %}<div class="pdf-veranstalter-kom"> {{ strVeranstalterKom|raw }}</div>{% endif %}
+		</div>
+	{% endif %}
+	{% if pdfInfo != NULL %}<div class="pdf-pdfinfo blockende"> {{ pdfInfo|raw }}</div>{% endif %}
+	{% if infolink != NULL %}<div class="pdf-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
+	{{ strImg|raw }}
+	</page>
+{% endblock %}

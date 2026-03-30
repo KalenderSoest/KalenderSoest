@@ -1,0 +1,88 @@
+{% extends 'Kalender/base_detail.html.twig' %}
+{% block dfx_termin_detail %}		
+{% if konf.dfxTpl == 'block' %}
+   <div itemscope itemtype="http://schema.org/Event">
+{% else %}
+	<div itemscope itemtype="http://schema.org/Event" class="fx-{{ konf.dfxTpl }}">
+{% endif %}
+    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    
+    {% if konf.dfxTpl == 'block' %}
+   		<h3 itemprop="name" class="dfx-titel fx-block">{{ titel|raw }}</h3>
+	{% else %}
+		<h3 itemprop="name" class="dfx-titel">{{ titel|raw }}</h3>
+	{% endif %}
+	{% if termin.subtitel != NULL %}
+		<div class="dfx-detail-subtitel">{{'subtitel-fe'|trans}}{{ termin.subtitel }} </div>
+	{% endif %}
+	<div class="row">
+            <div itemprop="image" class="col-12 col-md-6">
+                {% if strSlider != NULL %}
+                        {{ strSlider|raw }}	
+                {% else %}
+                        {{ strImg|raw }}
+                {% endif %}			
+                {% if strText != NULL %}<div itemprop="description" class="dfx-text-detail">{{ strText|raw }}</div> {% endif %}
+                {% if strEintritt != NULL %}<div class="dfx-eintritt-detail">{{ strEintritt|raw }}</div> {% endif %}
+                {% if termin.video != NULL %}<div class="dfx-detail-video">{{ termin.video|raw }} </div> {% endif %}
+                {{ strSerie|raw }}
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="dfx-detail-zwue-linie">{{ 'datum uhrzeit'|trans }}</div>
+                    <div class="dfx-detail-datum">{{ strDate }}</div>
+                    {% if strTime !='' %}<div class="dfx-detail-zeit">{{ strTime }}</div>{% endif %}
+                    {{strMetadate|raw }}
+                <br>
+                {% if strLokal != NULL or strOrt != NULL or strStrasse != NULL %}
+                    <div class="dfx-detail-zwue-linie">{{ 'veranstaltungsort'|trans }}</div>
+                    <div itemprop="location" itemscope itemtype="http://schema.org/Place">
+                    {% if strLokal != NULL %}<div itemprop="name" class="dfx-detail-lokal"> {{ strLokal|raw }} </div>{% endif %}
+                        {% if strOrt != NULL or strStrasse != NULL %}
+                            <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                            {% if strStrasse != NULL %}<div class="dfx-detail-strasse"> {{ strStrasse|raw }}</div>{% endif %}
+                                {% if strOrt !=NULL %}<div class="dfx-detail-ort"> {{ strOrt|raw }}</div>{% endif %}
+                            </span>
+                        {% endif %}
+                        {{ strGeoItemprop|raw }}
+                        {% if strLocationKom !=NULL %}<div class="dfx-detail-location-kom"> {{ strLocationKom|raw }}</div>{% endif %}
+                    </div>
+                    <br>
+                {% endif %}
+                {% if strVeranstalter != NULL %}
+                    <div itemprop="organizer" itemscope itemtype="http://schema.org/Organizer">
+                        <div class="dfx-detail-zwue-linie">{{ 'veranstalter'|trans }}</div>
+                        <div itemprop="name" class="dfx-detail-veranstalter"> {{ strVeranstalter|raw }} </div>
+                        <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                            {% if strVeranstalterAdr != NULL %}<div class="dfx-detail-veranstalter-adr"> {{ strVeranstalterAdr|raw }}</div>{% endif %}
+                            {% if strVeranstalterKom != NULL %}<div class="dfx-detail-veranstalter-kom"> {{ strVeranstalterKom|raw }}</div>{% endif %}
+                        </span>
+                    </div>
+                    <br>
+                {% endif %}
+                {% if infoHeader != NULL %}
+                    <div class="dfx-detail-zwue-linie">{{ infoHeader|raw }}</div>
+                    <div class="dfx-detail-info"> {{ rowInfo|raw }} </div>
+                    <br>
+                {% endif %}
+                {% if socialHeader != NULL %}
+                    <div class="dfx-detail-zwue-linie">{{socialHeader|raw }}</div>
+                    {% if rowSocial != NULL %}<div class="dfx-social">{{ rowSocial|raw }}</div>{%  endif %}
+                    <br>
+                {% endif %}
+                {% if termin.bg > 0 %}
+                    <div class="dfx-detail-zwue-linie">{{ 'anfahrt'|trans }}</div>
+                        {{ strMapWindow|raw }}
+                        {% set strGeo = termin.bg ~ ',' ~ termin.lg %}
+                        <form action="https://maps.google.de/maps" method="get" target="_blank">
+                            <div class="dfx-map-form-detail"><input placeholder="{{  'standort'|trans }}" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="{{ strGeo }}" /></div>
+                            <div class="dfx-map-form-detail"><input type="submit" value="{{ 'route anzeigen'|trans }}" class="btn btn-primary" /></div>
+                        </form>
+                {% endif %}
+            </div>
+	</div>
+    <div class="row dfx-detail-footer">
+        <div class="col-6 back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+        <div class="col-6 text-right">{{ printLinks|raw }}</div>
+    </div>
+</div>
+{% endblock %}

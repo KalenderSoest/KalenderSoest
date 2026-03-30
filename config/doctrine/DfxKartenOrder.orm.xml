@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxKartenOrder" table="pool_dfx_karten_order">
+    <indexes>
+      <index name="id_termin" columns="id_termin"/>
+      <index name="id_kalender" columns="id_kalender"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="nachname"  column="nachname" length="100"/>
+    <field name="vorname"  column="vorname" length="100"/>
+    <field name="strasse"  column="strasse" length="100" nullable="true"/>
+    <field name="org"  column="org" length="100" nullable="true"/>
+    <field name="plz"  column="plz" length="10" nullable="true"/>
+    <field name="ort"  column="ort" length="100" nullable="true"/>
+    <field name="email"  column="email" length="100"/>
+    <field name="tel"  column="tel" length="50" nullable="true"/>
+    <field name="mobil"  column="mobil" length="50" nullable="true"/>
+    <field name="anzahl" type="integer" column="anzahl"/>
+    <field name="notiz" type="text" column="notiz" nullable="true"/>
+    <field name="code"  column="code" length="20" unique="true" nullable="true"/>
+    <field name="datum" type="datetime" column="datum"/>
+    <field name="versand" type="datetime" column="versand" nullable="true"/>
+    <field name="zahlweise" type="datetime" column="zahlweise" nullable="true"/>
+    <field name="datenschutz" type="boolean" column="datenschutz" nullable="true"/>
+	<field name="agb" type="boolean" column="agb" nullable="true"/>
+    <field name="filter1" type="boolean" column="filter_1" nullable="true"/>
+    <field name="filter2" type="boolean" column="filter_2" nullable="true"/>
+    <field name="filter3" type="boolean" column="filter_3" nullable="true"/>
+    <field name="filter4" type="boolean" column="filter_4" nullable="true"/>
+    <field name="filter5" type="boolean" column="filter_5" nullable="true"/>
+    <field name="text1"  column="text_1" length="256" nullable="true"/>
+    <field name="text2"  column="text_2" length="256" nullable="true"/>
+    <field name="text3"  column="text_3" length="256" nullable="true"/>
+    <field name="text4"  column="text_4" length="256" nullable="true"/>
+    <field name="text5"  column="text_5" length="256" nullable="true"/>
+    <field name="text6"  column="text_6" length="256" nullable="true"/>
+    <field name="text7"  column="text_7" length="256" nullable="true"/>
+    <field name="text8"  column="text_8" length="256" nullable="true"/>
+    <field name="text9"  column="text_9" length="256" nullable="true"/>
+    <field name="text10"  column="text_10" length="256" nullable="true"/>
+    <field name="text11"  column="text_11" length="256" nullable="true"/>
+    <field name="text12"  column="text_12" length="256" nullable="true"/>
+    <field name="text13"  column="text_13" length="256" nullable="true"/>
+    <field name="text14"  column="text_14" length="256" nullable="true"/>
+    <field name="text15"  column="text_15" length="256" nullable="true"/>
+    <field name="textbox1" type="text" column="textbox_1" nullable="true"/>
+    <field name="textbox2" type="text" column="textbox_2" nullable="true"/>
+    <many-to-one field="termin" target-entity="DfxTermine">
+      <join-columns>
+        <join-column name="id_termin"  on-delete="SET NULL"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="datefix" target-entity="DfxKonf">
+      <join-columns>
+        <join-column name="id_kalender"  on-delete="SET NULL"/>
+      </join-columns>
+    </many-to-one>
+   </entity>
+</doctrine-mapping>
+

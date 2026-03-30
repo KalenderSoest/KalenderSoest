@@ -1,0 +1,82 @@
+﻿{% set file =  filter_form is defined ? tplform : 'news_solo'%}
+{% extends 'News/'~ file ~'.html.twig' %}
+{% block dfx_news %}
+	{% set tz = konf.trennzeichen %}
+	{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+	{% if konf.imgListe == 2 %}
+		{% set colXsImg = 3 %}
+	    {% set colSmImg = 4 %}
+	    {% set colMdImg = 3 %}
+
+	    {% set colXsText = 9 %}
+	    {% set colSmText = 8 %}
+	    {% set colMdText = 9 %}
+	{% else %}
+		{% set colXsImg = 2 %}
+	    {% set colSmImg = 3 %}
+	    {% set colMdImg = 2 %}
+
+	    {% set colXsText = 10 %}
+	    {% set colSmText = 9 %}
+	    {% set colMdText = 10 %}
+	{%  endif %}
+	<div class="dfx-header">Alle Artikel {{ headline }}</div>
+	{% if konf.paginationTop == 1 %}
+		{{ block('dfx_pagination') }}
+	{%  endif %}
+	{% set tplClass = 'blank'  %}
+	{% set rowCount = 0 %}
+	{% if news|length > 0 %}
+	{% for artikel in news %}
+		{% set titel = artikel.titel %}
+		{% set strDate = artikel.datumInput|date('d.m.Y')  %}
+		{% set strMetadate = artikel.datumInput|date('Y-m-d') %}
+		{% set altText = artikel.imgtext %}
+		{% set altText = artikel.imgcopyright is not null ? altText ~ ' &copy; ' ~ artikel.imgcopyright : altText %}
+		{% set vorschau = {"thumbnail": {"size": [konf.imgPrevWidth,konf.imgPrevHeight] }} %}
+		{% if artikel.img != NULL  %}
+			{% set strImgPrev = '<img title="' ~ altText ~ '"  alt="' ~ altText ~ '" class="dfx-image" src="' ~ asset('/images/dfx/' ~ artikel.datefix.id ~ '/' ~ artikel.img) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+		{% else %}
+			{% set strImgPrev = NULL %}
+        {%  endif %}
+		{% if artikel.video != NULL %}
+			{%  set strVideo = artikel.video %}
+		{% else %}
+			{%  set strVideo = NULL %}
+		{% endif %}
+		{% set rowInfo ='' %}
+		{% set rowInfo = artikel.mail is not null ? rowInfo  ~ ' ' ~ '<a href="mailto:' ~ artikel.mail  ~ '" title="' ~ 'mail senden'|trans ~ '"><i class="fa-solid fa-message"></i></a>' : rowInfo %}
+		{% if artikel.pdf is not null %}
+			{% set rowInfo = rowInfo  ~ ' ' ~ '<a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ artikel.pdf ~ '" class="dfx-nojson" target="_blank" title="' ~ 'pdf download'|trans ~ '"><i class="fa-solid fa-download"></i></a>' %}
+		{% endif %}
+		{% set linktext = artikel.linktext is not null ? artikel.linktext : artikel.link %}
+		{% set rowInfo = artikel.link is not null ? rowInfo  ~ ' ' ~ '<a href="' ~ artikel.link  ~ '" title="' ~ linktext ~ '" target="_blank"><i class="fa-solid fa-circle-info"></i></a>' : rowInfo %}
+		{% set rowSocial = NULL %}
+		{% set rowSocial = konf.allowMail  ? rowSocial  ~ ' ' ~ '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('artikel_mail', { 'id': artikel.id, 'kid': konf.id } ) ~ '" title="' ~ 'als mail senden'|trans ~ '"><i class="fa-solid fa-envelope"></i></a>' : rowSocial %}
+		{% set strText = artikel.beschreibung is not null ? artikel.beschreibung|raw|nl2br : "" %}
+
+        {% set mehrUrl = frontendUrlQ ~ 'nfxid=' ~ artikel.id  %}
+		{% set printLinks = konf.allowPrint == true ? '<a class="dfx-print" title="Artikel drucken" href="' ~ url('artikel_print', { 'id': artikel.id }) ~ '"><i class="fa-solid fa-print"></i></a> <a class="dfx-pdf" target="_blank" title="Artikel als PDF" href="' ~ url('artikel_fe_pdf', { 'id': artikel.id }) ~ '"><i class="fa-solid fa-file-pdf"></i></a>' : null %}
+		{% set mehrLink = '<div itemprop="url" class="dfx-mehr float-end"><a href="' ~ mehrUrl ~ '">' ~ 'details'|trans ~ ' <i class="fa-solid fa-chevron-right"></i></a></div>' %}
+
+
+		{% set strKurztext = artikel.kurztext is not null ? '<div itemprop="description" class="dfx-lead">' ~ artikel.kurztext|raw|nl2br ~ '</div>': NULL %}
+		{% set rowCount = rowCount + 1 %}
+
+		{{ block('dfx_artikel') }}
+	{% endfor %}
+	{% else %}
+		<div class=" row">
+			<div class="col-lg-12">
+				<div class="dfx-zwue fx-linie">keine Artikel</div>
+			</div>
+		</div>
+	{% endif %}
+	{{ block('dfx_pagination') }}
+	<div id="dfx_konf" data-frontend="{{ konf.frontendUrl }}" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}" data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" data-tpl="liste" style="display:none"></div>
+{% endblock dfx_news %}
+{% block dfx_pagination %}
+<div class="navigation row">
+    <div class="col-12">{{ knp_pagination_render(news) }}</div>
+</div>
+{%  endblock %}

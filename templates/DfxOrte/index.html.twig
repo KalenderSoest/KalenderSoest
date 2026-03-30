@@ -1,0 +1,39 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Orte' %}
+{% block pageheader 'Orte' %}
+{% block subheader 'Listenansicht' %}
+
+{% block footer %}
+
+{% endblock footer %}
+
+{% block body -%}
+<a href="{{ path('orte_new') }}">Ort hinzufügen</a><br />   
+<table class="table table-striped">
+       <thead>
+            <tr>
+            	<th>Plz</th>
+                <th>Ortsname</th>
+                <th>Region</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for entity in pagination %}
+            <tr>
+                <td>{{ entity.plz }}</td>
+                <td>{{ entity.ort }}</td>
+                <td>{% if entity.region is not null %}{{ entity.region.region }}{% endif %}</td>
+                    
+				<td><a href="{{ path('orte_edit', { 'id': entity.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ entity.ort }} löschen" href="{{ path('orte_delete', { 'id': entity.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+    	{{ knp_pagination_render(pagination) }}
+	</div>
+    <a href="{{ path('orte_new') }}">Ort hinzufügen</a>
+{% endblock %}  
+

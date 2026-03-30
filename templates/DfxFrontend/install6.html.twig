@@ -1,0 +1,24 @@
+﻿{% extends 'Admin/base_admin.html.twig' %}
+{% block title %}Datefix Installation{% endblock %}
+{% block pageheader %}INSTALLATION{% endblock %}
+{% block subheader %}Abgeschlossen{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-sm-12 col-md-8">
+            <h2>Installation abgeschlossen, Account für Superadmin angelegt</h2>
+            <h4>Ihre Login-Daten:</h4>
+            <p>Usernummer: <strong>{{ user.username }}</strong></p>
+            <p>Passwort: Das von Ihnen gewählte Passwort</p>
+            <p><a href="{{ path('app_login') }}" target="_blank">Zum Login</a></p>
+            <p>Hier geht es zum Kalender in einer neutralen Umgebung: <a href="{{ path('kalender_fe', { 'kid': user.datefix.id }) }}" target="_blank">Zum Kalender</a></p>
+            <h4>Einbau</h4>
+            <p>Fügen Sie folgenden Code an der Stelle in Ihrer Internetseite ein, an der der Kalender stehen soll:</p>
+            <p><textarea rows="2" class="form-control" readonly>
+&lt;script id=&quot;dfx&quot; data-kid=&quot;{{ user.datefix.id }}&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_ajax.js&quot;&gt;&lt;/script&gt;
+&lt;div id=&quot;datefix&quot;&gt;&lt;/div&gt;</textarea></p>
+            <p>Sofern Sie Zugriff auf den Header- oder den Footer-Bereich Ihrer Seite haben, sollten Sie die Javascript-Einbindung in den Header oder Footer setzen. Die zweite Zeile muss an der Stelle stehen, an der der Kalender erscheinen soll.</p>
+            <h5>Alternativer Aufruf</h5>
+            <p>Ihr Kalender ist alternativ auch unter der Adresse <a href="{{ url('kalender_fe', { 'kid': user.datefix.id }) }}" target="_blank">{{ url('kalender_fe', { 'kid': user.datefix.id }) }}</a> erreichbar und kann so auch in einem Iframe eingebunden werden.</p>
+        </div>
+    </div>
+{% endblock %}

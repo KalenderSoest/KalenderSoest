@@ -1,0 +1,51 @@
+{% extends 'News/base_pdf.html.twig' %}
+{% block dfx_news_detail %}
+<style>
+  page{
+  	font-size: 11pt;
+  	color: #333;
+  }
+  a{
+  	color: #999;
+  }
+  .pdf-subtitel, .pdf-lead {
+  	font-weight: bold;
+  	line-height: 1.75;
+  }
+
+  .blockende{
+  	margin-bottom: 12pt;
+  }
+  .pdf-beschreibung, .pdf-lead, .pdf-bu{
+    text-align: justify;
+    line-height: 1.75;
+  }
+
+  .pdf-logo{
+    vertical-valign: top;
+    max-width: 50%;
+  }
+  .dfx-detail-image{
+      max-width: 100%;
+  }
+</style>
+<page backbottom="10mm">
+    <table style="width: 100%">
+    	<tr>
+    	<td class="pdf-logo">{{ strLogo|raw }}</td>
+    	<td class="pdf-adresse"></td>
+    	</tr>
+    </table>
+
+    <h1 class="pdf-titel" style="margin-top:8mm">{{ artikel.titel|raw }}</h1>
+	{% if artikel.subtitel != NULL %}
+		<h3 class="pdf-subtitel blockende">{{'subtitel-fe'|trans}}{{ artikel.subtitel }}</h3>
+	{% endif %}
+    {% if strKurztext != NULL %}<div class="pdf-lead blockende">{{ strKurztext|raw }}</div> {% endif %}
+    {% if strText != NULL %}<div class="pdf-beschreibung blockende">{{ strText|raw }}<br></div> {% endif %}
+
+	{% if infolink != NULL %}<div class="pdf-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
+    {% if strDate !='' %}<div class="pdf-datumszeile blockende">{{ strDate }}</div>{% endif %}
+    {{ strImg|raw }}
+	</page>
+{% endblock %}

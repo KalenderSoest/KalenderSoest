@@ -1,0 +1,125 @@
+{%  if entity.strasse %}
+	{% set strStrasse =  entity.strasse %}
+{%  else %}
+	{% set strStrasse = NULL %}
+{%  endif %}
+{%  if entity.ort %}
+	{% if entity.plz %}
+		{% set strOrt = entity.plz  ~ ' ' ~ entity.ort %}
+	{% else %}
+		{% set strOrt =entity.ort %}
+	{% endif %}
+{%  else %}
+	{% set strOrt = NULL %}
+{%  endif %}
+{% set strLocationKom = entity.telefon != NULL ? 'telefon'|trans ~ ': ' ~ entity.telefon : NULL %}
+{% set strLocationKom = entity.email != NULL ? strLocationKom ~ '<br />' ~ 'email'|trans  ~ ': <a href = "mailto:' ~ entity.email ~ '">' ~ entity.email ~ '</a>': strLocationKom %}
+{% set strLocationKom = entity.www != NULL ? strLocationKom ~ '<br />' ~ 'www'|trans ~ ': <a href = "' ~ entity.www ~ '" target="_blank">' ~ entity.www ~ '</a>' : strLocationKom %}
+
+
+{% set detailbild = {"thumbnail": {"size": [konf.imgWidth,konf.imgHeight] }} %}
+{% set vorschau = {"thumbnail": {"size": [konf.imgPrevWidth,konf.imgPrevHeight] }} %}
+{% set altText = entity.imgtext %}
+{% set altText = entity.imgcopyright is not null ? altText ~ ' &copy; ' ~ entity.imgcopyright : altText %}
+
+{% if entity.imgLoc != NULL %}
+	{% set strImg = '<img title="Bild zu ' ~ entity.name ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgLoc) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+{% else %}
+	{% set strImg = NULL %}
+{%  endif %}
+{% set strSlider = NULL %}
+{% if entity.img2 != NULL %}
+	
+	{% set strImg2 = entity.img2 != NULL ? '<img title="Bild 2 zu ' ~ entity.name ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img2) | imagine_filter('thumb', detailbild)  ~ '" />' : NULL %}
+	{% set strImg3 = entity.img3 != NULL ? '<img title="Bild 2 zu ' ~ entity.name ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img3) | imagine_filter('thumb', detailbild)  ~ '" />' : NULL %}
+	{% set strImg4 = entity.img4 != NULL ? '<img title="Bild 2 zu ' ~ entity.name ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img2) | imagine_filter('thumb', detailbild)  ~ '" />' : NULL %}
+
+	{% set strImgPrev1 = entity.imgLoc != NULL ? '<img src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgLoc) | imagine_filter('thumb', vorschau)  ~ '" />' : NULL %}
+	{% set strImgPrev2 = entity.img2 != NULL ? '<img src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img2) | imagine_filter('thumb', vorschau)  ~ '" />' : NULL %}
+	{% set strImgPrev3 = entity.img3 != NULL ? '<img src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img3) | imagine_filter('thumb', vorschau)  ~ '" />' : NULL %}
+	{% set strImgPrev4 = entity.img4 != NULL ? '<img src="' ~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img2) | imagine_filter('thumb', vorschau)  ~ '" />' : NULL %}
+	{% set strSlider = '<div id="galerie" class="carousel slide article-slide clearfix" data-ride="carousel"><div class="carousel-inner cont-slider"><div class="item active">' ~ strImg ~ '</div><div class="item">' ~ strImg2 ~ '</div>' %}
+	{% set strSlider = strImg3 is not null ? strSlider ~ '<div class="item">' ~ strImg3 ~ '</div>' : strSlider %}
+	{% set strSlider = strImg4 is not null ? strSlider ~ '<div class="item">' ~ strImg4 ~ '</div>' : strSlider %}
+	{% set strSlider = strSlider ~ '</div>' %}
+	{% set strSliderPrev = '<ol class="carousel-indicators"><li data-target="#galerie" data-slide-to="0" class="active">' ~  strImgPrev1 ~'</li><li data-target="#galerie" data-slide-to="1" class="">' ~  strImgPrev2 ~'</li>' %}
+	{% set strSliderPrev = strImgPrev3 is not null ? strSliderPrev ~ '<li data-target="#galerie" data-slide-to="2" class="">' ~  strImgPrev3 ~'</li>' : strSliderPrev %}
+	{% set strSliderPrev = strImgPrev4 is not null ? strSliderPrev ~ '<li data-target="#galerie" data-slide-to="3" class="">' ~  strImgPrev4 ~'</li>' : strSliderPrev %}
+	{% set strSliderPrev = strSliderPrev ~ '</ol><a data-slide="prev" role="button" href="#galerie" class="left carousel-control"><span aria-hidden="true" class="fa-solid fa-circle-chevron-left"></span><span class="sr-only">Previous</span></a><a data-slide="next" role="button" href="#galerie" class="right carousel-control"><span aria-hidden="true" class="fa-solid fa-circle-chevron-right"></span><span class="sr-only">Next</span></a></div>' %}
+	{% set strSlider = strSlider ~ strSliderPrev %}
+	{% set strSlider = entity.imgtext is not null ? strSlider  ~ '<div><em>' ~ entity.imgtext  ~ '</em></div>' : strSlider %}
+	{% set strSlider = entity.imgcopyright is not null ? strSlider  ~ '<div class="text-right"><em>' ~ entity.imgcopyright  ~ '</em></div><br>' : strSlider ~ '<br>'%}
+{% elseif strImg is not null %}
+	{% set strImg = entity.imgtext is not null ? strImg  ~ '<div><em>' ~ entity.imgtext  ~ '</em></div>' : strImg %}
+	{% set strImg = entity.imgcopyright is not null ? strImg  ~ '<div class="text-right"><em>' ~ entity.imgcopyright  ~ '</em></div><br>' : strImg ~ '<br>'%}
+{% endif %}
+{% set strText = entity.zusatz is not null ? entity.zusatz|raw|nl2br : null %}
+{% if konf.useMap == 1 %}
+	{% set strMapLink = ( entity.lg and entity.bg) ? '<a href = "#" data-tid="' ~ entity.id ~ '" data-bg="' ~ entity.bg ~ '" data-lg="' ~ entity.lg ~ '" data-lokal="' ~ entity.name ~ '" class="dfx-map-open" title="' ~ 'veranstaltungsort auf lageplan'|trans ~ '"><i class="fa-solid fa-location-dot"></i></a>' : "" %}
+	{% set strMapWindow = '<br><div id="dfxMap" class="dfx-map-window"></div>'|raw %}
+	{% set strGeo = entity.bg ~ ',' ~ entity.lg %}
+	{% set strMapClose = '<div id="dfxMapClose" class="dfx-map-form row"><form action="https://maps.google.de/maps" method="get" target="_blank"><div class="col-12 col-sm-6 col-md-6"><input placeholder="' ~ 'standort'|trans ~ '" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="' ~ strGeo ~'" /></div><div class="col-12 col-sm-6 col-md-3"><input type="submit" value="' ~ 'route anzeigen'|trans ~ '" class="btn btn-primary" /></div><div class="col-12 col-sm-6 col-md-3"><a href="#" data-tid="' ~ entity.id ~ '" class="dfx-map-close">' ~ 'karte schliessen'|trans ~ '</a></div></form></div>'|raw %}
+{% else %}
+	{% set strMapLink = NULL %}
+	{% set strMapWindow = NULL %}
+	{% set strMapClose = NULL %}
+{% endif %}
+<div id="dfx_detail_wrapper" data-bg="{{ entity.bg }}" data-lg="{{ entity.lg }}" data-lokal="{{ entity.name }}" data-nav="{{ konf.navDetail }}">	
+{% if konf.dfxTpl == 'block' %}
+   <div>
+{% else %}
+	<div class="fx-{{ konf.dfxTpl }}">
+{% endif %}
+    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    
+    {% if konf.dfxTpl == 'block' %}
+   		<h3 class="dfx-titel fx-block">{{ entity.name|raw }}</h3>
+	{% else %}
+		<h3 class="dfx-titel">{{ entity.name|raw }}</h3>
+	{% endif %}
+	<div class="row">
+		<div class="col-12 col-sm-6 col-md-8">
+			{% if strSlider != NULL %}
+				{{ strSlider|raw }}
+			{% else %}
+				{{ strImg|raw }}
+			{% endif %}
+		   	{% if strText != NULL %}<div class="dfx-text-detail">{{ strText|raw }}</div>{% endif %}
+		</div>
+		<div class="col-12 col-sm-6 col-md-4">
+				<div class="dfx-detail-zwue-linie">{{ 'Anschrift'|trans }}</div>
+		       	{% if entity.name != NULL %}<div class="dfx-detail-lokal"> {{ entity.name|raw }} </div>{% endif %}
+				{% if strStrasse != NULL %}<div class="dfx-detail-strasse"> {{ strStrasse|raw }}</div>{% endif %}
+				{% if strOrt !=NULL %}<div class="dfx-detail-ort"> {{ strOrt|raw }}</div>{% endif %}
+				<br>
+				{% if  strLocationKom != NULL %}
+					<div class="dfx-detail-zwue-linie">{{ 'Kontakt'|raw }}</div>
+					<div class="dfx-location-kom"> {{ strLocationKom|raw }} </div>
+					<br>
+				{% endif %}
+			
+		</div>
+	</div>
+	{% if konf.useMap == 1 %}
+			    <div class="dfx-detail-zwue-linie">{{ 'anfahrt'|trans }}</div>
+				<div id="dfxMap" class="dfx-map-window dfx-map-open-self"></div>
+				{% set strGeo = entity.bg ~ ',' ~ entity.lg %}
+				<form action="https://maps.google.de/maps" method="get" target="_blank">
+				<div class="row dfx-map-form-detail" id="dfxMapClose" style="display:none">
+					<div class="col-12 col-md-8"><input placeholder="{{  'standort'|trans }}" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="{{ strGeo }}" /></div>
+					<div class="col-12 col-md-4"><input type="submit" value="{{ 'route anzeigen'|trans }}" class="btn btn-primary" /></div>
+				</div>
+				</form>
+			{% endif %}
+	
+	<div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+</div>
+</div>
+{% set skins = {'#818181':'gra', '#FF9900':'org','#F05513':'hro','#c63d4e':'dro','#996600':'brn','#5e95cc':'hbl','#4182C2':'dbl', '#84b231':'hgr', '#839636':'olv'} %}
+{% set radius = {'0':'k','1':'r' } %}
+{% if konf.dfxFarbeEigen is not null or konf.dfxFarbeRasterEigen is not null or konf.dfxFontSize is not null or konf.dfxFontColor is not null or konf.dfxFontType is not null  %}
+	{% set cssFile = 'own/' ~ konf.id ~'.css' %}
+{% else %}
+	{% set cssFile = 'datefix.' ~ skins[konf.dfxFarbe] ~ '-' ~ radius[konf.dfxRadius] ~ '.css' %}
+{% endif %}
+<div id="dfx_konf" data-cssfile="{{ cssFile }}" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-tpl="detail" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" style="display: none"></div>

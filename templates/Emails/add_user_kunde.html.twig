@@ -1,0 +1,34 @@
+﻿<p>Guten Tag {{ kunde.vorname }} {{ kunde.name }},</p>
+
+<p>Ihr Account für den Veranstaltungskalender {{ datefix_url }} wurde eingerichtet!</p>
+
+<p>Bitte lesen Sie diese Mail sorgfältig bis zum Ende durch.
+Sie enthält wichtige Informationen sowie Ihre Zugangsdaten.</p>
+
+<p>Die Url des rohen Kalenders: <a href="{{ url('kalender_fe', { 'kid': konf.id }) }}">{{ url('kalender_fe', { 'kid': konf.id }) }}</a></p>
+<h4>Einbau</h4>
+<p>Binden Sie folgenden Code an der Stelle in Ihren HTML-Code ein,
+an der der Kalender stehen soll:</p>
+
+<p>&lt;script id=&quot;dfx&quot; data-kid=&quot;{{ konf.id }}&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_ajax.js&quot;&gt;&lt;/script&gt;
+&lt;div id=&quot;datefix&quot;&gt;&lt;/div&gt;</p>
+
+<p>Alternativ können Sie auch die Rohversion des Kalenders mit Hilfe
+des iframe-Tags in Ihre Seite einbinden.</p>
+
+<p>Eine ausführlie Einbauanleitung finden Sie unter "Einbau" im Verwaltungsbereich </p>
+
+<h4>Administration</h4>
+
+<p>Im Administrationsbereich verwalten Sie Ihre Veranstaltungstermine und
+die vielfältigen Konfigurationsmöglichkeiten von Datefix. Loggen Sie sich dazu
+mit  Ihrer <strong>User-Nummer {{ konf.user.id }}</strong> unter <a href="{{ url('app_login') }}">{{ url('app_login') }}</a> ein.</p>
+
+<p>Für den Fall, dass Sie Fragen haben, lesen Sie bitte zunächst die
+Hilfetexte, bevor Sie sich (nur per Mail) an uns wenden.</p>
+
+<p>Wir freuen uns auf eine hoffentlich erfolgreiche Zusammenarbeit.</p>
+<br>
+<hr>
+{% include 'impressum.html.twig' %}
+<hr>

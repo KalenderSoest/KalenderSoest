@@ -1,0 +1,41 @@
+{% extends 'Kalender/' ~ custom ~ 'termine.html.twig' %}
+{% block dfx_termin %}	
+<div itemscope itemtype="http://schema.org/Event" class="row">
+{% if strImgPrev is not null %}
+    <div class="col-{{ colXsImg }} col-sm-{{ colSmImg }} col-md-{{ colMdImg }}">
+   		<span itemprop="image" class="dfx-image">{{ strImgPrev|raw }}</span>
+   	</div>	
+		<div class="col-{{ colXsText }} col-sm-{{ colSmText }} col-md-{{ colMdText }}">
+	{%  else %}
+		<div class="col-12">
+	{% endif %}
+	  <div class="fx-raster">
+		<div class="row">
+	   		<div itemprop="name" class="col-12 col-sm-7 col-md-8"><h5 class="dfx-titel-liste-dreizeilig"><a href="{{ mehrUrl }}">{{ titel|raw }}</a></h5></div>
+			<div class="d-none d-sm-block col-sm-5 col-md-4 text-right">{{ rowInfo|raw }}</div>
+		</div>
+	 </div>
+	<div>
+		{% if strDate !='' %}<span class="dfx-datum-liste-zweizeilig">{{ strDate }}</span>{% endif %}{% if strTime !='' %}<span class="dfx-zeit-liste-zweizeilig">{% if strDate !='' %}{{ tz }}{% endif %} {{ strTime }}</span>{% endif %}{{ strMetadate|raw }}
+			<span itemprop="location" itemscope itemtype="http://schema.org/Place">
+    			{% if strLokal !='' %}
+    				<span itemprop="name" class="dfx-lokal-liste-zweizeilig">{{ strLokal|raw }}</span>
+    			{% endif %}
+    			{% if strOrt !='' and strLokal !='' %} 
+    			    {{ tz }} 
+    			{% endif %}
+    			{% if strOrt !='' or strStrasse !='' %}
+    			<span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+        			{% if strOrt !='' %}<span class="dfx-ort-liste-zweizeilig">  {{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="dfx-strasse-liste-zweizeilig">, {{ strStrasse|raw }}</span>{% endif %}
+    		    </span>
+    		    {% endif %}
+				{{ strMapLink|raw }} {{ strGeoItemprop|raw }}
+    		 </span>
+    		 <a style="float:right" href="{{ mehrUrl }}">{{ 'details'|trans }} <i class="fa-solid fa-chevron-right"></i></a>
+	</div>
+	</div>
+	{{ strMapWindow|raw }}
+	{{ strMapClose|raw }}
+</div>
+<hr class="terminlinie">			
+{%  endblock %}

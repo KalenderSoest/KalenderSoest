@@ -1,0 +1,91 @@
+{% extends 'news/base.html.twig' %}
+{% set navPos = konf.navPos %}
+
+	{% block nav_full %}{% if navPos =='top' and nav == 1  %}
+		 <div class="col-12 col-md-6">
+			{{ block('dfx_nav_filter_top') }}
+		  </div>
+		  <div class="col-12 col-md-6">
+			{{ block('dfx_nav_newsliste') }}
+		  </div>
+	{% endif %}{% endblock nav_full %}
+
+	{% block nav_side %}{% if navPos !='top' and nav == 1  %}
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12">
+                {{ block('dfx_nav_filter_side') }}
+            </div>
+        </div>
+    {% endif %}{% endblock nav_side %}
+
+
+{% block dfx_nav_filter_top %}
+		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+		<div class="row">
+		{% if konf.filterDatum == 1 %}
+		  <div class="col-md-6">
+		  {{ form_row(filter_form.datum_von) }}
+		  </div>
+		  <div class="col-12 col-md-6">
+		  {{ form_row(filter_form.datum_bis) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterRubrik == 1 %}
+		  <div class="col-md-6">
+		  {{ form_row(filter_form.rubrik) }}
+		   </div>
+		{%  endif %}
+		{% if konf.filterZielgruppe == 1 %}
+		  <div class="col-md-6">
+		  {{ form_row(filter_form.zielgruppe) }}
+		   </div>
+		{%  endif %}
+		{% if konf.filterSuche == 1 %}
+		    <div class="col-md-6">
+		  {{ form_row(filter_form.suche) }}
+		  </div>
+		{%  endif %}
+		</div>
+		<div class="row">
+		  <div class="col-6 col-sm-6 col-md-6">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div class="col-6 col-sm-6 col-md-6">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		</div>
+	{{ form_end(filter_form, {'render_rest': false}) }}
+{% endblock %}
+{% block dfx_nav_filter_side %}
+        <div class="dfx-filter-side">
+   		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+   		{% if konf.filterDatum == 1 %}
+			{{ form_row(filter_form.datum_von) }}
+			{{ form_row(filter_form.datum_bis) }}
+		{% endif %}
+		{% if konf.filterRubrik == 1 %}
+			{{ form_row(filter_form.rubrik) }}
+		{%  endif %}
+		{% if konf.filterZielgruppe == 1 %}
+			{{ form_row(filter_form.zielgruppe) }}
+		{%  endif %}
+		{% if konf.filterSuche == 1 %}
+		    {{ form_row(filter_form.suche) }}
+		{% endif %}
+		<div class="row">
+		  <div class="col-6">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		</div>
+			{{ form_end(filter_form, {'render_rest': false}) }}
+
+	   </div>
+
+{% endblock %}
+
+{% block dfx_nav_newsliste %}
+
+{% endblock %}

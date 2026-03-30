@@ -1,0 +1,9 @@
+<table>
+    {%  if termine is defined and termine|length > 0   %}
+            {% for termin in termine %}
+                <tr><td style="padding-right:20px;">{{ termin.datumVon }} </td><td style="padding-right:20px;">{{ termin.zeit }} </td><td>{{ termin.titel }}</td></tr>
+            {% endfor %}
+        {% else %}
+                <tr><td style="padding-right:20px;">Keine Termine gefunden</td></tr>
+        {% endif %}
+</table>

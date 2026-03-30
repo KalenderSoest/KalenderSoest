@@ -1,0 +1,75 @@
+{% set skins = {'#818181':'gra', '#FF9900':'org','#F05513':'hro','#c63d4e':'dro','#996600':'brn','#5e95cc':'hbl','#4182C2':'dbl', '#84b231':'hgr', '#839636':'olv'} %}
+{% set radius = {'0':'k','1':'r' } %}
+{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+{% if konf.dfxFarbeEigen is not null or konf.dfxFarbeRasterEigen is not null or konf.dfxFontSize is not null or konf.dfxFontColor is not null or konf.dfxFontType is not null %}
+	{% set cssFile = 'own/' ~ konf.id ~'.css' %}
+{% else %}
+	{% set cssFile = 'datefix.' ~ skins[konf.dfxFarbe] ~ '-' ~ radius[konf.dfxRadius] ~ '.css' %}
+{% endif %}
+	  {% if calendar is defined and calendar %}
+	  <!-- Responsive calendar - START -->
+		<div class="responsive-calendar" data-cssfile="{{ cssFile }}">
+		  <div class="controls" style="">
+		      <div class="" style="float: left; width:14%"><a data-go="prev" href="{{ calendar.prevHref }}" aria-label="Zur Terminliste {{ calendar.prevLabel }}"><i class="fa-solid fa-chevron-left"></i></a></div>
+		      
+		      <div class="month-header" style="float: left; width:72%">
+		          <span data-head-year="">{{ calendar.year }}</span> <span data-head-month="">{{ calendar.monthLabel }}</span>
+		      </div>
+		     <div class="right" style="float: left; width:14%"><a data-go="next" href="{{ calendar.nextHref }}" aria-label="Zur Terminliste {{ calendar.nextLabel }}"><i class="fa-solid fa-chevron-right"></i></a></div>
+		  </div>
+		  {% include 'Kalender/_responsive_calendar_days.html.twig' with { calendar: calendar } %}
+		</div>
+	  {% endif %}
+        <div id="dfx_konf"  data-frontend="{{ konf.frontendUrl }}" style="display: none"></div>
+		<!-- Responsive calendar - END -->
+        <div class="dfx-filter-side">
+   		{{ form_start(filter_form,  {'action': konf.frontendUrl , 'attr': {'class': ''} }) }}
+		{{ form_row(filter_form.m) }}
+		{{ form_row(filter_form.t) }}
+   		{% if konf.filterDatum == 1 %}
+			{{ form_row(filter_form.datum_von) }}
+			{{ form_row(filter_form.datum_bis) }}
+		{% endif %}
+		{% if konf.filterRubrik == 1 %}
+			{{ form_row(filter_form.rubrik) }}
+		{% endif %}
+                {% if konf.filterZielgruppe == 1 %}
+			{{ form_row(filter_form.zielgruppe) }}
+		{% endif %}
+                {{ form_row(filter_form.suche) }}
+		{% if konf.filterNat == 1 %}
+			{{ form_row(filter_form.nat) }}
+		{% endif %}
+		{% if konf.filterRegion == 1 %}
+		   {{ form_row(filter_form.region) }}
+		{%  endif %}
+		{% if konf.filterOrt == 1 %}
+			{{ form_row(filter_form.ort) }}
+		{% endif %}
+		{% if konf.filterPlzarea == 1 %}
+		  <div style="width: 45%; float: left">
+		  {{ form_row(filter_form.plz) }}
+		  </div>
+		{% endif %}
+		{% if konf.filterUmkreis == 1 %}
+		 <div style="width: 45%; float: right">
+		  {{ form_row(filter_form.umkreis) }}
+		  {{ form_row(filter_form.bg) }}
+		  {{ form_row(filter_form.lg) }}
+		 </div>
+		{% endif %}
+		{% if konf.filterLocation == 1 %}
+		   {{ form_row(filter_form.lokal) }}
+		{% endif %}
+		{% if konf.filterVeranstalter == 1 %}
+		   {{ form_row(filter_form.veranstalter) }}
+		{% endif %}
+		 <div style="float:left; width: 45%">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div style="width: 45%; float:right">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+			{{ form_row(form._token) }}
+			{{ form_end(form, {'render_rest': false}) }}
+		</div>

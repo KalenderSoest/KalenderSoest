@@ -1,0 +1,62 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% if termin.datum == termin.datumVon %}
+	{% set strDate =  termin.datumVon|date('d.m.Y') %}
+{% else %}	
+	{% set strDate = termin.datumVon|date('m.d.Y') ~ ' bis '|trans ~ termin.datum|date('m.d.Y') %}
+{% endif %}	
+{% set strTime = termin.zeit != NULL ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+
+{% block title 'Kartenreservierungen' %}
+{% block pageheader 'Kartenreservierungen' %}
+{% block subheader "#{ termin.titel|raw ~', ' ~  strDate ~ ' ' ~ strTime }" %}
+
+{% block footer %}
+	
+    
+    
+	
+
+{% endblock footer %}
+
+{% block body -%}
+
+     <table class="table table-striped">
+        <thead>
+            <tr>
+            	<th>Name</th>
+            	<th>Straße</th>
+                <th>Plz</th>
+                <th>Ort</th>
+                <th>Telefon</th>
+                <th>Mobil</th>
+                <th>E-Mail</th>
+                <th style="text-align:right">Plätze</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for reservierung in karten %}
+			 <tr>
+                <td>{{ reservierung.nachname }}, {{ reservierung.vorname }}</td>
+                <td>{{ reservierung.strasse  }}</td>
+                <td>{{ reservierung.plz  }}</td>
+                <td>{{ reservierung.ort  }}</td>
+                <td>{{ reservierung.tel  }}</td>
+                <td>{{ reservierung.mobil  }}</td>
+                <td>{{ reservierung.email  }}</td>
+                <td style="text-align:right">{{ reservierung.anzahl  }}</td>
+                <td><a href="{{ path('karten_edit', { 'id': reservierung.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ reservierung.nachname }} löschen" href="{{ path('karten_delete', { 'id': reservierung.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+                
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<div class="navigation">
+    {{ knp_pagination_render(karten) }}
+</div>
+<div><a href="{{ path('pdf_reservierungen_liste', { 'tid': termin.id }) }}"><i class="fa-solid fa-file-pdf"> </i> Download Komplettdaten als PDF</a> | <a href="{{ path('pdf_reservierungen_liste_einzeilig', { 'tid': termin.id, 'kid': konf.id, }) }}"><i class="fa-solid fa-file-pdf"> </i> Download Liste Kompaktdaten als PDF</a><br><br></div>
+
+<div><a href="{{ path('admin_karten')  }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur terminuebersucht'|trans}}</a></div>
+{% endblock %}  
+

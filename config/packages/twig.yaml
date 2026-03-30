@@ -1,0 +1,23 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    form_themes: [ 'bootstrap_5_layout.html.twig' ]
+    paths:
+        "%kernel.project_dir%/config": config
+    globals:
+        kernelProjectDir: "%kernel.project_dir%"
+        datefix_url: "%datefix_url%"
+        dfx_version: "%dfx_version%"
+        dfx_mail: "%dfx_mail%"
+        backend: "%backend%"
+        zielgruppe: "%zielgruppe%"
+        mapkey: "%mapkey%"
+        tileserver: "%tileserver%"
+        mapset: "%mapset%"
+        copyright: "%copyright%"
+        initbg: "%initbg%"
+        initlg: "%initlg%"
+        initzoom: "%initzoom%"
+        optionsRadio : "%optionsRadio%"
+        optionsMenue : "%optionsMenue%"
+        optionsCheckboxes: "%optionsCheckboxes%"
+        optionsMenueMulti: "%optionsMenueMulti%"

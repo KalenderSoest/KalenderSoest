@@ -1,0 +1,33 @@
+{% extends 'Kalender/' ~ custom ~ 'termine.html.twig' %}
+{% block dfx_termin %}	
+<div itemscope itemtype="http://schema.org/Event" class="row fx-raster">
+	{% if strImgPrev is not null %}
+        <div class="col-{{ colXsImg }} col-sm-{{ colSmImg }} col-md-{{ colMdImg }}" style="padding: 0">
+       		<span itemprop="image" class="dfx-image">{{ strImgPrev|raw }}</span>
+       	</div>	
+		<div class="col-{{ colXsText }} col-sm-{{ colSmText }} col-md-{{ colMdText }}">
+	{%  else %}
+		<div class="col-12">
+	{% endif %}
+			<h5 itemprop="name" class="dfx-titel-liste-zweizeilig"><a href="{{ mehrUrl }}">{{ titel|raw }}</a></h5>
+			{% if strDate !='' %}<span class="dfx-datum-liste-zweizeilig">{{ strDate }}</span>{% endif %}{% if strTime !='' %}<span class="dfx-zeit-liste-zweizeilig">{% if strDate !='' %}{{ tz }}{% endif %} {{ strTime }}</span>{% endif %}{{ strMetadate|raw }}
+			<span itemprop="location" itemscope itemtype="http://schema.org/Place">
+    			{% if strLokal !='' %}
+    				<span itemprop="name" class="dfx-lokal-liste-zweizeilig">{{ strLokal|raw }}</span>
+    			{% endif %}
+    			{% if strOrt !='' and strLokal !='' %} 
+    			    {{ tz }} 
+    			{% endif %}
+    			 {% if strOrt !='' or strStrasse !='' %}
+    			<span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+        			{% if strOrt !='' %}<span class="dfx-ort-liste-zweizeilig">  {{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="dfx-strasse-liste-zweizeilig">, {{ strStrasse|raw }}</span>{% endif %}
+    		    </span>
+    		    {% endif %}
+				{{ strMapLink|raw }} {{ strGeoItemprop|raw }}
+    		 </span>
+    		 <a style="float:right" href="{{ mehrUrl }}">{{ 'details'|trans }} <i class="fa-solid fa-chevron-right"></i></a>
+		</div>
+		{{ strMapWindow|raw }}
+		{{ strMapClose|raw }}
+</div>
+{%  endblock %}

@@ -1,0 +1,53 @@
+{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+{% set tz = ' | ' %}{% set daynr =  termin.datumVon|date('w') %}
+{% set daynr =  termin.datumVon|date('w') %}
+{% set daynrto =  termin.datum|date('w') %}
+{% set monthnr =  termin.datumVon|date('n') %}
+{% set monthnrto =  termin.datum|date('n') %}
+{% if termin.datum == termin.datumVon %}
+	{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+{% else %}	
+	{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+{% endif %}	
+
+{% set strTime = termin.zeit|date('H:i') != NULL ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+{% set strTime = termin.zeitBis != NULL ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+{% set strLokal = termin.lokal %}
+{% set strStrasse =  termin.lokalStrasse %}
+{%  if termin.ort %}
+	{% if termin.plz %}
+		{% set strOrt = termin.plz  ~ " " ~ termin.ort %}
+	{% else %}
+		{% set strOrt =termin.ort %}
+	{% endif %}
+{%  else %}
+	{% set strOrt = NULL %}
+{%  endif %}
+{%  if termin.veranstalter is defined %}
+	{% set strVeranstalter = termin.idVeranstalter.id is defined ? '<a href="' ~ path('veranstalter_show', { 'id': termin.idVeranstalter.id } ) ~ '">' ~ termin.veranstalter ~ '</a>' : termin.veranstalter %}
+	{% if termin.idVeranstalter.id is defined %}	
+		{% set strVeranstalterAdr = termin.idVeranstalter.strasse != NULL ? '<br />' ~ termin.idVeranstalter.strasse : NULL %}
+		{% set strVeranstalterAdr = termin.idVeranstalter.ort != NULL ? strVeranstalterAdr ~ '<br />' ~ termin.idVeranstalter.plz ~ ' ' ~ termin.idVeranstalter.ort : strVeranstalterAdr %}
+		{% set strVeranstalterKom = termin.idVeranstalter.telefon != NULL ? '<br />' ~ 'telefon'|trans ~ ': ' ~ termin.idVeranstalter.telefon : NULL %}
+		{% set strVeranstalterKom = termin.idVeranstalter.email != NULL ? strVeranstalterKom ~ '<br />' ~ 'email'|trans  ~ ': <a href = "mailto:' ~ termin.idVeranstalter.email ~ '">' ~ termin.idVeranstalter.email ~ '</a>' : strVeranstalterKom %}
+		{% set strVeranstalterKom = termin.idVeranstalter.www != NULL ? strVeranstalterKom ~ '<br />' ~ 'www'|trans ~ ': <a href = "http://' ~ termin.idVeranstalter.www ~ '">' ~ termin.idVeranstalter.www ~ '</a>' : strVeranstalterKom  %}
+	{%  else %}	
+		{%  set strVeranstalterAdr = NULL %}
+		{%  set strVeranstalterKom = NULL %}
+		{%  set strVeranstalter = termin.mail != NULL ? strVeranstalter ~ '<br />' ~ 'email'|trans  ~ ': <a href = "mailto:' ~ termin.mail ~ '">' ~ termin.mail ~ '</a>' : strVeranstalter %}
+	{%  endif %}
+	
+{% else %}
+	{% set strVeranstalter = NULL %}
+{% endif %}	
+{% set strText = termin.beschreibung is not null ? termin.beschreibung|nl2br : null %}
+{% set frontendUrlQ = '?' in termin.datefix.frontendUrl ? termin.datefix.frontendUrl ~ '&' : termin.datefix.frontendUrl ~ '?' %}
+{%  block body %}{%  endblock body %}
+{% block footer %}
+<p>{{ 'f-text1'|trans }}: <a href="{{ termin.datefix.frontendUrl }}">{{ termin.datefix.frontendUrl }}</a> </p>
+
+<hr>
+{% include 'impressum.html.twig' %}
+<hr>
+{% endblock footer %}

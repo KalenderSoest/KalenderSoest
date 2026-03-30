@@ -1,0 +1,24 @@
+  <div class="day-headers">
+    <div class="rc-header">Mo</div>
+    <div class="rc-header">Di</div>
+    <div class="rc-header">Mi</div>
+    <div class="rc-header">Do</div>
+    <div class="rc-header">Fr</div>
+    <div class="rc-header">Sa</div>
+    <div class="rc-header">So</div>
+  </div>
+  <div class="days" data-group="days">
+    {% for day in calendar.days %}
+      <div class="{{ day.class }}" style="{{ day.style }}">
+        {% if day.href %}
+          <a data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}" href="{{ day.href }}" aria-label="{{ day.aria }}">{{ day.day }}</a>
+        {% else %}
+          {% if day.isCurrent %}
+            <a data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}">{{ day.day }}</a>
+          {% else %}
+            <a data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}" aria-disabled="true" tabindex="-1" data-disabled="true">{{ day.day }}</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>

@@ -1,0 +1,113 @@
+﻿{% set nav = nav is not defined ? konf.navDetail : nav %}
+{% set tplform = tplform is not defined ? 'form' : tplform %}
+{% set file =  filter_form is defined ? tplform : 'news_solo'%}
+{% set file =  'news_solo'%}
+{% extends 'News/'~ file ~'.html.twig' %}
+{% block dfx_news %}
+	{% set titel = artikel.titel %}
+    {% set altText = artikel.imgtext is not null ? "Bild mit Bildunterschrift: " ~ artikel.imgtext : "Bild zu " ~ artikel.titel %}
+	{% set tz = konf.trennzeichen %}
+	{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+	{% set strDate = artikel.datumVon|date('d.m.Y')  %}
+	{% set strMetadate = '<meta content="' ~ artikel.datumInput|date('Y-m-d') ~ '" itemprop="datePublished">' %}
+	{% set detailbild = {"thumbnail": {"size": [konf.imgWidth,konf.imgHeight] }} %}
+	{% set vorschau = {"thumbnail": {"size": [konf.imgPrevWidth,konf.imgPrevHeight] }} %}
+	{% set galleryTitle = artikel.titel|default('Bild') %}
+	{% if artikel.img != NULL %}
+		{% set strImg = '<img title="Bild zu ' ~ artikel.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev1 = '<img src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg = NULL %}
+		{% set strImgPrev1 = NULL %}
+	{%  endif %}
+	{% if artikel.img5 != NULL %}
+		{% set strImg5 = '<img class="dfx-image" src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img5) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev5 = '<img src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img5) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg5 = NULL %}
+		{% set strImgPrev5 = NULL %}
+	{%  endif %}
+
+	{% if artikel.img2 != NULL %}
+		{% set strImg2 = '<img title="Bild 2 zu ' ~ artikel.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img2) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev2 = '<img src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img2) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg2 = NULL %}
+		{% set strImgPrev2 = NULL %}
+	{% endif %}
+
+	{% if artikel.img3 != NULL %}
+		{% set strImg3 = '<img title="Bild 3 zu ' ~ artikel.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img3) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev3 = '<img src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img3) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg3 = NULL %}
+		{% set strImgPrev3 = NULL %}
+	{% endif %}
+	{% if artikel.img4 != NULL %}
+		{% set strImg4 = '<img title="Bild 4 zu ' ~ artikel.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img4) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev4 = '<img src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ artikel.img4) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg4 = NULL %}
+		{% set strImgPrev4 = NULL %}
+	{% endif %}
+	{% if strImg2 != NULL %}
+		{% set strSlider = '<div class="dfx-gallery" data-dfx-gallery data-gallery-title="' ~ galleryTitle|e('html_attr') ~ '"><div class="dfx-gallery-stage"><button type="button" class="dfx-gallery-nav dfx-gallery-nav-prev" data-dfx-gallery-prev aria-label="Vorheriges Bild"><span aria-hidden="true" class="fa-solid fa-chevron-left"></span></button><div class="dfx-gallery-slides">' %}
+		{% set strSlider = strSlider ~ '<button type="button" class="dfx-gallery-slide is-active" data-dfx-gallery-slide data-index="0" aria-label="Bild 1 anzeigen">' ~ strImg ~ '</button>' %}
+		{% set strSlider = strSlider ~ '<button type="button" class="dfx-gallery-slide" data-dfx-gallery-slide data-index="1" aria-label="Bild 2 anzeigen">' ~ strImg2 ~ '</button>' %}
+		{% set strSlider = strImg3 is not null ? strSlider ~ '<button type="button" class="dfx-gallery-slide" data-dfx-gallery-slide data-index="2" aria-label="Bild 3 anzeigen">' ~ strImg3 ~ '</button>' : strSlider %}
+		{% set strSlider = strImg4 is not null ? strSlider ~ '<button type="button" class="dfx-gallery-slide" data-dfx-gallery-slide data-index="3" aria-label="Bild 4 anzeigen">' ~ strImg4 ~ '</button>' : strSlider %}
+		{% set strSlider = strImg5 is not null ? strSlider ~ '<button type="button" class="dfx-gallery-slide" data-dfx-gallery-slide data-index="4" aria-label="Bild 5 anzeigen">' ~ strImg5 ~ '</button>' : strSlider %}
+		{% set strSlider = strSlider ~ '</div><button type="button" class="dfx-gallery-nav dfx-gallery-nav-next" data-dfx-gallery-next aria-label="Nächstes Bild"><span aria-hidden="true" class="fa-solid fa-chevron-right"></span></button></div>' %}
+		{% set strSliderPrev = '<div class="dfx-gallery-thumbs" data-dfx-gallery-thumbs><button type="button" class="dfx-gallery-thumb is-active" data-dfx-gallery-thumb data-index="0" aria-label="Bild 1 auswählen">' ~  strImgPrev1 ~'</button><button type="button" class="dfx-gallery-thumb" data-dfx-gallery-thumb data-index="1" aria-label="Bild 2 auswählen">' ~  strImgPrev2 ~'</button>' %}
+		{% set strSliderPrev = strImgPrev3 is not null ? strSliderPrev ~ '<button type="button" class="dfx-gallery-thumb" data-dfx-gallery-thumb data-index="2" aria-label="Bild 3 auswählen">' ~  strImgPrev3 ~'</button>' : strSliderPrev %}
+		{% set strSliderPrev = strImgPrev4 is not null ? strSliderPrev ~ '<button type="button" class="dfx-gallery-thumb" data-dfx-gallery-thumb data-index="3" aria-label="Bild 4 auswählen">' ~  strImgPrev4 ~'</button>' : strSliderPrev %}
+		{% set strSliderPrev = strImgPrev5 is not null ? strSliderPrev ~ '<button type="button" class="dfx-gallery-thumb" data-dfx-gallery-thumb data-index="4" aria-label="Bild 5 auswählen">' ~  strImgPrev5 ~'</button>' : strSliderPrev %}
+		{% set strSliderPrev = strSliderPrev ~ '</div><div class="dfx-gallery-lightbox" data-dfx-gallery-lightbox hidden><button type="button" class="dfx-gallery-lightbox-close" data-dfx-gallery-lightbox-close aria-label="Lightbox schließen"><span aria-hidden="true" class="fa-solid fa-xmark"></span></button><button type="button" class="dfx-gallery-lightbox-nav dfx-gallery-lightbox-prev" data-dfx-gallery-lightbox-prev aria-label="Vorheriges Bild"><span aria-hidden="true" class="fa-solid fa-chevron-left"></span></button><div class="dfx-gallery-lightbox-content" data-dfx-gallery-lightbox-content></div><button type="button" class="dfx-gallery-lightbox-nav dfx-gallery-lightbox-next" data-dfx-gallery-lightbox-next aria-label="Nächstes Bild"><span aria-hidden="true" class="fa-solid fa-chevron-right"></span></button></div></div>' %}
+		{% set strSlider = strSlider ~ strSliderPrev %}
+		{% set strSlider = artikel.imgtext is not null ? strSlider  ~ '<div><em>' ~ artikel.imgtext  ~ '</em></div>' : strSlider %}
+		{% set strSlider = artikel.imgcopyright is not null ? strSlider ~ '<div style="text-align:right;"><em>' ~ artikel.imgcopyright  ~ '</em></div><br>' : strSlider ~ '<br>'%}
+	{% else  %}
+	   	{% set strSlider = NULL %}
+		{% if strImg != NULL %}
+			{% set strImg = artikel.imgtext is not null ? strImg  ~ '<div><em>' ~ artikel.imgtext  ~ '</em></div>' : strImg %}
+			{% set strImg = artikel.imgcopyright is not null ? strImg  ~ '<div style="text-align:right;"><em>' ~ artikel.imgcopyright  ~ '</em></div><br>' : strImg ~ '<br>'%}
+		{% endif %}
+	{% endif %}
+	{% set infoHeader = null %}
+	{% set rowInfo = null %}
+	{% if artikel.mail is not null %}
+            {% set rowInfo = rowInfo  ~ ' ' ~ '<i class="fa-solid fa-message"></i> <a href="mailto:' ~ artikel.mail  ~ '">' ~ 'mail senden'|trans ~ '</a><br>' %}
+            {% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'kontaktheader'|trans : 'kontaktheader'|trans  %}
+	{% endif %}
+
+	{% set pdflinktext = artikel.pdflinktext is not null ? artikel.pdflinktext :  'pdf download'|trans  %}
+    {% if artikel.pdf is not null %}
+		{% set rowInfo =  rowInfo  ~ ' ' ~ '<i class="fa-solid fa-download" aria-hidden="true"></i> <a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ artikel.pdf ~ '" class="dfx-nojson" target="_blank">' ~ pdflinktext ~ ' </a><br>' %}
+    {% endif %}
+
+
+	{% set linktext = artikel.linktext is not null ? artikel.linktext : 'Mehr Informationen'|trans %}
+	{% set rowInfo = artikel.link is not null ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-circle-info"></i> <a href="' ~ artikel.link  ~ '" target="_blank">' ~ linktext ~ '</a><br>' : rowInfo %}
+	{% if artikel.pdf is not null or artikel.link is not null %}
+		{% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'infoheader'|trans : 'infoheader'|trans  %}
+	{% endif %}
+	{% set strKurztext = artikel.kurztext is not null ? artikel.kurztext|raw|nl2br  : "" %}
+	{% set strText = artikel.beschreibung is not null ? artikel.beschreibung|raw|nl2br : null %}
+	{% set printLinks = konf.allowPrint == true ? '<a class="dfx-print" title="Artikel drucken" href="' ~ url('artikel_print', { 'id': artikel.id }) ~ '"><i class="fa-solid fa-print"></i></a> <a class="dfx-pdf" target="_blank" title="Artikel als PDF" href="' ~ url('artikel_fe_pdf', { 'id': artikel.id }) ~ '"><i class="fa-solid fa-file-pdf"></i></a>' : null %}
+	<div id="dfx_detail_wrapper" class="container-fluid"  data-cssfile="{{ 'datefix.dro-r.css' }}">
+		{{ block('dfx_news_detail') }}
+	</div>
+	<script type="text/javascript">
+	    {% block javascript_var %}{% endblock %}
+	    document.addEventListener('DOMContentLoaded', function() {
+	    	{% block javascript_onload %}{% endblock %}
+	    })
+	    {% block javascript_functions %}{% endblock %}
+   </script>
+
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,60 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Userverwaltung' %}
+{% block pageheader 'User eingeben' %}
+
+
+{% block body -%}
+    {{ form_start(form) }}
+    <div class="row">
+	    <div class="col-sm-12 col-md-9">
+	    {{ form_row(form.nameLang) }}
+	    </div>
+    </div>
+    <div class="row">
+	    <div class="col-sm-12 col-md-9">
+	    {{ form_row(form.email) }}
+	    </div>
+    </div>
+    <div class="row">
+	    <div class="col-sm-12 col-md-9">
+	    {{ form_row(form.password.first) }}
+	    </div>
+    </div>
+    <div class="row">
+	    <div class="col-sm-12 col-md-9">
+	    {{ form_row(form.password.second) }}
+	    </div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-12">
+    		{{ form_row(form.roles) }}
+    	</div>
+    </div>
+    {% if is_granted('ROLE_DFX_GROUP') %}
+     <div class="row">
+    	{% if is_granted('ROLE_DFX_META') %}
+    		<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.rolesM) }}
+    		</div>
+    	{% endif %}
+    	{% if is_granted('ROLE_DFX_GROUP') %}
+    		<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.rolesG) }}
+    		</div>
+    	{% endif %}
+    </div>
+    {% endif %}
+    <div class="row">
+		  <div class="col-6">
+		  {{ form_row(form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(form.reset) }}
+		  </div>
+	</div>
+    {{ form_row(form._token) }}
+     {{ form_row(form.init) }}
+     {{ form_end(form, {'render_rest': false}) }}
+    <div><br /><a href="{{ path('admin_user') }}">Zurück zur Liste ohne zu speichern</a></div>
+{% endblock body %}
+

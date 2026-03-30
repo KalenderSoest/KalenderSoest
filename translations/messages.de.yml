@@ -1,0 +1,254 @@
+eintritt:    Eintritt
+nachname: Nachname
+vorname: Vorname
+firma: Firma/Organisation
+strasse: Straße
+plz: Plz
+ort: Ort
+telefon: Telefon
+mobil: Mobil
+email: E-Mail
+www: Internet
+nachricht: Nachricht
+zurueck: zurück
+details: Details
+mehr: mehr
+Next: Weiter
+Previous: Zurück
+termin ansehen: Termin ansehen
+subtitel-fe: ""
+subtitel-be: Untertitel
+
+
+
+#Termine
+sonntag: Sonntag
+montag: Montag
+dienstag: Dienstag
+mittwoch: Mittwoch
+donnerstag: Donnerstag
+freitag: Freitag
+samstag: Samstag
+
+so: So
+mo: Mo
+di: Di
+mi: Mi
+do: Do
+fr: Fr
+sa: Sa
+
+januar: Januar
+februar: Februar
+maerz: März
+april: April
+mai: Mai
+juni: Juni
+juli: Juli
+august: August
+september: September
+oktober: Oktober
+november: November
+dezember: Dezember
+
+Alle Veranstaltungen: Alle Veranstaltungen
+keine Termine: Keine Veranstaltungen im gesuchten Zeitraum gefunden
+veranstaltungsort auf lageplan:    Veranstaltungsort auf Lageplan
+verabreden:    Verabreden
+erinnern:    Erinnern lassen
+eintragen: In Kalender eintragen
+als mail senden:    Als Mail senden
+mail senden:    Mail an Veranstalter
+karte schliessen: Karte schließen
+standort: Eigener Standort
+route anzeigen: Route anzeigen - zu Google Maps wechseln
+pdf download: PDF Download
+Mehr Informationen: Mehr Informationen
+
+#Anmeldung/Karten
+karten: Tickets
+anmelden: Anmeldung
+anmeldung: Anmeldung/Platzanfrage
+uebermittelte anmeldedaten: Übermittelte Anmeldung/Platzanfrage
+uebermittelte kartenreservierung: Übermittelte Kartenreservierung
+anzahl: Anzahl
+personenzahl: Personenzahl
+fuer: für
+von: von
+plaetze verfuegbar: Plätze verfügbar
+karten verfuegbar: Tickets verfügbar
+ausgebucht: ausgebucht
+ausverkauft: ausverkauft
+ak-text1: Bitte geben Sie mindestens Ihren Nachnamen, Vornamen und Ihre E-Mail-Adresse ein.
+a-text2-1: <b>Wichtiger Hinweis!</b> Ihre Platzanfrage wird per E-Mail an
+a-text2-2: übermittelt. Bitte lassen Sie sich Ihre Platzanfrage von dort ausdrücklich bestätigen und über die Modalitäten des Vertragsabschlusses informieren. Die Möglichkeit eine Anmeldung abzuschicken, bedeutet nicht, dass aktuell noch Plätze vorhanden sind. Der Betreiber dieses Veranstaltungskalenders haftet nicht für Schäden, die durch fehlerhafte E-Mail-Adressen, Serverausfälle oder andere Fehler bei der Nutzung dieses Systems entstehen.
+a-text3: Anmeldung gesendet
+a-text4: Anmeldung wurde gesendet an
+k-text2-1: <b>Wichtiger Hinweis!</b> Ihre Reservierungsanfrage wird per E-Mail an
+k-text2-2: übermittelt. Bitte lassen Sie sich Ihre Reservierung von dort ausdrücklich bestätigen und über die Modalitäten des Vertragsabschlusses informieren. Die Möglichkeit eine Reservierung abzuschicken, bedeutet nicht, dass aktuell noch Plätze vorhanden sind. Der Betreiber dieses Veranstaltungskalenders haftet nicht für Schäden, die durch fehlerhafte E-Mail-Adressen, Serverausfälle oder andere Fehler bei der Nutzung dieses Systems entstehen.
+k-text3: Anmeldung gesendet
+k-text4: Anmeldung wurde gesendet an
+ak-text6: Folgende Daten wurden übermittelt
+ak-text7: Für diese Veranstaltung stehen nicht mehr genügend Plätze zur Verfügung.
+ak-text8: Noch
+ak-text9: Die Anmeldung wurde unwiederbringlich gelöscht.
+ak-text10: Die Kartenreservierung wurde unwiederbringlich gelöscht.
+pflichtfelder: "* Pflichtfelder"
+Anmeldung gelöscht: Anmeldung gelöscht
+Kartenreservierung gelöscht: Kartenreservierung gelöscht
+Anmeldung löschen: Anmeldung löschen
+Kartenreservierung löschen: Kartenreservierung löschen
+
+#Überschriften
+kartenheader: Tickets
+anmeldenheader: Anmeldung
+kontaktheader: Kontakt
+infoheader: weitere Informationen
+teilen: Teilen
+merken: Merken
+datum uhrzeit: Datum/Uhrzeit
+veranstaltungsort: Veranstaltungsort
+veranstalter: Veranstalter
+anfahrt: Anfahrt
+
+#Mailfooter
+f-text1: Diese Mail wurde automatisch erzeugt für den Veranstaltungskalendermit der Url
+f-text2: Wenn Sie Probleme mit der verwendeten Software Datefix melden wollen, wenden Sie sich bitte an info@datefix.de.
+f-text3: "Bitte geben Sie dabei folgende Referenz-Nummer an: Veranstaltungskalender Nr"
+
+#Terminhinweis als Mail
+Terminhinweis als E-Mail verschicken: Terminhinweis als E-Mail verschicken
+rechtshinweis mail: "Mit Klick auf den Button 'Termin als Mail versenden' bestätigen Sie, dass der Empfänger Ihnen persönlich bekannt ist bzw. Sie davon ausgehen, dass er mit der Zusendung des Terminhinweises einverstanden ist."
+datenschutz mail: "Datenschutzhinweis: Zum Schutz vor Missbrauch werden Ihre E-Mail-Adresse und Ihre Internet-Verbindungsdaten vorübergehend gespeichert."
+hinweis auf termin: Hinweis auf Veranstaltungstermin
+moechte sie auf folgenden Termin hinweisen: möchte Sie auf folgenden Termin hinweisen
+Kommentar von: Kommentar von
+E-Mail erfolgreich verschickt: E-Mail erfolgreich verschickt
+Ihr Veranstaltungshinweis auf: Ihr Veranstaltungshinweis auf
+wurde erfolgreich an: wurde erfolgreich an
+verschickt: verschickt
+antworten: antworten
+
+#Reminder
+An Termin erinnern lassen: An Termin erinnern lassen
+Erinnerung erfolgreich gespeichert: Erinnerung erfolgreich gespeichert
+Ihr Erinnerungswunsch an: Ihr Erinnerungswunsch an
+wurde erfolgreich gespeichert: wurde erfolgreich gespeichert
+Eine E-Mail wird am: Eine E-Mail wird am
+an: an
+
+#Termineingabe Web
+Termineintrag erfolgreich: Termineintrag erfolgreich
+Veranstaltung eingetragen: Ihre Veranstaltung wurde erfolgreich in den Veranstaltungskalender eingetragen
+FreigabeA dministrator: Ihr Eintrag ist erst nach der Freigabe durch den Administrator des Veranstaltungskalenders sichtbar
+Email Administrator: "Eine E-Mail an den Administrator ("
+ist unterwegs: ") ist unterwegs"
+Termin bearbeiten: Um den Termin zu bearbeiten, klicken Sie hier
+Termin loeschen: Um den Termin zu loeschen, klicken Sie hier
+Termin veroeffentlichen: Termin veröffentlichen
+Termin sperren: Termin sperren
+Kurzfassung Termineintrag: Kurzfassung Ihres Termineintrages
+Hinweis Serientermin: Dieser Termin ist Teil einer Terminserie. Das Löschen und Bearbeiten wirkt sich auf alle Termine dieser Serie aus!
+Hinweis Serie Datumseingabe: Dieser Termin ist Teil einer Terminserie. Es ist nicht möglich, Datumsänderungen vorzunehmen, weitere Termine hinzuzufügen oder einzelne Termine aus der Serie herauszunehmen. Sie können einzelne Termine aus der Terminliste heraus bearbeiten oder löschen.
+Ihr Veranstaltungseintrag: Ihr Veranstaltungseintrag
+Neuer Veranstaltungseintrag: Neuer Veranstaltungseintrag
+#Versionen
+
+Testversion: Testen Sie Datefix 30 Tage kostenlos und ohne jede Verpflichtung. <strong>Der Account endet automatisch und bedarf keiner Kündigung.</strong> Innerhalb des Testzeitraums haben Sie jederzeit die Möglichkeit, den Testaccount in einen regulären Account umzuwandeln. Die im Testzeitraum angelegten Termindaten sowie die gesamte Konfigurration und Einbindung bleiben dabei erhalten.    
+Testversion2: <small>- und Datefix 30 Tage kostenlos und unverbindlich testen</small>
+
+#Anmeldungen/Karten
+zurueck zur terminuebersucht: Zurück zur Terminübersicht
+
+#PDF
+Weitere Informationen: Weitere Informationen
+
+#Mailtexte diverse
+Freigabe meta: Freigabe im Meta-Kalender
+Freigabe meta ja: Freigabe im Meta-Kalender erteilen
+Freigabe meta nein: Freigabe im Meta-Kalender verweigern
+
+Freigabe group: Freigabe im Gruppenkalender
+Freigabe group ja: Freigabe im Gruppenkalender erteilen
+Freigabe group nein: Freigabe im Gruppenkalender verweigern
+
+# Headline über den Terminen / Zeitspannen
+im Umkreis von: im Umkreis von
+Km um: Km um
+im Postleitzahlgebiet: im Postleitzahlgebiet
+Region: Region
+mit Suchwort(en): mit Suchwort(en)
+ab heute: ab heute
+am: am
+ab: ab
+bis: bis
+vom: vom
+
+# Terminauswahl
+Datum von: Datum von
+Datum bis: Datum bis
+Land wählen: Land wählen
+PLZ-Gebiet: PLZ-Gebiet
+Ort wählen: Ort wählen
+Umkreis Km: Umkreis Km
+Veranstaltungsstätte wählen: Veranstaltungsstätte wählen
+Veranstalter wählen: Veranstalter wählen
+Region wählen: Region wählen
+Veranstalter aus Datenbank wählen: Veranstalter aus Datenbank wählen
+Rubrik wählen: Rubrik wählen
+Suche in Titel, Text: Suche in Titel, Text
+suchen: suchen
+verwerfen: verwerfen
+
+# Formulare allgemein
+sicherheitscode: Sicherheitscode
+4-stellige Codezahl: 4-stellige Codezahl
+zurueck zur liste: Zurück
+zurücksetzen: zurücksetzen
+
+# Formular Termin als Mail versenden
+Absender E-Mail: Absender E-Mail
+Ihre E-Mail-Adresse: Ihre E-Mail-Adresse
+Absender Vorname: Absender Vorname
+Ihr Vorname: Ihr Vorname
+Absender Nachname: Absender Nachname
+Ihr Nachname: Ihr Nachname
+Empfänger E-Mail: Empfänger E-Mail
+E-Mail-Adresse des Empfängers: E-Mail-Adresse des Empfängers
+Nachricht an Empfänger: Nachricht an Empfänger
+Termin als Mail versenden: Termin als Mail versenden
+
+# Formular an Termin erinnern
+Erinnern am: Erinnern am
+Datum wählen: Datum wählen
+
+#Termineingabe Web
+Daten des Eingebers: Daten des Eingebers
+einzeltermin: Einzeltermin
+serientermin: Serientermin
+tf-text1: <h4>Eingabe Einzeltermine</h4><p>Einzeltermine sind Veranstaltungen, die einmalig an einem Tag stattfinden oder sich über mehrere Tage erstrecken, aber als eine Veranstaltung zu betrachten sind - wie zum Beispiel ein Seminar oder eine mehrtägige Reise. <strong>Mehrtägige Einzeltermine erscheinen nur mit dem Anfangsdatum im Kalender</strong></p>
+tf-text2: <h3>Eingabe Serientermine</h3><p>Serientermine sind Einzeltermine, die in einem bestimmten Zeitraum regelmäßig stattfinden oder sich in unregelmäßigen Abständen wiederholen. Das können Ausstellungen sein oder ein Weihnachtsmarkt, der über einen bestimmten Zeitraum täglich stattfindet. Serientermine erscheinen an allen Tagem im Kalender und können nach der Eingabe einzeln oder gebündelt bearbeitet werden.
+tf-text3: <h4>Regelmäßiger Termin</h4><p>Geben Sie ein Start- und Enddatum an und markieren dann die Tage, an denen der Termin stattfindet. Die ermittelten Tage werden automatisch in das in der nächsten Zeile erscheinende Listenfeld für die regelmäßigen Serientermine eingetragen und können ggf. von Hand nachbearbeitet werden.</p>
+tf-text4: <h4>Unregelmäßiger Termin</h4><p>Unregelmäßig stattfindende Termine können über den mit dem Listenfeld verknüpften Kalender erfasst werden. Klicken Sie auf die Tage, an denen der Termin erscheinen soll. Sie können die Eingabe auch über Monatsgrenzen hinweg fortsetzen, indem Sie mit den << >> Tasten die Moante wechseln.</p> 
+tf-text5: Hole Geodaten aus Adressdaten
+tf-text6: Hole Geodaten aus Karte
+tf-text7: Geben Sie hier den vollständigen HTML-Einbettungscode ein, den die Videoprtale zur Verfügung stelllen.
+rubriken: Rubriken
+legende1: Was & wo
+legende2: Texte & Medien
+legende3: Veranstalter, Kontakt, Karten, Anmeldungen
+
+#Nachträge
+Termin als PDF: Termin als PDF
+Termin drucken: Termin drucken
+Uhr: Uhr
+Datensatz speichern: Datensatz speichern
+
+datenschutz_1: Ja, ich habe die Datenschutzerklärung
+datenschutz_linktext: hier lesen
+datenschutz_2: zur Kenntnis genommen und bin damit einverstanden, dass die von mir angegebenen Daten elektronisch erhoben und gespeichert werden. 
+
+kontoinhaber: Kontoinhaber
+bankname: Bankname
+iban: IBAN
+bic: BIC

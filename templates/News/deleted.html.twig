@@ -1,0 +1,6 @@
+﻿{% block body %}
+<h3>Artikel gelöscht</h3>
+DArtikel "{{ entity.titel }}" wurde erfolgreich gelöscht.<br>
+<div class="back-to-list"><a href="{{ url('news_fe', { kid: konf.id }) }}" data-dfx-news-list="1" data-dfx-ajax-url="{{ datefix_url }}/js/news/{{ konf.id }}">{{'zurueck zur liste'|trans}}</a></div>
+{% endblock %}
+

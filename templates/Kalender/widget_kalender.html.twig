@@ -1,0 +1,63 @@
+	{% if konf.filterKalender == 1 and calendar is defined and calendar %}
+	  <!-- Responsive calendar - START -->
+		<div class="responsive-calendar ">
+		  <div class="controls" style="">
+		      <div class="" style="float: left; width:14%"><a data-go="prev" data-year="{{ calendar.prevYear }}" data-month="{{ calendar.prevMonth }}" href="{{ calendar.prevHref }}" aria-label="Zur Terminliste {{ calendar.prevLabel }}"><i class="fa-solid fa-chevron-left"></i></a></div>
+		      
+		      <div class="month-header" style="float: left; width:72%">
+		          <span data-head-year="">{{ calendar.year }}</span> <span data-head-month="">{{ calendar.monthLabel }}</span>
+		      </div>
+		     <div class="right" style="float: left; width:14%"><a data-go="next" data-year="{{ calendar.nextYear }}" data-month="{{ calendar.nextMonth }}" href="{{ calendar.nextHref }}" aria-label="Zur Terminliste {{ calendar.nextLabel }}"><i class="fa-solid fa-chevron-right"></i></a></div>
+		  </div>
+		  {% include 'Kalender/_responsive_calendar_days.html.twig' with { calendar: calendar } %}
+		</div>
+		<!-- Responsive calendar - END -->
+     {% endif %}
+        <div class="dfx-filter-side">
+   		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+   		{% if konf.filterDatum == 1 %}
+			{{ form_row(filter_form.datum_von) }}
+			{{ form_row(filter_form.datum_bis) }}
+		{% endif %}
+		{% if konf.filterRubrik == 1 %}
+			{{ form_row(filter_form.rubrik) }}
+		{% endif %}
+                {% if konf.filterZielgruppe == 1 %}
+			{{ form_row(filter_form.zielgruppe) }}
+		{% endif %}
+                {{ form_row(filter_form.suche) }}
+		{% if konf.filterNat == 1 %}
+			{{ form_row(filter_form.nat) }}
+		{% endif %}
+		{% if konf.filterRegion == 1 %}
+		   {{ form_row(filter_form.region) }}
+		{%  endif %}
+		{% if konf.filterOrt == 1 %}
+			{{ form_row(filter_form.ort) }}
+		{% endif %}
+		{% if konf.filterPlzarea == 1 %}
+		  <div style="width: 45%; float: left">
+		  {{ form_row(filter_form.plz) }}
+		  </div>
+		{% endif %}
+		{% if konf.filterUmkreis == 1 %}
+		 <div style="width: 45%; float: right">
+		  {{ form_row(filter_form.umkreis) }}
+		  {{ form_row(filter_form.bg) }}
+		  {{ form_row(filter_form.lg) }}
+		 </div>
+		{% endif %}
+		{% if konf.filterLocation == 1 %}
+		   {{ form_row(filter_form.lokal) }}
+		{% endif %}
+		{% if konf.filterVeranstalter == 1 %}
+		   {{ form_row(filter_form.veranstalter) }}
+		{% endif %}
+		 <div style="float:left; width: 45%">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div style="width: 45%; float:right">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		
+	</div>

@@ -1,0 +1,7 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Konfiguration' %}
+{% block pageheader 'Konfiguration' %}
+{% block subheader 'Einstellungen geändert' %}
+{% block body -%}
+<a href="{{ url('kalender_fe', { 'kid': entity.id}) }}" title="Zum Veranstaltungskalender" target="_blank">Veranstaltungskalender ansehen</a>
+{% endblock %}

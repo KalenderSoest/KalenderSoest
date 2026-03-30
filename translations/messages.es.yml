@@ -1,0 +1,149 @@
+﻿eintritt:    Entrada
+nachname: Apellido
+vorname: Nombre
+strasse: Calle
+plz: Código postal
+ort: Ciudad
+telefon: Teléfono
+mobil: Móvil
+email: E-Mail
+www: Internet
+nachricht: Mensaje
+zurueck zur liste: Espalda
+details: Detalles
+mehr: más
+Next: más
+Previous: Espalda
+termin ansehen: Vea el horario
+
+
+
+#Termine
+sonntag: Domingo
+montag: Lunes
+dienstag: Martes
+mittwoch: Miércoles
+donnerstag: Jueves
+freitag: Viernes
+samstag: Sábado
+
+so: Dom
+mo: Lun
+di: Mar
+mi: Mié
+do: Jue
+fr: Vie
+sa: Sáb
+
+januar: Enero
+februar: Febrero
+maerz: Marzo
+april: April
+mai: Mayo
+juni: Junio
+juli: Julio
+august: Agosto
+september: Septiembre
+oktober: Octubre
+november: Noviembre
+dezember: Diciembre
+
+Alle Veranstaltungen: Todos los eventos
+keine Termine: No se encontraron en este período de acontecimientos
+veranstaltungsort auf lageplan:    Lugar en el mapa
+verabreden:    organizar
+erinnern:    recordemos
+eintragen: Añadir al calendario
+als mail senden:    Enviar como correo electrónico
+mail senden:    Enviar por correo al organizador
+karte schliessen: Cerrar mapa
+standort: Lugar privado
+route anzeigen: Obtener direcciones
+pdf download: Descargar PDF
+
+#Anmeldung/Karten
+karten: Reserva de entradas
+anmelden: Registro
+anmeldung: Registro de petición / Curso
+uebermittelte anmeldedaten: Presentada solicitud / petición Place
+uebermittelte kartenreservierung: Reserva de billetes transferidos
+anzahl: Número
+personenzahl: Número de personas
+fuer: para
+von: de
+plaetze verfuegbar: Lugares disponibles
+karten verfuegbar: Entradas disponibles
+ausgebucht: Totalmente lleno
+ausverkauft: Se agotó
+ak-text1: Por favor, introduzca al menos su apellido, nombre y su dirección de correo electrónico.
+a-text2-1: <b>Nota importante!</b> Su solicitud por e-mail a
+a-text2-2: recibido. Por favor, obtener confirmación explícita e informar sobre las modalidades de contrato su consulta a partir de ahí. La posibilidad de presentar una solicitud no significa que en la actualidad son todavía hay plazas disponibles. El operador de este calendario de eventos no es responsable de los daños causados por las direcciones de correo electrónico incorrecta, fallas en el servidor u otros errores en el uso de este sistema.
+a-text3: Aplicación de envío
+a-text4: La aplicación ha sido enviada a
+k-text2-1: <b>Nota importante!</b> solicitará su reserva a través de correo electrónico
+k-text2-2: recibido. Por favor, obtener confirmación explícita e informar sobre los procedimientos de contratación de la reserva desde allí. La posibilidad de presentar una reserva no significa que en la actualidad son todavía hay plazas disponibles. El operador de este calendario de eventos no es responsable de los daños causados por las direcciones de correo electrónico incorrecta, fallas en el servidor u otros errores en el uso de este sistema.
+k-text3: Aplicación de envío
+k-text4: La aplicación ha sido enviada a
+ak-text5: Por favor, póngase en contacto con el remitente.
+ak-text6: La siguiente información ha sido enviado
+ak-text7: Para este evento ya no son suficientes espacios disponibles.
+ak-text8: Más
+pflichtfelder: "* Campos obligatorios"
+
+#Überschriften
+kartenheader: entradas
+anmeldenheader: registro
+kontaktheader: contacto
+infoheader: más información
+teilen: cuota
+merken: recordar
+datum uhrzeit: Fecha / Hora
+veranstaltungsort: lugar
+veranstalter: organizador
+anfahrt: ida
+
+#Mailfooter
+f-text1: Este mensaje ha sido generada automáticamente para el calendario de eventos con la URL
+f-text2: Si usted desea reportar un problema, por favor llame al info@vip-events.es
+f-text3: "Por favor proporcione la siguiente referencia: Número de eventos calendario"
+
+#Terminhinweis als Mail
+Terminhinweis als E-Mail verschicken: enviar por correo electrónico la cita Nota
+rechtshinweis mail: "Confirme haciendo clic en 'enviar solicitud por correo electrónico como' botón de que el receptor que es personalmente consciente de, o asumir que él indicador con el reenvío del delantero está de acuerdo."
+datenschutz mail: "Privacidad Nota: Para evitar el mal uso de su dirección de correo electrónico y su conexión a Internet se almacenan temporalmente los datos."
+hinweis auf termin: Recordando el horario del evento
+moechte sie auf folgenden Termin hinweisen: quiero llamar su atención a la siguiente fecha
+Kommentar von: por comentar
+E-Mail erfolgreich verschickt: correo electrónico enviado con éxito
+Ihr Veranstaltungshinweis auf: Su evento en cuenta
+wurde erfolgreich an: era para tener éxito
+verschickt: enviado
+antworten: responder
+
+#Reminder
+An Termin erinnern lassen: Recuerde dejar que cita
+Erinnerung erfolgreich gespeichert: Recordatorio guardado correctamente
+Ihr Erinnerungswunsch an: El recordatorio al deseo
+wurde erfolgreich gespeichert: ha sido guardado con éxito
+Eine E-Mail wird am: Un correo electrónico es en
+an: en
+
+#Termineingabe Web
+Termineintrag erfolgreich: Fecha de entrada con éxito
+Veranstaltung eingetragen: Su caso se ha registrado correctamente en el calendario de eventos
+FreigabeA dministrator: Su entrada es visible sólo después de la liberación por el Administrador del calendario de eventos
+Email Administrator: "Un correo electrónico al administrador ("
+está en camino: ") está en camino"
+Termin bearbeiten: Para editar el evento, haga clic aquí
+Termin loeschen: Para eliminar el evento, haga clic aquí
+Termin veroeffentlichen: publicar evento
+Termin sperren: fecha del bloqueo
+Kurzfassung Termineintrag: Resumen de la entrada de cita
+Hinweis Serientermin: Este nombramiento es parte de una cita periódica. Edición o supresión afecta a todas las fechas de esta serie!
+Hinweis Serie Datumseingabe: Este nombramiento es parte de una serie de cita. No es posible cambio de fecha para añadir más fechas o eliminar eventos individuales de la serie. Puede editar o eliminar fechas individuales de la lista de citas a cabo.
+Ihr Veranstaltungseintrag: Ihr Veranstaltungseintrag
+Neuer Veranstaltungseintrag: Neuer Veranstaltungseintrag
+
+datenschutz_1: Ja, ich habe die Datenschutzerklärung
+datenschutz_linktext: hier lesen
+datenschutz_2: zur Kenntnis genommen und bin damit einverstanden, dass die von mir angegebenen Daten elektronisch erhoben und gespeichert werden. 

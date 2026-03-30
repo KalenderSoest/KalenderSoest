@@ -1,0 +1,42 @@
+<table width="800">
+  <tr>
+    <td>Kunde</td>
+    <td>{{ kunde.kunde }}</td>
+  </tr>
+  <tr>
+    <td>Name</td>
+    <td>{{ kunde.name }}</td>
+  </tr>
+  <tr>
+    <td>Vorname</td>
+    <td>{{ kunde.vorname }}</td>
+  </tr>
+  <tr>
+    <td>Strasse</td>
+    <td>{{ kunde.strasse }}</td>
+  </tr>
+  <tr>
+    <td>PLZ Ort</td>
+    <td>{{ kunde.plz }} {{ kunde.ort }}</td>
+  </tr>
+  <tr>
+    <td>E-Mail</td>
+    <td>{{ kunde.email }}</td>
+  </tr>
+  <tr>
+    <td>Telefon</td>
+    <td>{{ kunde.telefon }}</td>
+  </tr>
+  <tr>
+    <td>User-Nr</td>
+    <td>{{ konf.user.id }}</td>
+  </tr>
+  <tr>
+    <td>Kalender-Nr</td>
+    <td>{{ konf.id }}</td>
+  </tr>
+  <tr>
+    <td>Link</td>
+    <td><a href="{{ url('kalender_fe', { 'kid': konf.id }) }}">{{ url('kalender_fe', { 'kid': konf.id }) }}</a></td>
+  </tr>
+</table>

@@ -1,0 +1,55 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Veranstalter' %}
+{% block pageheader 'Veranstalter' %}
+{% block subheader 'Veranstalterliste' %}
+
+{% block footer %}
+    
+	
+	
+	
+
+{% endblock footer %}
+
+{% block body -%}
+    <a href="{{ path('veranstalter_new') }}">Veranstalter hinzufügen</a><br />
+    <hr>
+    <h4>Veranstalter suchen</h4>
+    {%  if pagination.getTotalItemCount == 0 %}
+    Keine Veranstalter gefunden
+    {% endif %}
+    {{ form_start(form_suche) }}
+    <div class="row">
+        <div class="col-sm-3">{{ form_row(form_suche.vid) }}</div>
+        <div class="col-sm-3">{{ form_row(form_suche.name) }}</div>
+        <div class="col-sm-3">&nbsp;<br>{{ form_row(form_suche.submit) }}</div>
+    </div>
+    {{ form_end(form_suche) }}
+     <table class="table table-striped">
+       <thead>
+            <tr>
+            	<th>ID</th>
+            	<th>Name</th>
+                <th>Ort</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for entity in pagination %}
+            <tr>
+            	<td>{{ entity.id }}</td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.ort }}</td>
+                    
+				<td><a href="{{ path('veranstalter_edit', { 'id': entity.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ entity.name }} löschen" href="{{ path('veranstalter_delete', { 'id': entity.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+    	{{ knp_pagination_render(pagination) }}
+	</div>
+    <a href="{{ path('veranstalter_new') }}">Veranstalter hinzufügen</a>
+{% endblock %}  
+

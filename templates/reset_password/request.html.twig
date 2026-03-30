@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Passwort zurücksetzen{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    <h1>Passwort zurücksetzen</h1>
+
+    {{ form_start(requestForm) }}
+        {{ form_row(requestForm.require_username) }}
+        {{ form_row(requestForm.email) }}
+        {% if requireUsername %}
+            {{ form_row(requestForm.username) }}
+        {% endif %}
+        <div>
+            <small>
+                Geben Sie Ihre E-Mail-Adresse ein. Falls diese Adresse mehreren Benutzerkonten zugeordnet ist, wird zusätzlich die Usernummer abgefragt, mit der Sie sich anmelden.
+            </small>
+        </div>
+
+        <button class="btn btn-primary">Link zum Zurücksetzen senden</button>
+    {{ form_end(requestForm) }}
+{% endblock %}

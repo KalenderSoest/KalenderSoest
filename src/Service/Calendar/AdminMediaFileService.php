@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Service\Calendar;
+
+use App\Service\FileUploadService;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
+
+final class AdminMediaFileService
+{
+    private const FIELD_CONFIG = [
+        'imageFile' => ['getter' => 'getImg', 'setter' => 'setImg', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete', 'referenceFields' => ['img']],
+        'imageFile2' => ['getter' => 'getImg2', 'setter' => 'setImg2', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete2', 'referenceFields' => ['img2']],
+        'imageFile3' => ['getter' => 'getImg3', 'setter' => 'setImg3', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete3', 'referenceFields' => ['img3']],
+        'imageFile4' => ['getter' => 'getImg4', 'setter' => 'setImg4', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete4', 'referenceFields' => ['img4']],
+        'imageFile5' => ['getter' => 'getImg5', 'setter' => 'setImg5', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete5', 'referenceFields' => ['img5']],
+        'pdfFile' => ['getter' => 'getPdf', 'setter' => 'setPdf', 'path' => 'pdf/dfx', 'deleteField' => 'pdfFileDelete', 'referenceFields' => ['pdf']],
+        'mediaFile' => ['getter' => 'getMedia', 'setter' => 'setMedia', 'path' => 'media/dfx', 'deleteField' => 'mediaFileDelete', 'referenceFields' => ['media']],
+    ];
+
+    public function __construct(
+        private readonly FileUploadService $fileUploadService,
+        private readonly SharedMediaDeletionService $sharedMediaDeletionService,
+    ) {
+    }
+
+    public function applyUploadedFiles(Request $request, string $formName, object $entity, string|int $kid): void
+    {
+        $files = $request->files->get($formName);
+        if (!is_array($files)) {
+            return;
+        }
+
+        foreach (self::FIELD_CONFIG as $field => $config) {
+            $file = $files[$field] ?? null;
+            if ($file === null || !method_exists($entity, $config['setter'])) {
+                continue;
+            }
+
+            $entity->{$config['setter']}($this->fileUploadService->upload($file, (string) $kid));
+        }
+    }
+
+    public function clearMarkedFiles(FormInterface $form, object $entity, string|int $kid): void
+    {
+        foreach (self::FIELD_CONFIG as $config) {
+            $deleteField = $config['deleteField'];
+            if (!$form->has($deleteField) || $form->get($deleteField)->getData() !== true) {
+                continue;
+            }
+
+            if (!method_exists($entity, $config['getter']) || !method_exists($entity, $config['setter'])) {
+                continue;
+            }
+
+            $currentFile = $entity->{$config['getter']}();
+            if (is_string($currentFile) && $currentFile !== '' && $this->canDeletePhysicalFile($entity)) {
+                $this->sharedMediaDeletionService->deleteIfUnused(
+                    $entity::class,
+                    $kid,
+                    method_exists($entity, 'getId') ? $entity->getId() : null,
+                    $currentFile,
+                    $config['path'],
+                    $config['referenceFields'],
+                );
+            }
+
+            $entity->{$config['setter']}(null);
+        }
+    }
+
+    private function canDeletePhysicalFile(object $entity): bool
+    {
+        if (!method_exists($entity, 'getCode')) {
+            return true;
+        }
+
+        return $entity->getCode() === null;
+    }
+
+}

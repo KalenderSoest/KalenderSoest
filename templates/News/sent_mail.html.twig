@@ -1,0 +1,11 @@
+{% extends 'News/base_detail.html.twig' %}
+{% block dfx_news_detail %}
+<div>
+    <h3>{{ 'E-Mail erfolgreich verschickt'|trans }}</h3>
+   <div class="back-to-list"><a href="{{ url('news_fe', { kid: konf.id }) }}" data-dfx-news-list="1" data-dfx-ajax-url="{{ datefix_url }}/js/news/{{ konf.id }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    <p>{{ 'Ihr Hinweis auf'|trans }} "{{ artikel.titel }}" {{ 'wurde erfolgreich an'|trans }}  {{ empfEmail }} {{ 'verschickt'|trans }}.</p>
+</div>
+{% endblock %}
+{% block dfx_konf %}
+	<div id="dfx_konf" data-tpl="report" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" style="display: none"></div>
+{% endblock dfx_konf %}

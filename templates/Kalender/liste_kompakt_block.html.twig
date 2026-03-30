@@ -1,0 +1,52 @@
+{% extends 'Kalender/' ~ custom ~ 'termine.html.twig' %}
+
+{% block dfx_termin %}
+<div itemscope itemtype="http://schema.org/Event" >
+<div class="row">
+	<div class="col-12">
+		<div class="fx-block">
+			<div class="row">
+				<div itemprop="name" class="col-10"><h4 class="dfx-titel-liste-kompakt">{{ titel|raw }}</h4></div>
+				<div class="col-2 text-right">{{ rowInfo|raw }}</div>
+			</div>
+		</div>
+	</div>
+</div>	
+<div class="row">
+    {% if termin.subtitel != NULL %}
+        <div class="col-12 dfx-subtitel-liste-kompakt">{{'subtitel-fe'|trans}}{{ termin.subtitel }} </div>
+    {% endif %}
+    {% if strImgPrev is not null %}
+    <div class="col-{{ colXsImg }} col-sm-{{ colSmImg }} col-md-{{ colMdImg }}">
+   		<span class="dfx-image" itemprop="image">{{ strImgPrev|raw }}</span>
+   	</div>	
+	<div class="col-{{ colXsText }} col-sm-{{ colSmText }} col-md-{{ colMdText }}">
+	{%  else %}
+		<div class="col-12">
+	{% endif %}
+		{% if strDate !='' %}<span class="dfx-datum-liste-zweizeilig">{{ strDate }}</span>{% endif %}{% if strTime !='' %}<span class="dfx-zeit-liste-zweizeilig">{% if strDate !='' %}{{ tz }}{% endif %} {{ strTime }}</span>{% endif %}{{ strMetadate|raw }}<br>
+		<div itemprop="location" itemscope itemtype="http://schema.org/Place">
+			{% if strLokal !='' %}
+				<span itemprop="name" class="dfx-lokal-liste-dreizeilig">{{ strLokal|raw }}</span>
+			{% endif %}
+			{% if strOrt !='' and strLokal !='' %} 
+			    {{ tz }} 
+			{% endif %}
+			 {% if strOrt !='' or strStrasse !='' %}
+			<span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+    			{% if strOrt !='' %} <span class="dfx-ort-liste-dreizeilig">{{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="dfx-strasse-liste-dreizeilig">, {{ strStrasse|raw }}</span>{% endif %}
+		    </span>
+		    {% endif %}
+		     {{ strMapLink|raw }} {{ strGeoItemprop|raw }}
+		 </div>				
+		{{  strTextLead|raw }}
+		<div class="row">
+			<div class="col-6">{{ printLinks|raw }}</div>
+			<div class="col-6 text-right">{{ mehrLink|raw }}</div>
+		</div>
+	</div>	
+</div>
+{{ strMapWindow|raw }}
+{{ strMapClose|raw }}
+</div>
+{%  endblock %}

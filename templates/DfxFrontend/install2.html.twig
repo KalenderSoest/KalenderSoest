@@ -1,0 +1,24 @@
+{% extends 'DfxFrontend/base.html.twig' %}
+{% block title %}Installation :: Datefix - Veranstaltungskalender{% endblock %}
+{% block body -%} 
+    <!-- Page Content -->
+    <div class="container">
+        <!-- Page Heading/Breadcrumbs -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="mb-3 pb-2 border-bottom">INSTALLATION
+                    <small>Datenbank erzeugen - Schritt 1: Installation vorbereiten</small>
+                </h1>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Content Row -->
+        <div class="row">
+            <div class="col-md-6">
+				{{ msg|raw }}
+			</div>
+       	</div>
+       	<hr>
+       	<a href="{{ path('dfx_install3_2') }}"><button class="btn btn-primary">Datenbanktabellen erzeugen</button></a>
+{%  endblock %}

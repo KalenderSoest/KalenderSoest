@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxNfxCounter" table="pool_dfx_nfx_counter">
+    <indexes>
+      <index name="dfx_status" columns="dfx_status"/>
+      <index name="kalender_id" columns="kalender_id"/>
+      <index name="kunden_id" columns="kunden_id"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="dfxDay" type="integer" column="dfx_day" nullable="true"/>
+    <field name="nfxDay" type="integer" column="nfx_day" nullable="true"/>
+    <field name="dfxSum" type="integer" column="dfx_sum" nullable="true"/>
+    <field name="nfxSum" type="integer" column="nfx_sum" nullable="true"/>
+    <field name="dfxApiDay" type="integer" column="dfx_api_day" nullable="true"/>
+    <field name="dfxApiSum" type="integer" column="dfx_api_sum" nullable="true"/>
+    <field name="dfxDatumStart" type="date" column="dfx_datum_start" nullable="true"/>
+    <field name="dfxLastLog" type="datetime" column="dfx_last_log" nullable="true"/>
+    <field name="nfxLastLog" type="datetime" column="nfx_last_log" nullable="true"/>
+    <field name="dfxStatus" type="smallint" column="dfx_status" nullable="true"/>
+    <field name="init"  column="init" length="200" nullable="true"/>
+    <many-to-one field="kunde" target-entity="DfxNfxKunden">
+      <join-columns>
+        <join-column name="kunden_id"  on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="user" target-entity="DfxNfxUser">
+      <join-columns>
+        <join-column name="user_id"  on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="datefix" target-entity="DfxKonf">
+      <join-columns>
+        <join-column name="kalender_id"  on-delete="SET NULL" />
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

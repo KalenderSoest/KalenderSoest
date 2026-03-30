@@ -1,0 +1,179 @@
+{% extends 'Kalender/base.html.twig' %}
+{% set navPos = konf.navPos %}
+
+	{% block nav_full %}{% if navPos =='top' and nav == 1  %}
+		 <div class="col-12 col-sm-7 col-md-7">
+			{{ block('dfx_nav_filter_top') }}
+		  </div>
+		  <div class="col-12 col-sm-5 col-md-5">
+			{{ block('dfx_nav_kalender') }}
+		  </div>
+	{% endif %}{% endblock nav_full %}
+  
+	{% block nav_side %}{% if navPos !='top' and nav == 1  %}   
+		<div class="row">
+        	<div class="col-12 col-sm-12 col-md-12">
+				{{ block('dfx_nav_kalender') }}
+           	</div>
+           	<div class="col-12 col-sm-12 col-md-12">
+           		{{ block('dfx_nav_filter_side') }}
+           	</div>
+        </div>
+     {% endif %}{% endblock nav_side %}
+    
+	
+{% block dfx_nav_filter_top %}
+		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+		{{ form_row(filter_form.m) }}
+		{{ form_row(filter_form.t) }}
+		<div class="row">
+		{% if konf.filterDatum == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.datum_von) }}
+		  </div>
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.datum_bis) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterRubrik == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.rubrik) }}
+		   </div>
+		{%  endif %}
+                {% if konf.filterZielgruppe == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.zielgruppe) }}
+		   </div>
+		{%  endif %}
+		{% if konf.filterSuche == 1 %}
+		    <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.suche) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterNat == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.nat) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterRegion == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.region) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterPlzarea == 1 %}
+		  <div class="col-6 col-sm-3 col-md-3">
+		  {{ form_row(filter_form.plz) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterUmkreis == 1 %}
+		  <div class="col-6 col-sm-3 col-md-3">
+		  {{ form_row(filter_form.umkreis) }}
+		  {{ form_row(filter_form.bg) }}
+		  {{ form_row(filter_form.lg) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterOrt == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.ort) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterLocation == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.lokal) }}
+		  </div>
+		{%  endif %}
+		{% if konf.filterVeranstalter == 1 %}
+		  <div class="col-sm-6 col-md-6">
+		  {{ form_row(filter_form.veranstalter) }}
+		  </div>
+		 
+		{% endif %}
+		</div>
+		<div class="row">
+		  <div class="col-6 col-sm-6 col-md-6">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div class="col-6 col-sm-6 col-md-6">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		</div>
+		{{ form_end(filter_form, {'render_rest': false}) }}
+{% endblock %}
+{% block dfx_nav_filter_side %}
+        <div class="dfx-filter-side">
+   		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+   		{{ form_row(filter_form.m) }}
+		{{ form_row(filter_form.t) }}
+   		{% if konf.filterDatum == 1 %}
+			{{ form_row(filter_form.datum_von) }}
+			{{ form_row(filter_form.datum_bis) }}
+		{% endif %}
+		{% if konf.filterRubrik == 1 %}
+			{{ form_row(filter_form.rubrik) }}
+		{%  endif %}
+                {% if konf.filterZielgruppe == 1 %}
+                    {{ form_row(filter_form.zielgruppe) }}
+		{%  endif %}
+		{% if konf.filterSuche == 1 %}
+		    {{ form_row(filter_form.suche) }}
+		{% endif %}
+		{% if konf.filterNat == 1 %}
+			{{ form_row(filter_form.nat) }}
+		{% endif %}
+		{% if konf.filterRegion == 1 %}
+		   {{ form_row(filter_form.region) }}
+		{%  endif %}
+		{% if konf.filterOrt == 1 %}
+			{{ form_row(filter_form.ort) }}
+		{% endif %}
+		<div class="row">
+		{% if konf.filterPlzarea == 1 %}
+		  <div class="col-6">
+		  {{ form_row(filter_form.plz) }}
+		  </div>
+		{% endif %}
+		{% if konf.filterUmkreis == 1  %}
+		 <div class="col-6">
+		  {{ form_row(filter_form.umkreis) }}
+		  {{ form_row(filter_form.bg) }}
+		  {{ form_row(filter_form.lg) }}
+		 </div>
+		{% endif %}
+		</div>
+		{% if konf.filterLocation == 1 %}
+		   {{ form_row(filter_form.lokal) }}
+		{% endif %}
+		{% if konf.filterVeranstalter == 1 %}
+		   {{ form_row(filter_form.veranstalter) }}
+		{% endif %}
+		 <div class="row">
+		  <div class="col-6">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		</div>
+			{{ form_end(filter_form, {'render_rest': false}) }}
+
+		</div>
+   
+{% endblock %}
+
+{% block dfx_nav_kalender %}
+	 {% if konf.filterKalender == 1 and calendar is defined and calendar %}
+	  <!-- Responsive calendar - START -->
+		<div class="responsive-calendar">
+		  <div class="controls row">
+		      <div class="col-2"><a data-go="prev" data-year="{{ calendar.prevYear }}" data-month="{{ calendar.prevMonth }}" href="{{ calendar.prevHref }}" aria-label="Zur Terminliste {{ calendar.prevLabel }}"><i class="fa-solid fa-chevron-left"></i></a></div>
+		      
+		      <div class="month-header col-8">
+		          <span data-head-year="">{{ calendar.year }}</span> <span data-head-month="">{{ calendar.monthLabel }}</span>
+		      </div>
+		     <div class="col-2"><a data-go="next" data-year="{{ calendar.nextYear }}" data-month="{{ calendar.nextMonth }}" href="{{ calendar.nextHref }}" aria-label="Zur Terminliste {{ calendar.nextLabel }}"><i class="fa-solid fa-chevron-right"></i></a></div>
+		  </div>
+		  {% include 'Kalender/_responsive_calendar_days.html.twig' with { calendar: calendar } %}
+		</div>
+		<!-- Responsive calendar - END -->
+     {% endif %}
+{% endblock %}

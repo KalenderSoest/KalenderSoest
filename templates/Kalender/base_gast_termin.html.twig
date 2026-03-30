@@ -1,0 +1,21 @@
+{% extends 'Kalender/fragment.html.twig' %}
+{% block dfx_termine %}
+	{% set skins = {'#818181':'gra', '#FF9900':'org','#F05513':'hro','#c63d4e':'dro','#996600':'brn','#5e95cc':'hbl','#4182C2':'dbl', '#84b231':'hgr', '#839636':'olv'} %}
+	{% set radius = {'0':'k','1':'r' } %}
+	{% if konf.dfxFarbeEigen is not null or konf.dfxFarbeRasterEigen is not null or konf.dfxFontSize is not null or konf.dfxFontColor is not null or konf.dfxFontType is not null  %}
+		{% set cssFile = 'own/' ~ konf.id ~'.css' %}
+	{% else %}
+		{% set cssFile = 'datefix.' ~ skins[konf.dfxFarbe] ~ '-' ~ radius[konf.dfxRadius] ~ '.css' %}
+	{% endif %}
+	{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+	{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+	{% set tz = konf.trennzeichen %}
+	{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+	<div id="dfx_detail_wrapper" class="container-fluid" data-bg="" data-lg="" data-lokal="" data-cssfile="{{ cssFile }}">
+		{{ block('dfx_termin_detail') }}
+	</div>
+{% endblock %}
+
+
+
+

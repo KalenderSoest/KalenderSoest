@@ -1,0 +1,47 @@
+﻿{% block dfx_news -%}
+	{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+	<table width="800" cellspacing="10" border="0" cellpadding="10">
+	{% set rowCount = 0 %}
+	{% set tplClass = 'blank'  %}
+	{% if termine|length > 0 %}
+		{% for artikel in news %}
+\t\t\t{% set strDate =  artikel.datumInput|date('d.m.Y') %}
+
+			{% if artikel.img != NULL  %}
+				{% set strImgPrev = '<img src="'~ datefix_url ~ '/images/dfx/' ~ konf.id ~ '/' ~ artikel.img ~ '" />' %}
+			{% else %}
+				{% set strImgPrev = NULL %}
+				{% set strImg = NULL %}
+			{%  endif %}
+			{% if artikel.video != NULL %}
+				{%  set strVideo = artikel.video %}
+			{% else %}
+				{%  set strVideo = NULL %}
+			{% endif %}
+			{% set rowInfo ='' %}
+			{% set rowInfo = artikel.mail is not null ? rowInfo  ~ ' ' ~ '<a href = "mailto:' ~ artikel.mail  ~ '" title="' ~ 'mail senden'|trans ~ '">' ~ 'mail senden'|trans ~ '</a>' : rowInfo %}
+			{% if artikel.pdf is not null %}
+				{% set rowInfo = rowInfo  ~ ' ' ~ '<a href="https://' ~ datefix_url ~ '/pdf/dfx/' ~ artikel.datefix.id ~ '/' ~ artikel.pdf ~ '" title="' ~ 'pdf download'|trans ~ '">' ~ 'pdf download'|trans ~ '</a>' %}
+			{% endif %}				
+			{% set linktext = artikel.linktext is not null ? artikel.linktext : artikel.link %}
+			{% set rowInfo = artikel.link is not null ? rowInfo  ~ ' ' ~ '<a href="' ~ artikel.link  ~ '" title="' ~ linktext ~ '" target="_blank"><i class="fa-solid fa-circle-info"></i></a>' : rowInfo %}
+			{% set strText = artikel.beschreibung is not null ? artikel.beschreibung : "" %}
+			{% set mehrUrl = frontendUrlQ ~ 'artikel=' ~ artikel.id  %}
+			{% set printLinks = '<a class="dfx-print" title="Termin drucken" href="' ~ url('termin_print', { 'id': artikel.id, 'kid':artikel.datefix.id }) ~ '"><i class="fa-solid fa-print"></i></a> <a class="dfx-pdf" target="_blank" title="Termin als PDF" href="' ~ url('termin_fe_pdf', { 'id': artikel.id, 'kid':konf.id }) ~ '"><i class="fa-solid fa-file-pdf"></i></a>' %}
+			{% set mehrLink = '<a href="' ~ mehrUrl ~ '">' ~ 'details'|trans ~ '</a>' %}
+			{% set strKurztext = artikel.kurztext is not null ? artikel.kurztext|nl2br : NULL %}
+			{% set rowCount = rowCount + 1 %}
+			{{ block('dfx_artikel') }}
+		{% endfor %}
+
+	{% else %}
+		<tr>
+			<td colspan="2">
+				Keine Artikel gefunden
+			</td>
+        </tr>
+	{% endif %}
+</table>
+{% endblock dfx_news %}
+
+

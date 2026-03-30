@@ -1,0 +1,83 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Accountverwaltung' %}
+{% block pageheader 'Accountverwaltung' %}
+{% block subheader 'Listenansicht' %}
+
+{% block footer %}
+
+{% endblock footer %}
+{% block body -%}
+    {% if dfx_version == 'multi' %}
+    <a href="{{ path('register') }}">Account hinzufügen</a>
+    <hr>
+    <h4>Account suchen</h4>
+    {%  if pagination.getTotalItemCount == 0 %}
+                Keine Accounts gefunden
+    {% else %}
+        {{ form_start(form_suche) }}
+        <div class="row">
+            <div class="col-sm-3">{{ form_row(form_suche.kid) }}</div>
+            <div class="col-sm-3">{{ form_row(form_suche.uid) }}</div>
+            <div class="col-sm-3">{{ form_row(form_suche.email) }}</div>
+            <div class="col-sm-3">&nbsp;<br>{{ form_row(form_suche.submit) }}</div>
+        </div>
+        {{ form_end(form_suche) }}
+
+    <table class="table table-striped">
+           <thead>
+                <tr>
+                    <th>ID Admin</th>
+                    <th>Titel</th>
+                    <th>Kalender-Nr</th>
+                    <th>IsMeta</th>
+                    <th>IsGruppe</th>
+                    <th>ToGruppe</th>
+                    <th colspan="4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {%  if pagination is not defined %}
+                <tr><td colspan="9">Keine Accounts gefunden</td></tr>
+            {% endif %}
+            {% for konf in pagination %}
+                <tr>
+                    <td>{{ konf.user.id }}</td>
+                    <td>{{ konf.titel }}</td>
+                    <td>{{ konf.id }}</td>
+                    <td>{% if konf.isMeta == 1 %}<i class="text-success fa-solid fa-square-check"></i> <a href="{{ path('dfxmeta_unset', { 'kid': konf.id }) }}"><i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('dfxmeta_set', { 'kid': konf.id }) }}"><i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                    <td>{% if konf.isGroup == 1 %}<i class="text-success fa-solid fa-square-check"></i> <a href="{{ path('dfxgroup_unset', { 'kid': konf.id }) }}"><i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('dfxgroup_set', { 'kid': konf.id }) }}"><i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                    <td>{{ konf.toGroup is iterable ? konf.toGroup|join('|') }}</td>
+                    <td><a href="{{ path('admin', { '_switch_user': konf.user.id }) }}" title="Login als Kalenderuser"><i class="fa-solid fa-right-to-bracket"></i></a></td>
+                    <td><a href="{{ path('admin_dfxkonf', { 'kid': konf.id }) }}" title="Konfiguration bearbeiten"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                    <td><a class="delete" title="Kalender  {{ konf.id }} löschen" href="{{ path('superadmin_dfxdelete', { 'kid': konf.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+        {% endif %}
+        <hr>
+        <a href="{{ path('register') }}">Account hinzufügen</a>
+        <hr>
+    {% endif %}
+    <p>Nach Änderungen an den SCSS-Dateien in web/scss werden die CSS-Dateien <strong> für die Standardfarben </strong>mit Klick auf den folgenden Link ohne Rückfrage neu kompiliert.</p>
+    <p><a href="{{ path('superadmin_writecss') }}">CSS Dateien jetzt neu erstellen</a></p>
+    <hr>
+    <p>Nach Änderungen an den SCSS-Dateien in web/scss werden die CSS-Dateien <strong> für Accounts mit eigenen Farben </strong> mit Klick auf den folgenden Link ohne Rückfrage neu kompiliert.</p>
+    <p><a href="{{ path('superadmin_writeowncss') }}">CSS Dateien jetzt neu erstellen</a></p>
+    <hr>
+    <p>Ist die nächtliche Statistik-Mail nicht erzeugt worden ? Ein Klick auf diesen Link wiederholt den Lauf des Archivierungsscriptes. Das kann allerdings zu Fehlern in der Statistik führen.</p>
+    <p><a href="{{ path('superadmin_nightrun') }}">Wartung starten</a></p>
+    <hr>
+    <p>Aktualisiere Datenbank nach Updade-Upload</p>
+    <p><a href="{{ path('superadmin_dabaupdate') }}">Update starten</a></p>
+    <p>Clear cache</p>
+    <p><a href="{{ path('superadmin_clearcache') }}">Clear Cache</a></p>
+{% endblock %} 
+
+
+
+
+

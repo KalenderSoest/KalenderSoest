@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Der Veranstaltungskalender für Städte, Gemeinden, Theater, Kulturveranstalter, Vereine und Jedermann.">
+    <meta name="author" content="Pool Online Internetservice">
+    <meta name="copyright" content="Pool Online Internetservice, Nördlingen">
+    <meta name="keywords" content="Veranstaltungskalender, Eventkalender, Homepagetools, Webmastertools, Homepage, Webkalender">
+	<meta NAME="robots" content="INDEX, FOLLOW">
+
+
+    <title>{% block title %}Datefix :: Veranstaltungkalender für jede Homepage{% endblock %}</title>
+    <link href="{{ asset('css/bootstrap.olv-k.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/datefix_fe.css') }}" rel="stylesheet">
+    {% block head %}{% endblock %}
+
+</head>
+<body>
+<nav id="dfx-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" role="navigation">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('images/logo_400.png') }}" width="300" height="" class="d-inline-block align-text-top"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dfx-navbar-collapse-1" aria-controls="dfx-navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="dfx-navbar-collapse-1">
+            	<ul class="navbar-nav ms-auto">
+            	    <li class="nav-item">
+                        <a class="nav-link" role="navigation" href="{{ path('app_login') }}"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% block body %}{% endblock body%}
+
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; POOL ONLINE INTERNETSERVICE 1999 - {{  'now'|date('Y') }}</p>
+                </div>
+            </div>
+        </footer>
+
+
+    <!-- /.container -->
+
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
+

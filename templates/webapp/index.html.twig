@@ -1,0 +1,1021 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    {% set webappPrimary = konf.dfxFarbeEigen is not null ? konf.dfxFarbeEigen : (konf.dfxFarbe is not null ? konf.dfxFarbe : '#FF9900') %}
+    {% set webappNavBg = konf.bgNav is not null ? konf.bgNav : webappPrimary %}
+    {% set webappLogo = konf.imgLogo is not null ? asset('/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo) : asset('webapp/images/logo_70.png') %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ webappConfig.title }} - WebApp</title>
+    <link rel="stylesheet" href="{{ asset('webapp/css/app.css') }}" />
+    <link rel="stylesheet" href="{{ asset('webapp/css/w3.css') }}" />
+    <link rel="stylesheet" href="{{ asset('js/leaflet/leaflet.css') }}" />
+
+    <link rel="manifest" href="{{ asset('webapp/manifest.json') }}" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="{{ webappConfig.title }}" />
+    <link rel="apple-touch-icon" href="{{ asset('webapp/images/icon_152.png') }}" />
+
+    <meta name="msapplication-TileImage" content="{{ asset('webapp/images/icon_144.png') }}" />
+    <meta name="msapplication-TileColor" content="#2196f3" />
+    <style>
+        :root {
+            --webapp-primary: {{ webappPrimary }};
+            --webapp-nav-bg: {{ webappNavBg }};
+            --webapp-primary-contrast: #fff;
+            --webapp-primary-hover: color-mix(in srgb, var(--webapp-primary) 82%, white);
+            --webapp-primary-active: color-mix(in srgb, var(--webapp-primary) 70%, white);
+        }
+
+        .app-nav-bar,
+        .app-sidebar,
+        .app-accent {
+            background-color: var(--webapp-primary) !important;
+            color: var(--webapp-primary-contrast) !important;
+        }
+
+        .app-header-shell {
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            z-index: 50;
+        }
+
+        .app-header-brand {
+            display: flex;
+            align-items: center;
+            min-height: 82px;
+            padding: 0.75rem 1rem;
+            background: #fff;
+        }
+
+        .app-nav-bar {
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            border-bottom: 4px solid var(--webapp-nav-bg);
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .app-brand-logo {
+            display: block;
+            max-height: 52px;
+            max-width: 220px;
+            width: auto;
+            height: auto;
+        }
+
+        .app-brand-title {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+
+        .app-nav-bar .w3-button,
+        .app-sidebar a,
+        .app-nav-link,
+        .app-accent {
+            color: var(--webapp-primary-contrast) !important;
+        }
+
+        .app-nav-bar .w3-button:hover,
+        .app-sidebar a:hover,
+        .app-nav-link:hover,
+        .app-nav-link:focus,
+        .app-accent:hover,
+        .app-accent:focus {
+            background-color: var(--webapp-primary-hover) !important;
+            color: var(--webapp-primary-contrast) !important;
+        }
+
+        .app-nav-link.app-nav-link-active,
+        .app-sidebar .app-nav-link.app-nav-link-active {
+            background-color: var(--webapp-primary-active) !important;
+            color: var(--webapp-primary-contrast) !important;
+        }
+
+        .app-sidebar {
+            z-index: 9;
+        }
+
+        .app-sidebar a {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .app-nav-inner {
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        .app-nav-desktop {
+            display: flex;
+            align-items: center;
+        }
+
+        .app-nav-link {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            box-sizing: border-box;
+            padding: 0 0.9rem !important;
+            line-height: 1;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .app-nav-link + .app-nav-link {
+            border-left: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+        .app-map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.25rem;
+            text-decoration: none;
+        }
+
+        .app-map-canvas {
+            display: none;
+            width: 100%;
+            min-height: 280px;
+            margin-top: 0.9rem;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .dfx-gallery {
+            position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 100%;
+        }
+
+        .dfx-gallery-stage {
+            position: relative;
+        }
+
+        .dfx-gallery-slides {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dfx-gallery-slide {
+            display: none;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            width: 100%;
+            cursor: zoom-in;
+        }
+
+        .dfx-gallery-slide.is-active {
+            display: block;
+        }
+
+        .dfx-gallery-slide img,
+        .dfx-gallery-lightbox-content img,
+        .app-single-image {
+            display: block;
+            width: 100%;
+            aspect-ratio: {{ konf.imgWidth }} / {{ konf.imgHeight }};
+            object-fit: cover;
+            object-position: center;
+            overflow: hidden;
+        }
+
+        .dfx-gallery-nav,
+        .dfx-gallery-lightbox-close,
+        .dfx-gallery-lightbox-nav {
+            border: 0;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.62);
+            color: #fff;
+        }
+
+        .dfx-gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3rem;
+            height: 3rem;
+            z-index: 1;
+        }
+
+        .dfx-gallery-nav-prev {
+            left: 0.75rem;
+        }
+
+        .dfx-gallery-nav-next {
+            right: 0.75rem;
+        }
+
+        .dfx-gallery-thumbs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+            gap: 0.65rem;
+            width: 100%;
+        }
+
+        .dfx-gallery-thumb {
+            padding: 0;
+            border: 2px solid transparent;
+            background: transparent;
+        }
+
+        .dfx-gallery-thumb.is-active {
+            border-color: var(--webapp-primary);
+        }
+
+        .dfx-gallery-thumb img {
+            display: block;
+            width: 100%;
+            aspect-ratio: {{ konf.imgPrevWidth }} / {{ konf.imgPrevHeight }};
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .dfx-gallery-lightbox[hidden] {
+            display: none !important;
+        }
+
+        .dfx-gallery-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.82);
+        }
+
+        .dfx-gallery-lightbox-content {
+            width: min(92vw, 1100px);
+        }
+
+        .dfx-gallery-lightbox-content img {
+            max-height: 86vh;
+            aspect-ratio: auto;
+        }
+
+        .dfx-gallery-lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .dfx-gallery-lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .dfx-gallery-lightbox-prev {
+            left: 1rem;
+        }
+
+        .dfx-gallery-lightbox-next {
+            right: 1rem;
+        }
+
+        .app-detail-shell {
+            padding: 1rem 0.5rem 1.5rem;
+        }
+
+        .app-detail-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 3rem;
+            margin-bottom: 0.75rem;
+            text-decoration: none;
+        }
+
+        .app-detail-title {
+            margin: 0 0 1rem;
+            font-size: 2rem;
+            line-height: 1.15;
+        }
+
+        .app-detail-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+            gap: 1.75rem;
+            align-items: start;
+        }
+
+        .app-detail-image {
+            margin: 0;
+        }
+
+        .app-detail-caption {
+            margin-top: 0.45rem;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        .app-detail-copyright {
+            margin-top: 0.25rem;
+            font-size: 0.95rem;
+            font-style: italic;
+            text-align: right;
+        }
+
+        .app-detail-body {
+            margin-top: 1rem;
+        }
+
+        .app-detail-body p {
+            margin: 0 0 0.9rem;
+        }
+
+        .app-detail-divider {
+            margin: 1.15rem 0 0;
+            border: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .app-detail-sidebar {
+            font-size: 0.98rem;
+        }
+
+        .app-detail-section {
+            padding: 0 0 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .app-detail-section:last-child {
+            border-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .app-detail-heading {
+            margin: 0 0 0.55rem;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .app-detail-meta {
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        .app-detail-meta strong {
+            display: block;
+        }
+
+        .app-detail-links a {
+            display: block;
+            margin-bottom: 0.3rem;
+            word-break: break-word;
+        }
+
+        .app-detail-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .app-detail-footer {
+            margin-top: 1rem;
+        }
+
+        .app-news-row {
+            position: relative;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .app-news-row::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .app-news-row-title {
+            margin-bottom: 0.2rem;
+            font-size: 1.15rem;
+            line-height: 1.25;
+        }
+
+        .app-news-row-date {
+            display: inline;
+            margin-left: 0.35rem;
+            font-size: 0.85rem;
+            color: rgba(0, 0, 0, 0.72);
+            text-align: left;
+        }
+
+        .app-news-row .news-detail-button {
+            position: absolute;
+            right: 0.75rem;
+            bottom: 0.9rem;
+            margin: 0;
+        }
+
+        .app-news-row .w3-col.s8,
+        .app-news-row .w3-col.m9,
+        .app-news-row .w3-col.l10 {
+            padding-right: 4.75rem;
+        }
+
+        .app-news-row .news-excerpt {
+            display: inline;
+        }
+
+        .app-news-row .news-excerpt p {
+            display: inline;
+            margin: 0;
+        }
+
+        .app-news-detail-shell {
+            padding: 1rem 0.5rem 1.5rem;
+        }
+
+        .app-news-detail-head {
+            margin-bottom: 1rem;
+        }
+
+        .app-news-detail-body {
+            margin-top: 1rem;
+        }
+
+        .app-news-detail-grid > div .app-news-detail-body:first-child {
+            margin-top: 0;
+        }
+
+        .app-news-detail-date-end {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(0, 0, 0, 0.68);
+            text-align: right;
+        }
+
+        .app-news-detail-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .app-calendar-shell {
+            padding: 1rem 0.5rem 1.5rem;
+        }
+
+        .app-calendar-card {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .app-calendar-controls {
+            display: grid;
+            grid-template-columns: 44px 1fr 44px;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .app-calendar-month {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .app-calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.35rem;
+        }
+
+        .app-calendar-head {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: rgba(0, 0, 0, 0.62);
+        }
+
+        .app-calendar-day {
+            min-height: 42px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: #fff;
+            color: #111;
+        }
+
+        .app-calendar-day.is-outside {
+            opacity: 0.45;
+        }
+
+        .app-calendar-day.is-active {
+            background: color-mix(in srgb, var(--webapp-primary) 18%, white);
+            border-color: color-mix(in srgb, var(--webapp-primary) 55%, white);
+            font-weight: 700;
+        }
+
+        .app-calendar-day.is-selected {
+            background: var(--webapp-primary);
+            color: #fff;
+            border-color: var(--webapp-primary);
+        }
+
+        .app-calendar-day[disabled] {
+            cursor: default;
+        }
+
+        .app-calendar-filters {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .app-calendar-filters .app-filter-full {
+            grid-column: 1 / -1;
+        }
+
+        .app-calendar-filters label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .app-calendar-filters input,
+        .app-calendar-filters select {
+            width: 100%;
+            min-height: 38px;
+            padding: 0.45rem 0.6rem;
+            border: 1px solid rgba(0, 0, 0, 0.18);
+            background: #fff;
+        }
+
+        .app-calendar-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1rem;
+        }
+
+        .app-pagination-divider {
+            margin: 0.85rem 0;
+            border: 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.12);
+        }
+
+        .app-pagination {
+            text-align: center;
+        }
+
+        .app-pagination-bottom {
+            margin-top: 0.85rem;
+        }
+
+        #template-event-row .bild,
+        #container-events-rows .bild,
+        #template-news-row .news-image,
+        #container-news-rows .news-image {
+            display: block;
+            width: 100%;
+            aspect-ratio: {{ konf.imgPrevWidth }} / {{ konf.imgPrevHeight }};
+            object-fit: cover;
+            object-position: center;
+            overflow: hidden;
+        }
+
+        #template-event .bild,
+        #container-event-card .bild,
+        #template-news-detail .news-image,
+        #container-news-detail-card .news-image {
+            display: block;
+            width: 100%;
+            aspect-ratio: {{ konf.imgWidth }} / {{ konf.imgHeight }};
+            object-fit: cover;
+            object-position: center;
+            overflow: hidden;
+        }
+
+        @media (max-width: 767.98px) {
+            .app-header-brand {
+                min-height: 68px;
+                padding: 0.65rem 0.85rem;
+            }
+
+            .app-brand-logo {
+                max-height: 40px;
+                max-width: 160px;
+            }
+
+            .app-brand-title {
+                font-size: 0.92rem;
+            }
+
+            .app-nav-inner {
+                min-height: 38px;
+            }
+
+            .app-nav-link {
+                height: 38px;
+                padding: 0 0.8rem !important;
+            }
+
+            .app-detail-grid {
+                grid-template-columns: 1fr;
+                gap: 1.15rem;
+            }
+
+            .app-detail-title {
+                font-size: 1.65rem;
+            }
+
+            .app-news-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .app-calendar-filters {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bgimage">
+
+<div class="w3-top w3-card-2 app-header-shell">
+    <div class="app-header-brand">
+        <span class="app-brand">
+            <img class="app-brand-logo" src="{{ webappLogo }}" alt="{{ webappConfig.title }} Logo">
+            <span class="app-brand-title">{{ webappConfig.title }}</span>
+        </span>
+    </div>
+
+    <div class="w3-bar app-nav-bar">
+        <div class="app-nav-inner">
+            <div class="w3-hide-medium w3-hide-large">
+                <a class="w3-bar-item w3-button w3-opennav" href="javascript:void(0)" onclick="openSideNav()" title="Seitenmenü öffnen">&#9776;</a>
+            </div>
+            <div class="w3-hide-small app-nav-desktop">
+                <a href="#kalender" class="w3-bar-item w3-button app-nav-link" data-app-view="calendar">Kalender</a>
+                <a href="#liste" class="w3-bar-item w3-button app-nav-link" data-app-view="events">Veranstaltungen</a>
+                <a href="#news" class="w3-bar-item w3-button app-nav-link" data-app-view="news">News</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav id="side-nav" class="w3-sidenav app-sidebar w3-animate-left" style="display: none; z-index: 9">
+    <a href="javascript:void(0)" onclick="closeSideNav()" class="w3-closenav w3-right-align w3-padding-right">&times;</a>
+    <a href="{{ path('webapp_index_kid', { kid: webappConfig.kid }) }}" id="home">Home</a>
+    <a href="#kalender" class="app-nav-link" data-app-view="calendar">Kalender</a>
+    <a href="#liste" id="liste" class="app-nav-link" data-app-view="events">Veranstaltungen</a>
+    <a href="#news" class="app-nav-link" data-app-view="news">News</a>
+</nav>
+
+<div id="nav-overlay" class="w3-overlay" onclick="closeSideNav()" style="cursor: pointer"></div>
+
+<div class="w3-content" style="max-width: 1000px; padding-top: calc(105px + 1.5rem) !important; min-height: 750px">
+
+<div id="component-home" class="app-component">
+    Willkommen in der Datefix WebApp
+</div>
+
+<div id="component-calendar" class="app-component">
+    <div class="app-calendar-shell">
+        <div class="app-calendar-card">
+            <div class="app-calendar-controls">
+                <button type="button" id="calendar-prev" class="w3-button app-accent" aria-label="Vorheriger Monat">&lt;</button>
+                <div id="calendar-month-label" class="app-calendar-month"></div>
+                <button type="button" id="calendar-next" class="w3-button app-accent" aria-label="Nächster Monat">&gt;</button>
+            </div>
+            <div class="app-calendar-grid">
+                <div class="app-calendar-head">Mo</div>
+                <div class="app-calendar-head">Di</div>
+                <div class="app-calendar-head">Mi</div>
+                <div class="app-calendar-head">Do</div>
+                <div class="app-calendar-head">Fr</div>
+                <div class="app-calendar-head">Sa</div>
+                <div class="app-calendar-head">So</div>
+            </div>
+            <div id="calendar-days" class="app-calendar-grid"></div>
+
+            <div class="app-calendar-filters">
+                {% if webappCalendarFilters.showDate %}
+                    <div>
+                        <label for="calendar-filter-datum-von">Datum ab</label>
+                        <input id="calendar-filter-datum-von" data-calendar-filter="datum_von" type="date">
+                    </div>
+                    <div>
+                        <label for="calendar-filter-datum-bis">Datum bis</label>
+                        <input id="calendar-filter-datum-bis" data-calendar-filter="datum_bis" type="date">
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showRubrik %}
+                    <div>
+                        <label for="calendar-filter-rubrik">Rubrik</label>
+                        <select id="calendar-filter-rubrik" data-calendar-filter="rubrik">
+                            <option value="">Alle</option>
+                            {% for option in webappCalendarFilters.rubriken %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showZielgruppe %}
+                    <div>
+                        <label for="calendar-filter-zielgruppe">Zielgruppe</label>
+                        <select id="calendar-filter-zielgruppe" data-calendar-filter="zielgruppe">
+                            <option value="">Alle</option>
+                            {% for option in webappCalendarFilters.zielgruppen %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showOrt %}
+                    <div>
+                        <label for="calendar-filter-ort">Ort</label>
+                        <select id="calendar-filter-ort" data-calendar-filter="ort">
+                            <option value="">Alle</option>
+                            {% for option in webappCalendarFilters.ortOptions %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showLocation %}
+                    <div>
+                        <label for="calendar-filter-lokal">Veranstaltungsstätte</label>
+                        <select id="calendar-filter-lokal" data-calendar-filter="lokal">
+                            <option value="">Alle</option>
+                            {% for option in webappCalendarFilters.lokalOptions %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showVeranstalter %}
+                    <div>
+                        <label for="calendar-filter-veranstalter">Veranstalter</label>
+                        <select id="calendar-filter-veranstalter" data-calendar-filter="veranstalter">
+                            <option value="">Alle</option>
+                            {% for option in webappCalendarFilters.veranstalterOptions %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showNat %}
+                    <div>
+                        <label for="calendar-filter-nat">Land</label>
+                        <select id="calendar-filter-nat" data-calendar-filter="nat">
+                            <option value="">Alle</option>
+                            {% for option in webappCalendarFilters.natOptions %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showRegion %}
+                    <div>
+                        <label for="calendar-filter-region">Region</label>
+                        <select id="calendar-filter-region" data-calendar-filter="region">
+                            <option value="">Alle</option>
+                            {% for option in webappCalendarFilters.regions %}
+                                <option value="{{ option.id }}">{{ option.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showPlzArea %}
+                    <div>
+                        <label for="calendar-filter-plz">PLZ-Gebiet</label>
+                        <input id="calendar-filter-plz" data-calendar-filter="plz" type="text">
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showRadius %}
+                    <div>
+                        <label for="calendar-filter-umkreis">Umkreis (km)</label>
+                        <input id="calendar-filter-umkreis" data-calendar-filter="umkreis" type="number" min="1" step="1">
+                    </div>
+                {% endif %}
+                {% if webappCalendarFilters.showSearch %}
+                    <div class="app-filter-full">
+                        <label for="calendar-filter-suche">Suche</label>
+                        <input id="calendar-filter-suche" data-calendar-filter="suche" type="text">
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="app-calendar-actions">
+                <button type="button" id="calendar-apply" class="w3-button app-accent">Veranstaltungen anzeigen</button>
+                <button type="button" id="calendar-reset" class="w3-button">Filter zurücksetzen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="component-eventliste" class="app-component">
+    <div id="spinner-loading-events">
+        <div class="spinner" style="margin: auto"></div>
+    </div>
+    <h5 id="label-eventliste-empty" class="margin-top-64 w3-center">Noch keine Veranstaltungen geladen!</h5>
+    <div id="container-events" class="">
+        <h1 style="text-align: center">Veranstaltungen</h1>
+        <hr class="app-pagination-divider">
+        <div id="pagination-events-top" class="app-pagination">
+            <button data-pagination-prev="events" class="w3-button app-accent w3-small">&lt; Zurück</button>
+            <span data-pagination-page="events" class="w3-padding-small">Seite 1</span>
+            <button data-pagination-next="events" class="w3-button app-accent w3-small">Weiter &gt;</button>
+        </div>
+        <hr class="app-pagination-divider">
+        <div id="template-event-row" itemscope itemtype="http://schema.org/Event" class="w3-row-padding event" hidden>
+            <div class="w3-col s4 m3 l2">
+                <img class="bild" src="" alt="Eventbild">
+            </div>
+            <div class="w3-col s8 m9 l10">
+                <div><strong itemprop="name" class="titel"></strong></div>
+                <div class="subtitel"></div>
+                <div><span class="datumvon"></span> <span class="datumbis"></span> <span class="zeitab"></span> <span class="zeitbis"></span><span class="metadate"></span></div>
+                <div itemprop="location" itemscope itemtype="http://schema.org/Place">
+                    <span itemprop="name" class="lokal"></span>,
+                    <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                        <span class="plz"></span> <span class="ort"></span>, <span class="strasse"></span>
+                    </span>
+                </div>
+                <div class="liste-detail-button app-accent w3-button w3-right w3-padding">&gt;</div>
+            </div>
+        </div>
+        <div id="container-events-rows"></div>
+        <div id="pagination-events-bottom" class="app-pagination app-pagination-bottom">
+            <button data-pagination-prev="events" class="w3-button app-accent w3-small">&lt; Zurück</button>
+            <span data-pagination-page="events" class="w3-padding-small">Seite 1</span>
+            <button data-pagination-next="events" class="w3-button app-accent w3-small">Weiter &gt;</button>
+        </div>
+        <hr class="app-pagination-divider">
+    </div>
+</div>
+
+<div id="component-event" class="app-component">
+    <div id="spinner-loading-event">
+        <div class="spinner" style="margin: auto"></div>
+    </div>
+    <h5 id="label-event-empty" class="margin-top-64 w3-center">Noch keine Veranstaltung geladen!</h5>
+    <div id="container-event">
+        <div id="template-event" itemscope itemtype="http://schema.org/Event" class="app-detail-shell" hidden>
+            <a href="#liste" class="app-detail-back back-button app-accent w3-button w3-padding" aria-label="Zurück">&lt;</a>
+            <h3 itemprop="name" class="titel app-detail-title"></h3>
+            <div class="app-detail-grid">
+                <div>
+                    <figure class="app-detail-image">
+                        <div class="app-media-slot"></div>
+                        <figcaption class="imgtext app-detail-caption"></figcaption>
+                        <div class="imgcopyright app-detail-copyright"></div>
+                    </figure>
+                    <div class="beschreibung app-detail-body"></div>
+                    <div class="eintritt app-detail-body"></div>
+                    <hr class="app-detail-divider">
+                </div>
+                <div class="app-detail-sidebar">
+                    <div class="app-detail-section">
+                        <h4 class="app-detail-heading">Datum/Uhrzeit</h4>
+                        <div class="app-detail-meta">
+                            <strong class="datumvon"></strong>
+                            <span class="datumbis"></span>
+                            <span class="zeitab"></span>
+                            <span class="zeitbis"></span>
+                            <span class="metadate"></span>
+                        </div>
+                    </div>
+                    <div class="app-detail-section" itemprop="location" itemscope itemtype="http://schema.org/Place">
+                        <h4 class="app-detail-heading">Veranstaltungsort</h4>
+                        <div class="app-detail-meta">
+                            <span itemprop="name" class="lokal"></span><br>
+                            <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                                <span class="strasse"></span><br><span class="plz"></span> <span class="ort"></span>
+                            </span>
+                        </div>
+                        <div class="app-detail-links">
+                            <a class="lokal-mail" href="#" style="display:none"></a>
+                            <a class="lokal-web" href="#" target="_blank" rel="noopener noreferrer" style="display:none"></a>
+                        </div>
+                    </div>
+                    <div class="app-detail-section">
+                        <h4 class="app-detail-heading">Veranstalter</h4>
+                        <div class="app-detail-meta veranstalter-info"></div>
+                    </div>
+                    <div class="app-detail-section">
+                        <h4 class="app-detail-heading">Kontakt / weitere Informationen</h4>
+                        <div class="app-detail-links kontakt-links"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="app-map-canvas"></div>
+            <div class="app-detail-footer">
+                <a href="#liste" class="app-detail-back back-button app-accent w3-button w3-padding" aria-label="Zurück">&lt;</a>
+            </div>
+        </div>
+    </div>
+    <div id="container-event-card"></div>
+</div>
+
+<div id="component-news" class="app-component">
+    <div id="spinner-loading-news">
+        <div class="spinner" style="margin: auto"></div>
+    </div>
+    <h5 id="label-news-empty" class="margin-top-64 w3-center">Noch keine News geladen!</h5>
+    <div id="container-news">
+        <h1 style="text-align: center">News</h1>
+        <hr class="app-pagination-divider">
+        <div id="pagination-news-top" class="app-pagination">
+            <button data-pagination-prev="news" class="w3-button app-accent w3-small">&lt; Zurück</button>
+            <span data-pagination-page="news" class="w3-padding-small">Seite 1</span>
+            <button data-pagination-next="news" class="w3-button app-accent w3-small">Weiter &gt;</button>
+        </div>
+        <hr class="app-pagination-divider">
+        <div id="template-news-row" class="w3-row-padding news app-news-row" hidden>
+            <div class="w3-col s4 m3 l2">
+                <img class="news-image" src="" alt="Newsbild">
+            </div>
+            <div class="w3-col s8 m9 l10">
+                <div class="app-news-row-title"><strong class="news-title"></strong></div>
+                <div class="news-subtitle"></div>
+                <div class="news-excerpt"></div>
+                <div class="app-news-row-date"><span class="news-date"></span></div>
+                <div class="news-detail-button app-accent w3-button w3-right w3-padding">&gt;</div>
+            </div>
+        </div>
+        <div id="container-news-rows"></div>
+        <div id="pagination-news-bottom" class="app-pagination app-pagination-bottom">
+            <button data-pagination-prev="news" class="w3-button app-accent w3-small">&lt; Zurück</button>
+            <span data-pagination-page="news" class="w3-padding-small">Seite 1</span>
+            <button data-pagination-next="news" class="w3-button app-accent w3-small">Weiter &gt;</button>
+        </div>
+        <hr class="app-pagination-divider">
+    </div>
+</div>
+
+<div id="component-news-detail" class="app-component">
+    <div id="spinner-loading-news-detail">
+        <div class="spinner" style="margin: auto"></div>
+    </div>
+    <h5 id="label-news-detail-empty" class="margin-top-64 w3-center">Noch kein News-Artikel geladen!</h5>
+    <div id="container-news-detail">
+        <div id="template-news-detail" class="app-news-detail-shell" hidden>
+            <a href="#news" class="app-detail-back news-back-button app-accent w3-button w3-padding" aria-label="Zurück">&lt;</a>
+            <div class="app-news-detail-head">
+                <h3 class="news-title app-detail-title"></h3>
+                <div class="news-subtitle"></div>
+            </div>
+            <div class="app-news-detail-grid">
+                <figure class="app-detail-image">
+                    <div class="news-media-slot"></div>
+                    <figcaption class="news-imgtext app-detail-caption"></figcaption>
+                    <div class="news-imgcopyright app-detail-copyright"></div>
+                </figure>
+                <div>
+                    <div class="news-excerpt app-news-detail-body"></div>
+                    <div class="news-body app-news-detail-body"></div>
+                </div>
+            </div>
+            <div class="news-date-end app-news-detail-date-end"></div>
+            <div class="app-detail-footer">
+                <a href="#news" class="app-detail-back news-back-button app-accent w3-button w3-padding" aria-label="Zurück">&lt;</a>
+            </div>
+        </div>
+    </div>
+    <div id="container-news-detail-card"></div>
+</div>
+
+</div>
+
+<script>
+    window.DFX_WEBAPP_CONFIG = {{ webappConfig|json_encode|raw }};
+    window.DFX_WEBAPP_CALENDAR_CONFIG = {{ webappCalendarFilters|json_encode|raw }};
+
+    function closeSideNav() {
+        document.getElementById('side-nav').style.display = 'none';
+        document.getElementById('nav-overlay').style.display = 'none';
+    }
+
+    function openSideNav() {
+        document.getElementById('side-nav').style.display = 'block';
+        document.getElementById('nav-overlay').style.display = 'block';
+    }
+</script>
+<script src="{{ asset('js/leaflet/leaflet.js') }}"></script>
+<script src="{{ asset('webapp/js/app.js') }}"></script>
+
+</body>
+</html>

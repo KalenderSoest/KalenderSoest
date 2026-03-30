@@ -1,0 +1,28 @@
+{% extends 'News/news.html.twig' %}
+{% block dfx_artikel %}
+<div class="nfx-item" itemscope itemtype="http://schema.org/Event" >
+<div class="row">
+    {% if strImgPrev is not null %}
+        <div class="col-{{ colXsImg }} col-sm-{{ colSmImg }} col-md-{{ colMdImg }}">
+            <span itemprop="image" class="dfx-image">{{ strImgPrev|raw }}</span>
+        </div>
+        <div class="col-{{ colXsText }} col-sm-{{ colSmText }} col-md-{{ colMdText }}">
+	{%  else %}
+		<div class="col-12 col-sm-12 col-md-12">
+	{% endif %}
+        <h4 itemprop="name" class="dfx-titel-liste-kompakt">{{ titel|raw }}</h4>
+
+		{% if artikel.subtitel != NULL %}
+			<div class="dfx-subtitel-liste-kompakt">{{'subtitel-fe'|trans}}{{ artikel.subtitel }} </div>
+		{% endif %}
+            {{  strKurztext|raw }}
+			<div class="dfx-liste-datumszeile">{{ strDate }} </div>
+		<div class="row">
+			<div class="col-6">{{ printLinks|raw }}</div>
+			<div class="col-6 text-right">{{ mehrLink|raw }}</div>
+		</div>
+	</div>
+</div>
+<hr class="terminlinie nfx-gap">
+<br>
+{%  endblock %}

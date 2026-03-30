@@ -1,0 +1,23 @@
+# Store common source and config files with LF line endings in the repository.
+* text=auto eol=lf
+
+# Windows command scripts should keep CRLF for native execution.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets must never be normalized.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.zip binary
+*.gz binary
+*.phar binary
+*.jar binary

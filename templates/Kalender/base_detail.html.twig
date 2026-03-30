@@ -1,0 +1,258 @@
+﻿{% set nav = nav is not defined ? konf.navDetail : nav %}
+{% set tplform = tplform is not defined ? 'form' : tplform %}
+{% set file =  filter_form is defined ? tplform : 'termine_solo'%}
+{% extends 'Kalender/'~ file ~'.html.twig' %}
+{% block dfx_termine %}
+	{% set titel = termin.titel %}
+	{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+	{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+	{% set tz = konf.trennzeichen %}
+	{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+	{% set daynr =  termin.datumVon|date('w') %}
+	{% set daynrto =  termin.datum|date('w') %}
+	{% set monthnr =  termin.datumVon|date('n') %}
+	{% set monthnrto =  termin.datum|date('n') %}
+	{% if termin.datum == termin.datumVon %}
+		{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+	{% else %}
+		{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+	{% endif %}
+	{% set strMetadate = termin.datumVon|date('Y-m-d') %}
+	{% set strMetadate = termin.zeit != NULL ? '<meta content="' ~ strMetadate ~ 'T' ~ termin.zeit|date('H:i') ~ '" itemprop="startDate">' : '<meta content="' ~ strMetadate ~ '" itemprop="startDate">' %}
+
+	{% set strTime = termin.zeit is not null and termin.zeit|date('H:i') !='00:00' ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+	{% set strTime = termin.zeitBis is not null and termin.zeitBis|date('H:i') !='00:00' ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+	{% set strLokalText =  termin.lokal is not null ? termin.lokal : null%}
+	{%  if termin.lokal is not null %}
+            {% set strLokal = termin.idLocation is not null ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('location_show', { 'id': termin.idLocation.id } ) ~ '">' ~ termin.lokal ~ '</a>' : termin.lokal %}
+
+       {%  if termin.idLocation is not null %}
+            {% set strLocationKom = termin.idLocation.telefon != NULL ? '<br /><span itemprop="telephone">' ~ 'telefon'|trans ~ ': ' ~ termin.idLocation.telefon ~ '</span>' : NULL %}
+                {% set strLocationKom = termin.idLocation.email != NULL ? strLocationKom ~ '<br /><a itemprop="email" href="mailto:' ~ termin.idLocation.email ~ '">' ~ termin.idLocation.email ~ '</a>' : strLocationKom %}
+                {% set strLocationKom = termin.idLocation.www != NULL ? strLocationKom ~ '<br /><a itemprop="url" href="' ~ termin.idLocation.www ~ '"  style="word-wrap: break-word;">' ~ termin.idLocation.www ~ '</a>' : strLocationKom %}
+                {% set strLokalText = termin.idLocation.name  %}
+            {%  else %}
+                {%  set strLocationKom = NULL %}
+            {%  endif %}
+	{% elseif termin.idLocation is not null and konf.showLokal == 1 %}
+            {% set strLokal = '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('location_show', { 'id': termin.idLocation.id } ) ~ '">' ~ termin.idLocation.name ~ '</a>' %}
+            {% set strLocationKom = termin.idLocation.telefon != NULL ? '<br /><span itemprop="telephone">' ~ 'telefon'|trans ~ ': ' ~ termin.idLocation.telefon ~ '</span>' : NULL %}
+            {% set strLocationKom = termin.idLocation.email != NULL ? strLocationKom ~ '<br /><a itemprop="email" href="mailto:' ~ termin.idLocation.email ~ '">' ~ termin.idLocation.email ~ '</a>' : strLocationKom %}
+            {% set strLocationKom = termin.idLocation.www != NULL ? strLocationKom ~ '<br /><a itemprop="url" href="' ~ termin.idLocation.www ~ '" style="word-wrap: break-word;">' ~ termin.idLocation.www ~ '</a>' : strLocationKom %}
+            {% set strLokalText = termin.idLocation.name  %}
+	{% else %}
+            {% set strLokal = NULL %}
+            {% set strLokalText = NULL %}
+            {%  set strLocationKom = NULL %}
+	{% endif %}
+	{%  if termin.lokalStrasse %}
+            {% set strStrasse =  '<span itemprop="streetAddress">' ~ termin.lokalStrasse ~ '</span>' %}
+	{%  else %}
+            {% set strStrasse = NULL %}
+	{%  endif %}
+	{%  if termin.ort %}
+            {% if termin.plz and konf.showPlz == 1 %}
+                {% set strOrt = '<span itemprop="postalCode">' ~ termin.plz  ~ '</span> <span itemprop="addressLocality">' ~ termin.ort ~ '</span>' %}
+            {% else %}
+                {% set strOrt ='<span itemprop="addressLocality">' ~ termin.ort ~ '</span>'  %}
+            {% endif %}
+	{%  else %}
+            {% set strOrt = NULL %}
+	{%  endif %}
+	{%  if termin.veranstalter is defined %}
+            {% set strVeranstalter = termin.idVeranstalter.id is defined ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('veranstalter_show', { 'id': termin.idVeranstalter.id } ) ~ '">' ~ termin.veranstalter ~ '</a>' : termin.veranstalter %}
+            {% if termin.idVeranstalter.id is defined %}
+                {% set strVeranstalterAdr = termin.idVeranstalter.strasse != NULL ? '<span itemprop="streetAddress">' ~ termin.idVeranstalter.strasse~ '</span>' : NULL %}
+                {% set strVeranstalterAdr = termin.idVeranstalter.ort != NULL ? strVeranstalterAdr ~ '<br /><span itemprop="postalCode">' ~ termin.idVeranstalter.plz ~ '</span><span itemprop="addressLocality"> ' ~ termin.idVeranstalter.ort~ '</span>' : strVeranstalterAdr %}
+                {% set strVeranstalterKom = termin.idVeranstalter.telefon != NULL ? '<br /><span itemprop="telephone">' ~ 'telefon'|trans ~ ': ' ~ termin.idVeranstalter.telefon ~ '</span>' : NULL %}
+                {% set strVeranstalterKom = termin.idVeranstalter.email != NULL ? strVeranstalterKom ~ '<br /><a itemprop="email" href="mailto:' ~ termin.idVeranstalter.email ~ '">' ~ termin.idVeranstalter.email ~ '</a>' : strVeranstalterKom %}
+                {% set strVeranstalterKom = termin.idVeranstalter.www != NULL ? strVeranstalterKom ~ '<br /><a itemprop="url" href="' ~ termin.idVeranstalter.www ~ '" target="_blank"  style="word-wrap: break-word;">' ~ termin.idLocation.www ~ '</a>' : strVeranstalterKom  %}
+				{% set strVeranstalterKom = termin.idVeranstalter.ansprech != NULL ? strVeranstalterKom ~ '<br />Kontakt: ' ~ termin.idVeranstalter.ansprech : strVeranstalterKom  %}
+
+			{%  else %}
+                {%  set strVeranstalterAdr = NULL %}
+                {%  set strVeranstalterKom = NULL %}
+            {%  endif %}
+
+	{% else %}
+            {% set strVeranstalter = NULL %}
+	{% endif %}
+	{% set altText = termin.imgtext %}
+	{% set altText = termin.imgcopyright is not null ? altText ~ ' &copy; ' ~ termin.imgcopyright : altText %}
+	{% set detailbild = {"thumbnail": {"size": [konf.imgWidth,konf.imgHeight] }} %}
+	{% set vorschau = {"thumbnail": {"size": [konf.imgPrevWidth,konf.imgPrevHeight] }} %}
+	{% set galleryTitle = termin.titel|default('Bild') %}
+	{% if termin.img != NULL %}
+		{% set strImg = '<img title="Bild zu ' ~ termin.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev1 = '<img src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg = NULL %}
+		{% set strImgPrev1 = NULL %}
+	{%  endif %}
+	{% if termin.img5 != NULL %}
+		{% set strImg5 = '<img class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img5) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+	{% else %}
+		{% set strImg5 = NULL %}
+	{%  endif %}
+
+    {% if termin.img2 != NULL %}
+		{% set strImg2 = '<img title="Bild 2 zu ' ~ termin.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img2) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev2 = '<img src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img2) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg2 = NULL %}
+		{% set strImgPrev2 = NULL %}
+	{% endif %}
+
+    {% if termin.img3 != NULL %}
+		{% set strImg3 = '<img title="Bild 3 zu ' ~ termin.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img3) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev3 = '<img src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img3) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg3 = NULL %}
+		{% set strImgPrev3 = NULL %}
+	{% endif %}
+    {% if termin.img4 != NULL %}
+		{% set strImg4 = '<img title="Bild 4 zu ' ~ termin.titel ~ '"  alt="' ~ altText ~ '" class="dfx-image dfx-detail-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img4) | imagine_filter('thumb', detailbild)  ~ '" />' %}
+		{% set strImgPrev4 = '<img src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img4) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+	{% else %}
+		{% set strImg4 = NULL %}
+		{% set strImgPrev4 = NULL %}
+	{% endif %}
+	{% if strImg2 != NULL %}
+		{% set strSlider = '<div class="dfx-gallery" data-dfx-gallery data-gallery-title="' ~ galleryTitle|e('html_attr') ~ '"><div class="dfx-gallery-stage"><button type="button" class="dfx-gallery-nav dfx-gallery-nav-prev" data-dfx-gallery-prev aria-label="Vorheriges Bild"><span aria-hidden="true" class="fa-solid fa-chevron-left"></span></button><div class="dfx-gallery-slides">' %}
+		{% set strSlider = strSlider ~ '<button type="button" class="dfx-gallery-slide is-active" data-dfx-gallery-slide data-index="0" aria-label="Bild 1 anzeigen">' ~ strImg ~ '</button>' %}
+		{% set strSlider = strSlider ~ '<button type="button" class="dfx-gallery-slide" data-dfx-gallery-slide data-index="1" aria-label="Bild 2 anzeigen">' ~ strImg2 ~ '</button>' %}
+		{% set strSlider = strImg3 is not null ? strSlider ~ '<button type="button" class="dfx-gallery-slide" data-dfx-gallery-slide data-index="2" aria-label="Bild 3 anzeigen">' ~ strImg3 ~ '</button>' : strSlider %}
+		{% set strSlider = strImg4 is not null ? strSlider ~ '<button type="button" class="dfx-gallery-slide" data-dfx-gallery-slide data-index="3" aria-label="Bild 4 anzeigen">' ~ strImg4 ~ '</button>' : strSlider %}
+		{% set strSlider = strSlider ~ '</div><button type="button" class="dfx-gallery-nav dfx-gallery-nav-next" data-dfx-gallery-next aria-label="Nächstes Bild"><span aria-hidden="true" class="fa-solid fa-chevron-right"></span></button></div>' %}
+		{% set strSliderPrev = '<div class="dfx-gallery-thumbs" data-dfx-gallery-thumbs><button type="button" class="dfx-gallery-thumb is-active" data-dfx-gallery-thumb data-index="0" aria-label="Bild 1 auswählen">' ~  strImgPrev1 ~'</button><button type="button" class="dfx-gallery-thumb" data-dfx-gallery-thumb data-index="1" aria-label="Bild 2 auswählen">' ~  strImgPrev2 ~'</button>' %}
+		{% set strSliderPrev = strImgPrev3 is not null ? strSliderPrev ~ '<button type="button" class="dfx-gallery-thumb" data-dfx-gallery-thumb data-index="2" aria-label="Bild 3 auswählen">' ~  strImgPrev3 ~'</button>' : strSliderPrev %}
+		{% set strSliderPrev = strImgPrev4 is not null ? strSliderPrev ~ '<button type="button" class="dfx-gallery-thumb" data-dfx-gallery-thumb data-index="3" aria-label="Bild 4 auswählen">' ~  strImgPrev4 ~'</button>' : strSliderPrev %}
+		{% set strSliderPrev = strSliderPrev ~ '</div><div class="dfx-gallery-lightbox" data-dfx-gallery-lightbox hidden><button type="button" class="dfx-gallery-lightbox-close" data-dfx-gallery-lightbox-close aria-label="Lightbox schließen"><span aria-hidden="true" class="fa-solid fa-xmark"></span></button><button type="button" class="dfx-gallery-lightbox-nav dfx-gallery-lightbox-prev" data-dfx-gallery-lightbox-prev aria-label="Vorheriges Bild"><span aria-hidden="true" class="fa-solid fa-chevron-left"></span></button><div class="dfx-gallery-lightbox-content" data-dfx-gallery-lightbox-content></div><button type="button" class="dfx-gallery-lightbox-nav dfx-gallery-lightbox-next" data-dfx-gallery-lightbox-next aria-label="Nächstes Bild"><span aria-hidden="true" class="fa-solid fa-chevron-right"></span></button></div></div>' %}
+		{% set strSlider = strSlider ~ strSliderPrev %}
+		{% set strSlider = termin.imgtext is not null ? strSlider  ~ '<div><em>' ~ termin.imgtext  ~ '</em></div>' : strSlider %}
+		{% set strSlider = termin.imgcopyright is not null ? strSlider ~ '<div class="text-right"><em>' ~ termin.imgcopyright  ~ '</em></div><br>' : strSlider ~ '<br>'%}
+	{% else  %}
+	   	{% set strSlider = NULL %}
+		{% if strImg != NULL %}
+			{% set strImg = termin.imgtext is not null ? strImg  ~ '<div><em>' ~ termin.imgtext  ~ '</em></div>' : strImg %}
+			{% set strImg = termin.imgcopyright is not null ? strImg  ~ '<div class="text-right"><em>' ~ termin.imgcopyright  ~ '</em></div><br>' : strImg ~ '<br>'%}
+		{% endif %}
+	{% endif %}
+	{% set strAdresse = konf.adresse is not null ? konf.adresse|nl2br : NULL %}
+
+	{% if termin.mailTyp == 'anmeldung' or termin.mailTyp == 'karten' %}
+            {% if termin.plaetzeGesamt > 0 %}
+                {% if termin.plaetzeAktuell > 0 and konf.showPlatzlimit == 1 %}
+                        {% set rowInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i>' ~ 'karten'|trans ~ '<br>(' ~ termin.plaetzeAktuell ~  ' ' ~ 'karten verfuegbar'|trans ~ ')</a><br>' : '' %}
+                        {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '" title="' ~ 'anmelden'|trans ~ '"><i class="fa-solid fa-pen-to-square"></i>' ~ 'anmelden'|trans ~ '<br>(' ~ termin.plaetzeAktuell ~  ' ' ~ 'plaetze verfuegbar'|trans ~ ')</a><br>' : rowInfo %}
+                {% elseif termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1 %}
+                        {% set rowInfo = termin.mailTyp == 'karten' ? "#{ 'karten'|trans } ("~ 'ausgebucht'|trans ~ ")<br>" : "" %}
+                        {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ "#{ 'anmelden'|trans } (" ~ 'ausverkauft'|trans ~ ")<br>" : rowInfo %}
+                {% else %}
+                        {% set rowInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '">' ~ 'karten'|trans ~ '</a><br>' : null %}
+                        {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-pen-to-square"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '">' ~ 'anmelden'|trans ~ '</a><br>' : rowInfo %}
+                {% endif %}
+            {% else %}
+                {% set rowInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '">' ~ 'karten'|trans ~ '</a><br>' : null %}
+                {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-pen-to-square"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '">' ~ 'anmelden'|trans ~ '</a><br>' : rowInfo %}
+            {% endif %}
+	{% else %}
+            {% set rowInfo = NULL %}
+	{% endif %}
+
+
+	{% set ticketformtext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
+	{% set ticketlinktext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
+	{% set infoHeader = termin.mailTyp == 'karten' or termin.ticketlink is not null ? 'kartenheader'|trans : null  %}
+	{% set rowInfo = termin.ticketlink is not null ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-ticket"></i> <a href="' ~ termin.ticketlink  ~ '" target="_blank">' ~ ticketlinktext ~ '</a><br>' : rowInfo %}
+
+	{% if termin.mailTyp == 'anmeldung' %}
+            {% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'anmeldenheader'|trans : 'anmeldenheader'|trans  %}
+	{%  endif %}
+	{% if termin.mailTyp == 'kontakt' %}
+            {% set rowInfo = rowInfo  ~ ' ' ~ '<i class="fa-solid fa-message"></i> <a href="mailto:' ~ termin.mail  ~ '">' ~ 'mail senden'|trans ~ '</a><br>' %}
+            {% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'kontaktheader'|trans : 'kontaktheader'|trans  %}
+	{% endif %}
+
+	{% set pdflinktext = termin.pdflinktext is not null ? termin.pdflinktext :  'pdf download'|trans  %}
+    {% if termin.pdf is not null %}
+		{% set rowInfo =  rowInfo  ~ ' ' ~ '<i class="fa-solid fa-download" aria-hidden="true"></i> <a href="' ~ datefix_url ~ '/pdf/dfx/' ~ termin.datefix.id ~ '/' ~ termin.pdf ~ '" class="dfx-nojson" target="_blank">' ~ pdflinktext ~ ' </a><br>' %}
+    {% endif %}
+
+
+	{% set linktext = termin.linktext is not null ? termin.linktext : 'Mehr Informationen'|trans %}
+	{% set rowInfo = termin.link is not null ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-circle-info"></i> <a href="' ~ termin.link  ~ '" target="_blank">' ~ linktext ~ '</a><br>' : rowInfo %}
+	{% if termin.pdf is not null or termin.link is not null %}
+		{% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'infoheader'|trans : 'infoheader'|trans  %}
+	{% endif %}
+   	{% set socialHeader = konf.allowRemind ==1 or konf.allowExport == 1 ? 'merken'|trans : null  %}
+	{% if konf.allowMail == 1 or konf.allowSocial == 1 %}
+		{% set socialHeader =   socialHeader is not null ? socialHeader ~ ' & ' ~ 'teilen'|trans : 'teilen'|trans  %}
+    {% endif %}
+	{% set rowSocial = NULL %}
+{% set rowSocial = konf.allowMail  ? rowSocial  ~ ' ' ~ '<a href = "' ~ frontendUrlQ ~ 'dfxpath=' ~  path('termine_mail', { 'id': termin.id, 'kid': konf.id }) ~ '" title="' ~ 'als mail senden'|trans ~ '" aria-label="' ~ 'Termin'|trans ~ ' ' ~ termin.titel ~ ' am ' ~ strDate ~ ', ' ~ strTime ~ ' – ' ~ 'als mail senden'|trans ~ '"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>' : rowSocial %}
+{% set rowSocial = konf.allowRemind  ? rowSocial  ~ ' ' ~ '<a href = "' ~ frontendUrlQ ~ 'dfxpath=' ~  path('termine_remind', { 'id': termin.id, 'kid': konf.id }) ~ '" title="' ~ 'erinnern'|trans ~ '" aria-label="' ~ 'Termin'|trans ~ ' ' ~ termin.titel ~ ' am ' ~ strDate ~ ', ' ~ strTime ~ ' – ' ~ 'erinnern'|trans ~ '"><i class="fa-solid fa-clock" aria-hidden="true"></i></a>' : rowSocial %}
+{% set rowSocial = konf.allowExport  ? rowSocial  ~ ' ' ~ '<a class="dfx-nojson" href = "' ~ url('termine_ical', { 'id': termin.id, 'kid': konf.id }) ~ '" title="' ~ 'eintragen'|trans ~ '" aria-label="' ~ 'Termin'|trans ~ ' ' ~ termin.titel ~ ' am ' ~ strDate ~ ', ' ~ strTime ~ ' – ' ~ 'in Kalender eintragen'|trans ~ '"><i class="fa-solid fa-calendar" aria-hidden="true"></i></a>' : rowSocial %}
+	{% if konf.allowSocial  %}
+		{% set FBLink = 'https://www.facebook.com/sharer/sharer.php?u=' ~ frontendUrlQ ~ 'dfxpath=/js/kalender/' ~ konf.id ~ '/detail/' ~ termin.id|url_encode  %}
+		{% set WALink = 'https://api.whatsapp.com/send?text=' ~ termin.titel ~ ', ' ~ strLokalText ~ ', ' ~ strDate ~ ' ' ~ strTime ~ ' ' ~ frontendUrlQ ~ 'dfxpath=/js/kalender/' ~ konf.id ~ '/detail/' ~ termin.id  %}
+		{% set XLink = 'https://twitter.com/share?text=' ~ termin.titel ~ ', ' ~ strLokalText ~ ', ' ~ strDate ~ ' ' ~ strTime ~ '&url=' ~ frontendUrlQ ~ 'dfxpath=/js/kalender/' ~ konf.id ~ '/detail/' ~ termin.id  %}
+		{% set LNLink = 'https://www.linkedin.com/shareArticle?mini=true&url=' ~ frontendUrlQ ~ 'dfxpath=/js/kalender/' ~ konf.id ~ '/detail/' ~ termin.id|url_encode  %}
+		{% set RDLink = 'https://www.reddit.com/submit?url=' ~ frontendUrlQ ~ 'dfxpath=/js/kalender/' ~ konf.id ~ '/detail/' ~ termin.id|url_encode  %}
+
+{% set facebook = '<a href="' ~ FBLink ~ '" onclick="window.open(\''~ FBLink ~'\',\'sharer\',\'width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no\');return false" rel="nofollow" aria-label="Teilen: ' ~ termin.titel ~ ' via Facebook"><i class="fa-brands fa-square-facebook" aria-hidden="true"></i></a>' %}
+{% set whatsapp = '<a href="' ~ WALink ~ '" onclick="window.open(\''~ WALink ~'\',\'sharer\',\'width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no\');return false" rel="nofollow" aria-label="Teilen: ' ~ termin.titel ~ ' via WhatsApp"><i class="fa-brands fa-square-whatsapp" aria-hidden="true"></i></a>' %}
+{% set twitter = '<a href="' ~ XLink ~ '" onclick="window.open(\''~ XLink ~'\',\'sharer\',\'width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no\');return false" rel="nofollow" aria-label="Teilen: ' ~ termin.titel ~ ' via X"><i class="fa-brands fa-square-x-twitter" aria-hidden="true"></i></a>' %}
+{% set linkedin = '<a href="' ~ LNLink ~ '" onclick="window.open(\''~ LNLink ~'\',\'sharer\',\'width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no\');return false" rel="nofollow" aria-label="Teilen: ' ~ termin.titel ~ ' via LinkedIn"><i class="fa-brands fa-square-linkedin" aria-hidden="true"></i></a>' %}
+		{% set rowSocial = '<span style="font-size: larger">' ~ rowSocial ~ facebook ~ ' ' ~ whatsapp ~  ' ' ~ twitter ~ ' ' ~ linkedin ~'</span>' %}
+	{% endif %}
+
+
+	{% set strLead = termin.lead is not null ? termin.lead|raw|nl2br  : "" %}
+	{% set strText = termin.beschreibung is not null ? termin.beschreibung|raw : null %}
+	{% set strEintritt = termin.eintritt is not null ? termin.eintritt : null %}
+{% if konf.useMap == 1 and termin.bg > 0 %}
+		{% set strMapLink = ( termin.lg and termin.bg) ? '<a href = "#" data-tid="' ~ termin.id ~ '" data-bg="' ~ termin.bg ~ '" data-lg="' ~ termin.lg ~ '" data-lokal="' ~ strLokalText ~ '" class="dfx-map-open" title="' ~ 'veranstaltungsort auf lageplan'|trans ~ '" aria-label="' ~ 'veranstaltungsort auf lageplan'|trans ~ '"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></a>' : "" %}
+		{% set strMapWindow = '<br><div id="dfxMap" data-initzoom="'~ konf.initZoom ~ '" class="dfx-map-window">&nbsp;</div>' %}
+		{% set strGeoItemprop = '<div itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
+    					<meta itemprop="latitude" content="' ~ termin.bg ~ '" />
+    					<meta itemprop="longitude" content="' ~ termin.lg ~ '" />
+  					</div>' %}
+		{% set strGeo = termin.bg ~ ',' ~ termin.lg %}
+		{% set strMapClose = '<div id="dfxMapClose" class="dfx-map-form row" style="display:none"><form action="https://maps.google.de/maps" method="get" target="_blank"><div class="col-12 col-sm-6 col-md-6"><input placeholder="' ~ 'standort'|trans ~ '" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="' ~ strGeo ~'" /></div><div class="col-12 col-sm-6 col-md-3"><input type="submit" value="' ~ 'route anzeigen'|trans ~ '" class="btn btn-primary" /></div><div class="col-12 col-sm-6 col-md-3"><a href="#" data-tid="" class="dfx-map-close" aria-label="' ~ 'karte schliessen'|trans ~ '">' ~ 'karte schliessen'|trans ~ '</a></div></form></div>'|raw %}
+	{% else %}
+		{% set strMapLink = null %}
+		{% set strMapWindow = null %}
+		{% set strGeoItemprop = null %}
+		{% set strMapClose = null %}
+	{% endif %}
+	{% if serie is defined and serie is not null and serie|length > 1 %}
+		{% set strSerie = '<h4>Weitere Termine</h4><ul>' %}
+		{% for sTermin in serie %}
+			{% set daynrS =  sTermin.datumVon|date('w') %}
+			{% set monthnrS =  sTermin.datumVon|date('n') %}
+			{% set strDateS =  "#{ days[daynrS] }, #{ sTermin.datumVon|date('d') }. #{ months[monthnrS] } #{ sTermin.datumVon|date('Y') } " %}
+{% set strSerie = strSerie ~ '<li><a class="dfx-mehr" href="' ~ frontendUrlQ ~ 'dfxid=' ~ sTermin.id ~ '" aria-label="Mehr Informationen zu ' ~ sTermin.titel ~ ' am ' ~ strDateS ~ ', ' ~ sTermin.zeit|date('H.i') ~ ' Uhr">' ~ strDateS ~ ', ' ~ sTermin.zeit|date('H.i') ~ ' Uhr</a></li>' %}
+		{% endfor %}
+		{% set strSerie = strSerie ~ '</ul>' %}
+	{% else %}
+		{% set strSerie = null %}
+	{% endif %}
+{% set printLinks = konf.allowPrint == true ? '<a class="dfx-print" title="Termin drucken" aria-label="Termin drucken: ' ~ termin.titel ~ '" href="' ~ url('termin_print', { 'id': termin.id }) ~ '"><i class="fa-solid fa-print" aria-hidden="true"></i></a> <a class="dfx-pdf" target="_blank" title="Termin als PDF" aria-label="PDF herunterladen: ' ~ termin.titel ~ '" href="' ~ url('termin_fe_pdf', { 'id': termin.id }) ~ '"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i></a>' : null %}
+	<div id="dfx_detail_wrapper" class="container-fluid" data-bg="{{ termin.bg }}" data-lg="{{ termin.lg }}" data-lokal="{{ strLokalText }}" data-cssfile="{{ 'own/1.css' }}">
+		{{ block('dfx_termin_detail') }}
+		{% block dfx_konf %}
+			<div id="dfx_konf" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-frontend="{{ konf.frontendUrl }}" data-tpl="detail" data-nav-pos="{{ konf.navPos }}" data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" data-kal="{{ kaldata }}" style="display: none"></div>
+		{% endblock dfx_konf %}
+	</div>
+	<script type="text/javascript">
+	    {% block javascript_var %}{% endblock %}
+
+	    {% block javascript_functions %}{% endblock %}
+   </script>
+{% endblock %}
+
+
+
+
+

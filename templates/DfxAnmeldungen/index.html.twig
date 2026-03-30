@@ -1,0 +1,59 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Anmeldungen' %}
+{% block pageheader 'Anmeldungen' %}
+{% block subheader 'Termine mit Anmeldungen ' ~ header %}
+
+{% block footer %}
+
+{% endblock footer %}
+
+{% block body -%}
+	{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+		<div class="row">
+		 	<div class="col-sm-6 col-md-3">
+		  		{{ form_row(filter_form.datum_von) }}
+		 	</div>
+		  	<div class="col-sm-6 col-md-3">
+		  		{{ form_row(filter_form.datum_bis) }}
+		  	</div>
+		  	<div class="col-sm-12 col-md-6">
+		  		{{ form_row(filter_form.suche) }}
+		  	</div>
+		</div>
+		<div class="row">
+		  <div class="col-6 col-sm-4 col-md-4">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div class="col-6 col-sm-4 col-md-4">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		</div>
+
+<hr>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            	<th>Titel</th>
+            	<th>Datum</th>
+                <th>gebuchte Plätze</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for anmeldung in anmeldungen %}
+			{% set plaetze = anmeldung.termin.plaetzeGesamt - anmeldung.termin.plaetzeAktuell > 0 ? anmeldung.termin.plaetzeGesamt - anmeldung.termin.plaetzeAktuell : null %}
+			
+            <tr>
+                <td>{{ anmeldung.termin.titel }}</td>
+                <td>{{ anmeldung.termin.datumVon|date('d.m.Y')  }}</td>
+                <td>{{ plaetze }}</td>
+                <td><a href="{{ path('admin_anmeldungen_liste', { 'tid': anmeldung.termin.id }) }}" title="Zur Buchungsliste"><i class="fa-solid fa-list" ></i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<div class="navigation">
+    {{ knp_pagination_render(anmeldungen) }}
+</div>
+{% endblock %}  

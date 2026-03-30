@@ -1,0 +1,44 @@
+<page>
+	<page_header footer="page">
+    
+    </page_header> 
+    <page_footer>
+    	 Seite [[page_cu]]/[[page_nb]]
+    </page_footer> 
+    <style>
+    	table{
+    		border-left:0.5pt;
+    		border-bottom:0.5pt;
+    	}
+    	td{
+    		font-size: 8pt;
+    		border-top:0.5pt;
+    		border-right:0.5pt;
+    		padding: 1mm;
+    		margin: 0;
+    		
+    	}
+    	th{
+    		font-size: 8pt;
+    		border-top:0.5pt;
+    		border-right:0.5pt;
+    		padding: 1mm;
+    		margin: 0;
+    		background-color: #f5f5f5;
+    	}
+    
+    </style>
+    <!-- Page Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-3 pb-2 border-bottom">{% block pageheader %}{% endblock %}
+                    <small>{% block subheader %}{% endblock %}</small>
+                </h1>
+            </div>
+        </div>
+        <!-- /.row -->
+        {% block body %}{% endblock %}
+    </div>
+    <!-- /.container -->
+</page>

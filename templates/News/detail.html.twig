@@ -1,0 +1,50 @@
+{% extends 'News/base_detail.html.twig' %}
+{% block dfx_news_detail %}
+{% if konf.dfxTpl == 'block' %}
+   <div itemscope itemtype="http://schema.org/NewsArticle">
+{% else %}
+	<div itemscope itemtype="http://schema.org/NewsArticle" class="fx-{{ konf.dfxTpl }}">
+{% endif %}
+    <div class="back-to-list"><a href="{{ url('news_fe', { kid: konf.id }) }}" data-dfx-news-list="1" data-dfx-ajax-url="{{ datefix_url }}/js/news/{{ konf.id }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    
+    {% if konf.dfxTpl == 'block' %}
+   		<h3 itemprop="headline" class="dfx-titel fx-block">{{ titel|raw }}</h3>
+	{% else %}
+		<h3 itemprop="headline" class="dfx-titel">{{ titel|raw }}</h3>
+	{% endif %}
+
+	{% if artikel.subtitel != NULL %}
+		<div class="dfx-detail-subtitel">{{'subtitel-fe'|trans}}{{ artikel.subtitel }} </div>
+	{% endif %}
+        {{strMetadate|raw }}
+	    {% if strSlider != NULL or strImg != NULL or strText != NULL %}
+	            <div class="row align-items-start">
+	                {% if strSlider != NULL or strImg != NULL %}
+	                    <div itemprop="image" class="col-12 col-lg-6">
+	                        {% if strSlider != NULL %}
+	                            {{ strSlider|raw }}
+	                        {% else %}
+	                            {{ strImg|raw }}
+	                        {% endif %}
+	                    </div>
+	                {% endif %}
+	                {% if strText != NULL %}
+	                    <div itemprop="text" class="dfx-text-detail col-12 col-lg-6">{{ strText|raw }}</div>
+	                {% endif %}
+	            </div>
+	        {% endif %}
+	{% if infoHeader != NULL %}
+        <div class="row">
+            <div class="col-12">
+                <div class="dfx-detail-zwue-linie">{{ infoHeader|raw }}</div>
+                <div class="dfx-detail-info"> {{ rowInfo|raw }} </div>
+                <br />
+            </div>
+        </div>
+    {% endif %}
+    <div class="row dfx-detail-footer">
+        <div class="col-6 back-to-list"><a href="{{ url('news_fe', { kid: konf.id }) }}" data-dfx-news-list="1" data-dfx-ajax-url="{{ datefix_url }}/js/news/{{ konf.id }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+        <div class="col-6 text-right">{{ printLinks|raw }}</div>
+    </div>
+</div>
+{% endblock %}

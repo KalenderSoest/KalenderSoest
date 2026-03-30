@@ -1,0 +1,124 @@
+﻿{% block form_row %}
+{% set type = type|default('text') %}
+{% if type =='file' %}
+	<div class="mb-3 row">
+        {% set cols_class = attr.cols is defined ? 'col-sm-' ~  attr.cols  :'col-sm-7' %}
+        <div class="{{ cols_class }}">
+    	   {{ form_widget(form) }}
+        </div>
+    </div>
+{% elseif expanded is not defined and attr.noFormControl is not defined  %} 
+	<div class="mb-3">
+	{{ form_errors(form) }}
+    {{ form_label(form, null, {'label_attr': {'class': ''} }) }}
+    
+    {% if attr.picker is defined %}
+         {{ block(attr.picker ~ 'Picker_widget') }}
+           
+    {% elseif attr.ownClass is defined  %}
+           {{ form_widget(form, {'attr': {'class': attr.ownClass } }) }}
+    {% else %}
+           {{ form_widget(form, {'attr': {'class': 'form-control'} }) }}
+    {% endif %}
+   
+   	</div>
+{%  elseif form.vars.block_prefixes.1 =='checkbox'  %}
+	{{- form_errors(form) -}}
+    {{- form_widget(form) -}}
+{% else %}
+    {{- form_label(form) -}}
+    {{- form_errors(form) -}}
+    {{- form_widget(form) -}}
+{% endif %}
+{% endblock form_row %}
+
+
+{% block datePicker_widget %}
+        {%  set attr = attr|merge({'class': ((attr.class|default('') ~ ' fxDatePicker')|trim)}) %}
+       
+        <div class="input-group"><input type="text" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} /><span class="input-group-text"><i class="fa-solid fa-calendar" aria-hidden="true"></i></span></div>
+        
+              
+{% endblock datePicker_widget %}
+
+{% block dateTimePicker_widget %}
+    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' fxDateTimePicker')|trim}) %}
+    
+{{ form_errors(form.date) }} {{ form_errors(form.time) }} {{ form_widget(form.date, {'id' : id ~ '_date' }) }} {{ form_widget(form.time, {'id' : id ~ '_time'}) }}
+    
+{% endblock %}
+
+{% block time_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else %}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline mb-3')|trim}) %}
+        {% if datetime is not defined or false == datetime %}
+            <div {{ block('widget_container_attributes') -}}>
+        {% endif %}
+            {%- set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} -%}
+			{{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second, vars) }}{% endif %}
+        {% if datetime is not defined or false == datetime %}
+            </div>
+        {% endif %}
+    {% endif %}
+{%- endblock time_widget %}
+
+{%- block choice_widget_collapsed -%}
+    {%- if required and placeholder is defined and placeholder is none and not placeholder_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%} 
+    <div class="mb-3">
+    <select {{ block('widget_attributes') }} class="form-control" {% if multiple %}  multiple="multiple"{% endif %}>
+        {%- if placeholder is defined and placeholder is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder|trans({}, translation_domain) }}</option>
+        {%- endif -%}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('choice_widget_options') -}}
+            {%- if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif -%}
+        {%- endif -%}
+        {%- set options = choices -%}
+        {{- block('choice_widget_options') -}}
+    </select>
+    </div>
+{%- endblock choice_widget_collapsed -%}
+
+{% block choice_widget_expanded %}
+	{% set cols_class = attr.cols is defined ? 'col-md-' ~  attr.cols  :'col-6 col-sm-4 col-md-3' %}
+    <div {{ block('widget_container_attributes') }} class="row checkboxrow">
+    {% for child in form %}
+        <div class="{{ cols_class }}">{{ form_widget(child) }}</div>
+    {% endfor %}
+    </div>
+{% endblock choice_widget_expanded %}
+
+{% block checkbox_widget %}
+    <div class="checkbox">
+       <label for="{{ id }}"><input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ label|trans({}, translation_domain) }}</label>
+    </div>
+{% endblock checkbox_widget %}
+{%- block radio_widget -%}
+   	<div class="radio">
+    	<label for="{{ id }}"><input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ label|trans({}, translation_domain) }}</label>
+    </div>
+{%- endblock radio_widget -%}
+{% block captcha_widget %}
+ <div class="row">
+ 	<div class="col-6 col-md-4 text-right">
+    	<img src="{{ captcha_code }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+    </div>
+    <div class="col-6 col-md-4">
+	{{ form_widget(form, {'attr': {'class': 'form-control', 'autocapitalize': 'off','autocorrect': 'off' }}) }}
+	</div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+

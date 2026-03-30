@@ -1,0 +1,77 @@
+﻿<h3>Tagesstatistik</h3>
+<table width="100%" border="0" cellspacing="2" cellpadding="3">
+    <tr bgcolor="#F0F0F0">
+        <th>ID</th>
+        <th>Kunde</th>
+        <th>Aufrufe</th>
+        <th>API Aufrufe</th>
+        <th>Gelöscht Termine/Img/Pdf/Medien</th>
+    </tr>
+    {% for counter in accounts %}
+        {% set kid = counter.datefix.id %}
+        <tr bgcolor="#F0F0F0">
+            <td>{{  counter.datefix.id }}</td>
+            <td nowrap><a href="{{ datefix_url }}/kalender/{{ kid }}">{{ counter.kunde.kunde }}</a></td>
+            <td>{{  kalender[kid]['cHits'] }}</td>
+            <td>{{  kalender[kid]['cHitsApi'] }}</td>
+            <td>{{ kalender[kid]['cDel'] }}/{{ kalender[kid]['cImg'] }}/{{ kalender[kid]['cPdf'] }}/{{ kalender[kid]['cMedia'] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<h3>Summen</h3>
+<table width="0%" border="0" cellspacing="2" cellpadding="3">
+    <tr bgcolor="#F0F0F0">
+        <th>Art</th>
+        <th>Aufrufe</th>
+    </tr>
+    <tr bgcolor="#F0F0F0">
+        <td>Kalender</td>
+        <td>{{ all.sum }}</td>
+    </tr>
+    <tr bgcolor="#F0F0F0">
+        <td>API</td>
+        <td>{{ all.sumApi }}</td>
+    </tr>
+</table>
+<p>SQL-Meldung:{{ all.logs}}/ Logs älter 30 Tage gelöscht</p>
+{% if all.monat is defined %}
+    <h3>Monatsstatistik {{ all.monat }}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="3">
+        <tr bgcolor="#F0F0F0">
+            <th>ID</th>
+            <th>Aufrufe</th>
+            <th>API Aufrufe</th>
+        </tr>
+        {% for counter in accountsM %}
+            {% set kid = counter.datefix.id %}
+            <tr bgcolor="#F0F0F0">
+                <td nowrap><a href="{{ datefix_url }}/kalender/{{ kid }}">{{ kid }}</a></td>
+                <td>{{ counter.summe }}</td>
+                <td>{{ counter.summeApi }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p>SQL-Meldung: {{ all.logsM }} Tageslogs älter 90 Tage gelöscht</p>
+{% endif %}
+{% if all.jahr is defined %}
+    <h3>Jahresstatistik {{ all.jahr }}</h3>
+    <table width="100%" border="0" cellspacing="2" cellpadding="3">
+        <tr bgcolor="#F0F0F0">
+            <th>ID</th>
+            <th>Aufrufe</th>
+            <th>API Aufrufe</th>
+        </tr>
+        {% for counter in accountsJ %}
+            {% set kid = counter.datefix.id %}
+            <tr bgcolor="#F0F0F0">
+                <td nowrap><a href="{{ datefix_url }}/kalender/{{ kid }}">{{ kid }}</a></td>
+                <td>{{ counter.summe }}</td>
+                <td>{{ counter.summeApi }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p>SQL-Meldung:{{ all.logsJ }} / Monatslogs älter zwei jahre gelöscht</p>
+{% endif %}
+<h3>Erinnerungsmails</h3>
+{{ erinnerungen|raw }}
+

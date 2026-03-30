@@ -1,0 +1,77 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% if termin.datum == termin.datumVon %}
+	{% set strDate =  termin.datumVon|date('d.m.Y') %}
+{% else %}	
+	{% set strDate = termin.datumVon|date('d.m.Y') ~ ' bis '|trans ~ termin.datum|date('m.d.Y') %}
+{% endif %}	
+{% set strTime = termin.zeit != NULL ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+{% block title 'Buchungen' %}
+{% block pageheader 'Buchung bearbeiten' %}
+{% block subheader "#{ termin.titel|raw ~', ' ~  strDate ~ ' ' ~ strTime }" %}
+
+{% block footer %}
+
+{% endblock footer %}
+
+{% block body -%}
+{% if error is defined %}
+ <p class="bg-danger">{{ error }}</p>
+{% endif %}
+{{ form_start(form) }}
+	<div class="row">
+		<div class="col-md-4">
+			{{ form_row(form.nachname) }}
+		</div>
+		<div class="col-md-4">
+			{{ form_row(form.vorname) }}
+		</div>
+		<div class="col-md-4">
+			{{ form_row(form.org) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 col-md-6">
+			{{ form_row(form.strasse) }}
+		</div>
+		<div class="col-sm-4 col-md-2">
+			{{ form_row(form.plz) }}
+		</div>
+		<div class="col-sm-8 col-md-4">
+			{{ form_row(form.ort) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			{{ form_row(form.tel) }}
+		</div>
+		<div class="col-sm-6">
+			{{ form_row(form.mobil) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+			{{ form_row(form.anzahl) }}
+		</div>
+		<div class="col-sm-8">
+			{{ form_row(form.email) }}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			{{ form_row(form.notiz) }}
+		</div>
+	</div>
+    
+    <div class="row">
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.submit) }}
+    	</div>
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.reset) }}
+    	</div>
+    </div>
+	{{ form_row(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+	<hr>
+    <div><a href="{{ path('admin_anmeldungen_liste', { 'tid': termin.id })  }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    {%  endblock %}

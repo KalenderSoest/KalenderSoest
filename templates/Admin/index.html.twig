@@ -1,0 +1,84 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Startseite' %}
+{% block pageheader 'Willkommen zurück' %}
+{% block subheader user.nameLang  %}
+{% block footer %}
+{% endblock footer %}
+{% block body -%}
+   
+   
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th width="30%">KalenderID</th>
+                <td>{{ kalender.id }}</td>
+            </tr>
+            <tr>
+                <th>Aufrufe Datefix heute</th>
+                <td>{{ counter.dfxDay }}</td>
+            </tr>
+            <tr>
+                <th>Aufrufe Datefix gesamt</th>
+                <td>{{ counter.dfxSum }}</td>
+            </tr>
+            {% if is_granted('ROLE_ADMIN')  %}
+
+            <tr>
+                <th>Letzter Aufruf Datefix</th>
+                <td>{{ counter.dfxLastLog|date('d.m.Y H:i:s') }}</td>
+            </tr>
+            {% endif %}
+            
+            
+        </tbody>
+    </table>
+     {% if is_granted('ROLE_ADMIN')  %}
+    <h1>Ihre Kundendaten</h1>
+    <table class="table table-striped">
+        <tbody>
+            
+            <tr>
+                <th width="30%">Kunde</th>
+                <td>{{ kunde.kunde }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ kunde.name }}</td>
+            </tr>
+            <tr>
+                <th>Vorname</th>
+                <td>{{ kunde.vorname }}</td>
+            </tr>
+            <tr>
+                <th>Strasse</th>
+                <td>{{ kunde.strasse }}</td>
+            </tr>
+            <tr>
+                <th>Plz</th>
+                <td>{{ kunde.plz }}</td>
+            </tr>
+            <tr>
+                <th>Ort</th>
+                <td>{{ kunde.ort }}</td>
+            </tr>
+            <tr>
+                <th>Land</th>
+                <td>{{ kunde.nat }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ kunde.email }}</td>
+            </tr>
+            <tr>
+                <th>Kundennummer</th>
+                <td>{{ kunde.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+   
+    <a href="{{ path('kunde_edit',{'id' : kunde.id}) }}"><button class="btn btn-primary">Kundendaten ändern</button></a>
+     {%  endif %}
+{% endblock %}
+
+
+

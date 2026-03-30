@@ -1,0 +1,75 @@
+{% extends 'Kalender/base_pdf.html.twig' %}
+{% block dfx_termin_detail %}
+<style>
+  page{
+  	font-size: 11pt;
+  	color: #333;
+  }
+  a{
+  	color: #999;
+  }
+  .print-terminid{
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 12mm;
+   }
+
+  .print-subtitel, .print-datumszeile, .print-locationzeile, .print-lead {
+  	font-weight: bold;
+  	line-height: 1.75;
+  }
+
+  .blockende{
+  	margin-bottom: 12pt;
+  }
+  .print-beschreibung, .print-lead, .print-bu{
+    text-align: justify;
+    line-height: 1.75;
+  }
+  .print-adresse{
+      vertical-align: bottom;
+      font-size: 10pt;
+      text-align: right;
+      width: 35%;
+  }
+
+  .print-logo{
+      vertical-valign: top;
+      max-width: 50%;
+  }
+
+  .grau{
+  	color: #85909A;
+  }
+  .dfx-detail-image{
+      max-width: 100%;
+  }
+</style>
+    <table style="width: 100%">
+        <tr>
+            <td class="print-logo">{{ strLogoUrl|raw }}</td>
+            <td class="print-adresse"></td>
+        </tr>
+    </table>
+    <h1 class="print-titel">{{ termin.titel|raw }}</h1>
+	{% if termin.subtitel != NULL %}
+		<h3 class="print-subtitel blockende">{{'subtitel-fe'|trans}}{{ termin.subtitel }}</h3>
+	{% endif %}
+	<div class="print-datumszeile">{% if strDate !='' %}<span class="print-datum">{{ strDate }}</span>{% endif %}{% if strTime !='' %}<span class="print-zeit">{% if strDate !='' %}{{ tz }}{% endif %} {{ strTime }}</span>{% endif %}</div>
+	<div class="print-locationzeile blockende">{% if strLokal !='' %}<span class="print-lokal">{{ strLokal|raw }}</span>{% endif %}{% if strOrt !='' and strLokal !='' %} {{ tz }} {% endif %}{% if strOrt !='' %}<span class="print-ort">  {{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="print-strasse">, {{ strStrasse|raw }}</span>{% endif %}</div>
+	{% if strLead != NULL %}<div class="print-lead blockende">{{ strLead|raw }}</div> {% endif %}
+    {% if strText != NULL %}<div class="print-beschreibung blockende">{{ strText|raw }}<br></div> {% endif %}
+    {% if strEintritt != NULL %}<div class="print-eintritt blockende">{{ strEintritt|raw }}</div> {% endif %}
+    {% if ticketlink != NULL %}<div class="print-ticketlink blockende"> {{ ticketlink|raw }}</div>{% endif %}
+    {% if ticketlink2 != NULL %}<div class="print-ticketlink blockende"> {{ ticketlink2|raw }}</div>{% endif %}
+    {% if anmeldelink != NULL %}<div class="print-ticketlink blockende"> {{ anmeldelink|raw }}</div>{% endif %}
+    {% if strVeranstalter != NULL %}
+		<div class="print-veranstalter blockende">{{ 'veranstalter'|trans }}:<br>{{ strVeranstalter|raw }}<br>
+		{% if strVeranstalterAdr != NULL %}<div class="print-veranstalter-adr"> {{ strVeranstalterAdr|raw }}</div>{% endif %}
+		{% if strVeranstalterKom != NULL %}<div class="print-veranstalter-kom"> {{ strVeranstalterKom|raw }}</div>{% endif %}
+		</div>
+	{% endif %}
+	{% if pdfInfo != NULL %}<div class="print-printinfo blockende"> {{ pdfInfo|raw }}</div>{% endif %}
+	{% if infolink != NULL %}<div class="print-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
+	{{ strImgUrl|raw }}
+{% endblock %}

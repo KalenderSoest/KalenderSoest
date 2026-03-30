@@ -1,0 +1,29 @@
+{% block dfx_news %}
+	{% set konf = artikel.datefix %}
+	{% set strDate =  artikel.datumInput|date('d.m.Y') %}
+	{% set strMetadate = artikel.datumInput|date('Y-m-d') %}
+
+	{% set strLogo = konf.imgLogo is not null ? '<img class="pdf-logo" src="'  ~ kernelProjectDir ~ '/web/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo  ~ '" />':NULL %}
+    {% set strLogoUrl = konf.imgLogo is not null ? '<img class="pdf-logo" src="'  ~ absolute_url(asset('/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo)) ~ '" />':NULL %}
+
+    {% set detailbild = {"thumbnail": {"size": [konf.imgWidth,konf.imgHeight] }} %}
+	{% if artikel.img != NULL %}
+		{% set strImg = '<img class="dfx-image dfx-detail-image" src="'  ~ kernelProjectDir ~ '/web/images/dfx/' ~ artikel.datefix.id ~ '/' ~ artikel.img  ~ '" />' %}
+        {% set strImgUrl = '<img class="dfx-image dfx-detail-image" src="' ~ absolute_url(asset('/images/dfx/' ~ artikel.datefix.id ~ '/' ~ artikel.img)) ~ '" />' %}
+
+    {% else %}
+		{% set strImg = NULL %}
+	{%  endif %}
+	{% set strImg = artikel.imgtext is not null ? strImg  ~ '<p class="pdf-bu">' ~ artikel.imgtext  ~ '</p>' : strImg %}
+    {% set strImgUrl = artikel.imgtext is not null ? strImgUrl  ~ '<p class="pdf-bu">' ~ artikel.imgtext  ~ '</p>' : strImgUrl %}
+	{% set strKurztext = artikel.kurztext is not null ? artikel.kurztext : "" %}
+	{% set strText = artikel.beschreibung is not null ? artikel.beschreibung : null %}
+	{% if artikel.pdf is not null %}
+		{% set pdfInfo =  'pdf download'|trans ~ ': <a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ artikel.pdf ~'">' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ artikel.pdf ~'</a>' %}
+	{%  else %}
+		{% set pdfInfo =  NULL %}
+	{%  endif %}
+	{% set infolink = artikel.link is not null ? 'Weitere Informationen'|trans  ~ ': <a href = "' ~ artikel.link  ~ '">' ~ artikel.link ~ '</a>' : NULL %}
+
+	{{ block('dfx_news_detail') }}
+{% endblock %}

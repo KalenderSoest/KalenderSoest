@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxKartenKat" table="pool_dfx_karten_kat">
+    <indexes>
+      <index name="id_kalender" columns="id_kalender"/>
+      <index name="id_location" columns="id_location"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="katName"  column="kat_name" length="100" nullable="true"/>
+    <field name="katPlaetze" type="integer" column="kat_plaetze" nullable="true"/>
+    <field name="katPlaetzeFrei" type="integer" column="kat_plaetze_frei" nullable="true"/>
+    <field name="katPreis0" type="decimal" column="kat_preis_0" precision="5" scale="2" nullable="true"/>
+    <field name="katPreis1" type="decimal" column="kat_preis_1" precision="5" scale="2" nullable="true"/>
+    <field name="katPreis2" type="decimal" column="kat_preis_2" precision="5" scale="2" nullable="true"/>
+    <field name="katText0"  column="kat_text_0" length="100" nullable="true"/>
+    <field name="katText1"  column="kat_text_1" length="100" nullable="true"/>
+    <field name="katText2"  column="kat_text_2" length="100" nullable="true"/>
+    <field name="katRgb"  column="kat_rgb" length="20" nullable="true"/>
+    <many-to-one field="datefix" target-entity="DfxKonf">
+      <join-columns>
+        <join-column name="id_kalender"  on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="location" target-entity="DfxLocation">
+      <join-columns>
+        <join-column name="id_location"  on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

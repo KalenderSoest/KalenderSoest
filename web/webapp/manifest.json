@@ -1,0 +1,32 @@
+﻿{
+	"short_name": "Datefix 2",
+	"name": "Datefix 2",
+	"description": "Datefix Veranstaltungs-WebApp",
+	"icons": [{
+		"src": "images/icon_128.png",
+		"sizes": "128x128",
+		"type": "image/png"
+	}, {
+		"src": "images/icon_144.png",
+		"sizes": "144x144",
+		"type": "image/png"
+	}, {
+		"src": "images/icon_152.png",
+		"sizes": "152x152",
+		"type": "image/png"
+	}, {
+		"src": "images/icon_192.png",
+		"sizes": "192x192",
+		"type": "image/png"
+	}, {
+		"src": "images/icon_256.png",
+		"sizes": "256x256",
+		"type": "image/png"
+	}],
+	"start_url": "/webapp?source=pwa",
+	"scope": "/webapp/",
+	"display": "standalone",
+	"background_color": "#ff9800",
+	"theme_color": "#ff9800"
+}
+

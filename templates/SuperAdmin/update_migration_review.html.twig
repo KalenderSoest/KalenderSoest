@@ -1,0 +1,19 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+
+{% block title 'Datefix Update-Migration' %}
+
+{% block body %}
+    <h1>Datefix Update</h1>
+    <h3>Individuelle Migration prüfen</h3>
+
+    <p><strong>Datei:</strong> {{ migration.path }}</p>
+    <p><strong>Version:</strong> {{ migration.version }}</p>
+    <p><strong>Noch nicht ausgeführte Migrationen:</strong> {{ pending_count }}</p>
+
+    <pre style="white-space: pre-wrap; max-height: 70vh; overflow: auto;">{{ migration.contents }}</pre>
+
+    <div class="mt-4">
+        <a class="btn btn-primary" href="{{ path('dfx_install_run_step', {step: 'apply_update_migration'}) }}">Migration ausführen</a>
+        <a class="btn btn-default" href="{{ path('dfx_install_status') }}">Zurück zum Status</a>
+    </div>
+{% endblock %}

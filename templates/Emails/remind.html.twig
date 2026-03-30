@@ -1,0 +1,18 @@
+﻿{% extends 'Emails/base_termin.html.twig' %}
+{% block body %}	
+<h2>Terminerinnerung</h2>
+<p>Hallo,</p>
+<p>Sie wollten an folgenden Termin erinnert werden:</p> 
+<h3>{{ termin.titel|raw }}</h3>
+<div>{{ strDate }}</div>
+{% if strTime !='' %}<div>{{ strTime }}</div>{% endif %}
+<p>
+{% if strLokal != NULL %}{{ strLokal|raw }}<br>{% endif %}
+{% if strStrasse != NULL %}{{ strStrasse|raw }}<br>{% endif %}
+{% if strOrt !=NULL %}{{ strOrt|raw }}<br>{% endif %}
+</p>
+{% if strText != NULL %}<p>{{ strText|raw }}</p>{% endif %}
+<p><a href="{{ frontendUrlQ }}dfxpath={{ path('detail', { 'id': termin.id, 'kid': konf.id }) }}">{{ 'termin ansehen'|trans }}</a></p>
+<p>Diese Mail wurde automatisch erzeugt durch einen auf der Internetseite  {{ konf.frontendUrl }} eingebauten Veranstaltungskalender. Bitte melden Sie missbräuchliche Verwendung ausschließlich dem Webmaster der genannten Internetseite. 
+
+{% endblock %}

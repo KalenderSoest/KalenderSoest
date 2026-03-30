@@ -1,0 +1,59 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Orte' %}
+{% block pageheader 'Ort eingeben' %}
+
+{% block footer %}
+{% if konf.useMap == 1 %}
+    <link href="{{ asset('js/leaflet/leaflet.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/leaflet/leaflet.js') }}" type="text/javascript"></script>
+{% endif %}
+
+{% endblock footer %}
+
+{% block body -%}
+    {{ form_start(form) }}
+    <div class="row">
+     <div class="col-sm-12 col-md-2">
+	    {{ form_row(form.plz) }}
+	    </div>
+	    <div class="col-sm-12 col-md-4">
+	    {{ form_row(form.ort) }}
+	    </div>
+	    <div class="col-sm-12 col-md-3">
+	    {{ form_row(form.region) }}
+	    </div>
+    </div>
+{% if konf.useMap == 1 %}
+	    <div class="row">
+	       	<div class="col-sm-6 col-md-2">
+	    		{{ form_row(form.bg) }}
+	    	</div>
+	    	<div class="col-sm-6 col-md-2">
+	    	 {{ form_row(form.lg) }}
+	    	   	</div>
+	    	<div class="col-sm-12 col-md-5">
+	    	 <a id="getgeodata" data-formname="orte" href="#">Hole Geodaten aus Adressdaten</a> | <a id="setgeodata" data-formname="orte"  href="#">Hole Geodaten aus Karte</a>
+	    	</div>
+	   </div>
+	   <div class="row">
+    		<div class="col-sm-12 col-md-9">
+	    		<div class="dfx-map-window" id="dfxMap" initbg="{{ initbg }}" initlg="{{ initlg }}" initzoom="{{ initzoom }}" style="margin-bottom:15px"></div>
+	    	</div>
+	   </div>
+	{% endif %}
+    
+    <div class="row">
+		  <div class="col-6">
+		  {{ form_row(form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(form.reset) }}
+		  </div>
+		
+	</div>
+	{{ form_row(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+	<div><br /><a href="{{ path('admin_orte') }}">Zurück zur Liste ohne zu speichern</a></div>
+{% endblock %}
+
+

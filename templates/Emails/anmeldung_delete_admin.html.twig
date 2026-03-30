@@ -1,0 +1,54 @@
+﻿{% extends 'Emails/base_termin.html.twig' %}
+{% block body %}
+<h3>{{ 'Anmeldung gelöscht'|trans }} {{ 'fuer'|trans }}</h3>
+<p><strong>{{ termin.titel|raw }}</strong><br>
+{{ strDate }} {% if strTime !='' %}{{ strTime }}{% endif %}</p>
+<p>
+{% if strLokal != NULL %}{{ strLokal|raw }}<br>{% endif %}
+{% if strStrasse != NULL %}{{ strStrasse|raw }}<br>{% endif %}
+{% if strOrt !=NULL %}{{ strOrt|raw }}<br>{% endif %}
+</p>
+<p><a href="{{ frontendUrlQ }}dfxpath={{ path('detail', { 'id': anmeldung.termin.id, 'kid': anmeldung.datefix.id }) }}">{{ 'termin ansehen'|trans }}</a></p>
+<h4>{{ 'anmeldung'|trans }} {{ 'von'|trans }}</h4>
+<table width="800">
+  <tr>
+    <td>{{ 'personenzahl'|trans }}</td>
+    <td>{{ anmeldung.anzahl }}</td>
+  </tr>
+  <tr>
+    <td>{{ 'nachname'|trans }}</td>
+    <td>{{ anmeldung.nachname }}</td>
+  </tr>
+  <tr>
+    <td>{{ 'vorname'|trans }}</td>
+    <td>{{ anmeldung.vorname }}</td>
+  </tr>
+  <tr>
+    <td>{{ 'strasse'|trans }}</td>
+    <td>{{ anmeldung.strasse }}</td>
+  </tr>
+  <tr>
+    <td>{{ 'plz'|trans }} {{ 'ort'|trans }}</td>
+    <td>{{ anmeldung.plz }} {{ anmeldung.ort }}</td>
+  </tr>
+  <tr>
+    <td>{{ 'email'|trans }}</td>
+    <td>{{ anmeldung.email }}</td>
+  </tr>
+  <tr>
+    <td>{{ 'telefon'|trans }}</td>
+    <td>{{ anmeldung.tel}}</td>
+  </tr>
+  <tr>
+    <td>{{ 'mobil'|trans }}</td>
+    <td>{{ anmeldung.mobil}}</td>
+  </tr>
+  <tr>
+    <td>{{ 'nachricht'|trans }}</td>
+    <td>{{ anmeldung.notiz}}</td>
+  </tr>
+</table>
+<p>{{ 'ak-text9'|trans }}</p>
+{% endblock body %}
+
+

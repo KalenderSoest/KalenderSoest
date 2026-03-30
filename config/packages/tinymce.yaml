@@ -1,0 +1,6 @@
+tinymce:
+    skin: 'appstack_light'
+    plugins: 'code advlist autolink link lists wordcount'
+    menubar: 'false'
+    toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright | bullist numlist | link | removeformat | code | wordcount'
+    config: 'tinymceAdditionalConfig'

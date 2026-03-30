@@ -1,0 +1,176 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+
+{% block body -%}
+    <h1>DfxTermine</h1>
+
+    <table class="record_properties">
+        <tbody>
+            
+            <tr>
+                <th>Datum</th>
+                <td>{{ entity.datum|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Datumvon</th>
+                <td>{{ entity.datumVon|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Zeit</th>
+                <td>{{ entity.zeit }}</td>
+            </tr>
+            <tr>
+                <th>Zeitbis</th>
+                <td>{{ entity.zeitBis }}</td>
+            </tr>
+            <tr>
+                <th>Nat</th>
+                <td>{{ entity.nat }}</td>
+            </tr>
+            <tr>
+                <th>Plz</th>
+                <td>{{ entity.plz }}</td>
+            </tr>
+            <tr>
+                <th>Ort</th>
+                <td>{{ entity.ort }}</td>
+            </tr>
+            <tr>
+                <th>Lokal</th>
+                <td>{{ entity.lokal }}</td>
+            </tr>
+            <tr>
+                <th>Lokalstrasse</th>
+                <td>{{ entity.lokalStrasse }}</td>
+            </tr>
+            <tr>
+                <th>Lg</th>
+                <td>{{ entity.lg }}</td>
+            </tr>
+            <tr>
+                <th>Bg</th>
+                <td>{{ entity.bg }}</td>
+            </tr>
+            <tr>
+                <th>Veranstalter</th>
+                <td>{{ entity.veranstalter }}</td>
+            </tr>
+            <tr>
+                <th>Idveranstalter</th>
+                <td>{{ entity.idVeranstalter }}</td>
+            </tr>
+            <tr>
+                <th>Idlocation</th>
+                <td>{{ entity.idLocation }}</td>
+            </tr>
+            <tr>
+                <th>Eintritt</th>
+                <td>{{ entity.eintritt }}</td>
+            </tr>
+            <tr>
+                <th>Rubrik</th>
+                <td>{{ entity.rubrik }}</td>
+            </tr>
+            {% if zielgruppe == true %}
+                <tr>
+                    <th>Zielgruppe</th>
+                    <td>{{ entity.zielgruppe }}</td>
+                </tr>
+            {% endif %}
+            
+            <tr>
+                <th>Titel</th>
+                <td>{{ entity.titel }}</td>
+            </tr>
+            <tr>
+                <th>Beschreibung</th>
+                <td>{{ entity.beschreibung }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ entity.status }}</td>
+            </tr>
+            <tr>
+                <th>Link</th>
+                <td>{{ entity.link }}</td>
+            </tr>
+            <tr>
+                <th>Img</th>
+                <td>{{ entity.img }}</td>
+            </tr>
+            <tr>
+                <th>Imgpos</th>
+                <td>{{ entity.imgPos }}</td>
+            </tr>
+            <tr>
+                <th>Mail</th>
+                <td>{{ entity.mail }}</td>
+            </tr>
+            <tr>
+                <th>Mailtyp</th>
+                <td>{{ entity.mailTyp }}</td>
+            </tr>
+            <tr>
+                <th>Pub</th>
+                <td>{{ entity.pub }}</td>
+            </tr>
+            <tr>
+                <th>Pubmeta</th>
+                <td>{{ entity.pubMeta }}</td>
+            </tr>
+            <tr>
+                <th>Code</th>
+                <td>{{ entity.code }}</td>
+            </tr>
+            <tr>
+                <th>Autor</th>
+                <td>{{ entity.autor }}</td>
+            </tr>
+            <tr>
+                <th>Nl</th>
+                <td>{{ entity.nl }}</td>
+            </tr>
+            <tr>
+                <th>Nlsent</th>
+                <td>{{ entity.nlSent }}</td>
+            </tr>
+            <tr>
+                <th>Serie</th>
+                <td>{{ entity.serie }}</td>
+            </tr>
+            <tr>
+                <th>Plaetzegesamt</th>
+                <td>{{ entity.plaetzeGesamt }}</td>
+            </tr>
+            <tr>
+                <th>Plaetzeaktuell</th>
+                <td>{{ entity.plaetzeAktuell }}</td>
+            </tr>
+            <tr>
+                <th>Input</th>
+                <td>{{ entity.input|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Modified</th>
+                <td>{{ entity.modified|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('dfxtermine') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('dfxtermine_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

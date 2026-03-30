@@ -1,0 +1,649 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Konfiguration' %}
+{% block pageheader 'Konfiguration bearbeiten' %}
+{% set strSubheader = entity.titel is not null ? entity.titel : entity.user.kunde.kunde %}
+{% block subheader strSubheader  %}
+{% block footer %}
+
+{% endblock footer %}
+{% block body -%}
+{{ form_start(edit_form) }}
+    <fieldset class="step-7">
+        <legend>URI, Logo, Banner, HTML Umfeld</legend>
+        <p>Tragen Sie in die Frontend-Url die Seite ein, in die Ihr Einbaucode eingebunden ist. Soll der Standalone-Kalender verwendet werden, lassen Sie die Einstellung unverändert. Geben Sie auch die Urls zu ihrer Datenschutzerklärung und Impressum ein.</p>
+        <div class="row">
+            <div class="col-md-4">
+                {{ form_row(edit_form.frontendUrl) }}
+            </div>
+            <div class="col-md-4">
+                {{ form_row(edit_form.datenschutzUrl) }}
+            </div>
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                <div class="col-md-4">
+                    {{ form_row(edit_form.impressumUrl) }}
+                </div>
+            {% endif %}
+        </div>
+        <p>Das Logo wird in den PDF-Exporten verwendet - sofern eines hochgeladen wurde. Logos werden automatisch auf eine Breite von 300 Pixel bzw Höhe von 150 Pixel verkleinert. Das Banner wird ausschließlich in der Standalone-Version ( {{ datefix_url ~ '/kalender/' ~ entity.id }} verwendet und automatisch auf die Größe von 1200 x 350 Pixel beschnitten.) </p>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(edit_form.imageFile) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {%  if entity.imgLogo is not null %}
+                    {% set strImgPrev = '<img class="dfx-image" src="'~ asset('/images/dfx/' ~ entity.id ~ '/' ~ entity.imgLogo) | imagine_filter('thumb') ~ '" />' %}
+                {% else %}
+                    {% set strImgPrev = NULL %}
+                {%  endif %}
+                {{ strImgPrev|raw }}
+            </div>
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(edit_form.imageFile2) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {%  if entity.imgBanner is not null %}
+                    {% set strImgPrev2 = '<img class="dfx-image" src="'~ asset('/images/dfx/' ~ entity.id ~ '/' ~ entity.imgBanner) | imagine_filter('thumb') ~ '" />' %}
+                {% else %}
+                    {% set strImgPrev2 = NULL %}
+                {%  endif %}
+                {{ strImgPrev2|raw }}
+            </div>
+        </div>
+        <p>Sie haben hier die Möglichkeit für die Standalone-Version ( {{ datefix_url ~ '/kalender/' ~ entity.id }}) erklärenden HTML-Code einzufügen. Er erscheint zwischen Banner und Veranstaltungskalender bzw unterhalb der Veranstaltungsdaten.  </p>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(edit_form.htmlHead) }}
+            </div>
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(edit_form.htmlFooter) }}
+            </div>
+        </div>
+        <p>Der Eintrag unter "Titel" wird in der Standalone-Version ( {{ datefix_url ~ '/kalender/' ~ entity.id }} für die Anzeige im Browser-Tab verwendet. Die Adresse wird für die Footer der Systemmails, den Adressbereich der PDF-Dokumente und bei fehlendem Link zum Impressum im automatisch generiertem Impressum verwendet. Fehlen Angaben in diesem Feld, werden automatisch die Kundendaten verwendet.</p>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(edit_form.titel) }}
+            </div>
+            <div class="col-sm-9 col-md-6">
+                {{ form_row(edit_form.adresse) }}
+            </div>
+        </div>
+
+
+    </fieldset>
+    <hr>
+<fieldset class="step-0">
+    <legend>Rubriken</legend>
+     {% if entity.inheritMeta == 1 or entity.inheritGroup == 1 %}
+     	<div class="row">
+    		<div class="col-12">
+    			Die Rubriken werden vom übergeordneten Meta- oder Gruppenkalender bezogen.
+    		</div>
+    	</div>
+	{% else %}
+    	{{ form_errors(edit_form.rubriken) }}
+     	<div class="row" id="rubrik-fields-list" data-prototype='<input type="text" class="form-control" id="datefix_backendbundle_dfxkonf_rubriken___name__" name="datefix_backendbundle_dfxkonf[rubriken][]" value="" />'>
+		 {% for rubrikField in edit_form.rubriken %}
+    		<div class="col-12 col-sm-4 col-md-3" style="margin-bottom: 10px;">
+        		{{ form_errors(rubrikField) }}
+        		{{ form_widget(rubrikField, { 'attr': {'class': 'form-control'} }) }}
+    		</div>
+		 {% endfor %}
+		</div>
+		<div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+    		<a href="#" id="add-rubrik">Rubrik hinzufügen</a><br /><br />
+    	</div>
+    </div>
+    {% endif %}
+    {% if zielgruppe %}
+    <legend>Zielgruppen</legend>
+        {% if entity.inheritZielgruppenMeta == 1 or entity.inheritZielgruppenGroup == 1 %}
+            <div class="row">
+                    <div class="col-12">
+                            Die Zielgruppen werden vom übergeordneten Meta- oder Gruppenkalender bezogen.
+                    </div>
+            </div>
+         {% else %}
+            {{ form_errors(edit_form.zielgruppen) }}
+            <div class="row" id="zielgruppe-fields-list" data-prototype='<input type="text" class="form-control" id="datefix_backendbundle_dfxkonf_zielgruppen___name__" name="datefix_backendbundle_dfxkonf[zielgruppen][]" value="" />'>
+                {% for zielgruppenField in edit_form.zielgruppen %}
+                    <div class="col-12 col-sm-4 col-md-3" style="margin-bottom: 10px;">
+                        {{ form_errors(zielgruppenField) }}
+                        {{ form_widget(zielgruppenField, { 'attr': {'class': 'form-control'} }) }}
+                    </div>
+                 {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-4 col-md-3">
+                    <a href="#" id="add-zielgruppe">Zielgruppe hinzufügen</a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</fieldset>
+    <hr>
+<fieldset class="step-1">
+    <legend>Gliederung, Gestaltung und Farben</legend>
+    <div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+    		{{ form_row(edit_form.dfxTplVersion) }}
+
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+    	 {{ form_row(edit_form.dfxTpl) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+    	 {{ form_row(edit_form.dfxTplDetail) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.dfxFarbe) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.dfxFarbeEigen) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.dfxFarbeRaster) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.dfxFarbeRasterEigen) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.dfxFontColor) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.dfxFontSize) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-4">
+			{{ form_row(edit_form.dfxFontType) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-3">
+			{{ form_row(edit_form.bgDatefix) }}
+    	</div>
+    	<div class="col-12 col-sm-3">
+			{{ form_row(edit_form.bgNav) }}
+    	</div>
+    	<div class="col-12 col-sm-6">
+			Tragen Sie nur einen Farbwert im HEX-Format (#AABBCC), wenn der Veranstaltungskalender bzw das Navigationselement keine vom Umfeld vererbte ("inherit") Hintergrundfarbe bekommen sollen.
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-3">
+			{{ form_row(edit_form.dfxWidth) }}
+    	</div>
+    	<div class="col-12 col-sm-9">
+			Die Datefix-Templates sind durchgängig für eine korrekte Darstellung auf Mobilgeräten optimiert. Deshalb nimmt Datefix standardmäßig immer 100 % des verfügbaren Platzes ein. Geben Sie hier bei Bedarf eine maximale Breite in Pixel ein, die Datefix nicht überschreiten darf.
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-md-6">
+			{{ form_row(edit_form.dfxCss) }}
+    	</div>
+    	<div class="col-12 col-sm-6">
+			<br>Die hier eingegebenen CSS-Definitionen werden an das Ende des Datefix-CSS-Files angefügt und wird von #datefix{} umschlossen.
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+    		{{ form_row(edit_form.itemsListe) }}
+    	</div>
+    	<!--
+    	<div class="col-12 col-sm-4 col-md-3">
+    	 {{ form_row(edit_form.lengthTeaser) }}
+    	</div>
+    	// -->
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.dfxRadius) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.trennzeichen) }}
+    	</div>
+    </div>
+     <div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+    		{{ form_row(edit_form.paginationTop) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+    	 {{ form_row(edit_form.paginationBottom) }}
+    	</div>
+    	<div class="col-12 col-sm-12 col-md-6">
+			{{ form_row(edit_form.zwueDatum) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-4 col-md-3">
+    		{{ form_row(edit_form.showPlz) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+    	 {{ form_row(edit_form.showOrt) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.showStrasse) }}
+    	</div>
+    	<div class="col-12 col-sm-4 col-md-3">
+			{{ form_row(edit_form.showLokal) }}
+    	</div>
+    </div>
+</fieldset>
+    <hr>
+<fieldset class="step-2">
+    <legend>Kalender, Suchfunktion, Filterelemente</legend>
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-3">
+			{{ form_row(edit_form.navPos) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+    	 {{ form_row(edit_form.navWidth) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+    		{{ form_row(edit_form.navListe) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+    	 {{ form_row(edit_form.navDetail) }}
+    	</div>
+
+     </div>
+     <div class="row">
+    	<div class="col-6 col-sm-3 col-md-2">
+    		{{ form_row(edit_form.filterKalender) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+    	 {{ form_row(edit_form.filterDatum) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.filterSuche) }}
+    	</div>
+
+    </div>
+     <div class="row">
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterOrt) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterPlzarea) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterUmkreis) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterRegion) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterNat) }}
+    	</div>
+
+    </div>
+    <div class="row">
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterRubrik) }}
+    	</div>
+        {% if zielgruppe %}
+        <div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterZielgruppe) }}
+    	</div>
+        {% endif %}
+
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterVeranstalter) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterLocation) }}
+    	</div>
+        <div class="col-6 col-sm-3 col-md-2">
+            {{ form_row(edit_form.filterDozenten) }}
+    	</div>
+
+    </div>
+ </fieldset>
+<hr>
+<fieldset class="step-3">
+    <legend>Bild-Optionen und Bildgrößen</legend>
+    <div class="row">
+    	<div class="col-12 col-sm-4 col-md-2">
+    		{{ form_row(edit_form.feldImg) }}
+    	</div>
+    	<div class="col-12 col-sm-8 col-md-10">
+    		{{ form_row(edit_form.feldGalerie) }}
+    	</div>
+
+    </div>
+    <div class="row align-items-start">
+        <div class="col-12 col-md-4">
+            <strong>&nbsp;</strong>
+        </div>
+    	<div class="col-12 col-md-4">
+    		<strong>Bildgröße Vorschaubilder in Listen</strong>
+    	</div>
+    	<div class="col-12 col-md-4">
+    	    <strong>Bildgröße in Detailansichten</strong>
+    	</div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            {{ form_row(edit_form.imgListe) }}
+        </div>
+    	<div class="col-6 col-sm-3 col-md-2">
+    		{{ form_row(edit_form.imgPrevWidth) }}
+
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+    	 {{ form_row(edit_form.imgPrevHeight) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.imgWidth) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.imgHeight) }}
+    	</div>
+
+    </div>
+</fieldset>
+<hr>
+<fieldset class="step-4">
+    <legend>Optionale Felder Termineingabe</legend>
+    <div class="row">
+    	<div class="col-12 col-sm-2 col-md-2">
+    		{{ form_row(edit_form.feldLead) }}
+    	</div>
+        <div class="col-6 col-sm-4 col-md-2 text-md-end">
+            Max Zeichen Vorschau
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+            {{ form_row(edit_form.maxLengthLead) }}
+        </div>
+    	<div class="col-12 col-sm-2 col-md-2">
+    	 {{ form_row(edit_form.feldBeschreibung) }}
+    	</div>
+        <div class="col-6 col-sm-4 col-md-2 text-md-end">
+            Max Zeichen Text
+        </div>
+    	<div class="col-6 col-sm-4 col-md-2">
+    		{{ form_row(edit_form.maxLengthBeschreibung) }}
+    	</div>
+     </div>
+     <div class="row">
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldOrt) }}
+    	</div>
+        <div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldOrtdb) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldPlz) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldNat) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldRegion) }}
+    	</div>
+     </div>
+     <div class="row">
+        <div class="col-6 col-sm-3 col-md-2">
+    		{{ form_row(edit_form.feldSubtitel) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+    		{{ form_row(edit_form.feldLocation) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+    	 {{ form_row(edit_form.feldVeranstalter) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldPdf) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldVideo) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+    	 {{ form_row(edit_form.feldEintritt) }}
+    	</div>
+
+     </div>
+     <div class="row">
+       <div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldLink) }}
+    	</div>
+         <div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldTicketlink) }}
+    	</div>
+    	<div class="col-6 col-sm-4 col-md-2">
+    		{{ form_row(edit_form.feldKarten) }}
+    	</div>
+    	<div class="col-6 col-sm-4 col-md-4">
+    	 {{ form_row(edit_form.feldAnmeldung) }}
+    	</div>
+    	<div class="col-6 col-sm-3 col-md-2">
+			{{ form_row(edit_form.feldPlatzlimit) }}
+    	</div>
+
+     </div>
+	<div class="row">
+		<div class="col-6 col-sm-3 col-md-4">
+			{{ form_row(edit_form.feldOnlinetermin) }}
+		</div>
+	</div>
+</fieldset>
+    <hr>
+<fieldset class="step-4-2">
+	<legend>Kartenanzeige mit Open Street Map </legend>
+     <div class="row">
+       <div class="col-12">
+            <div class="d-flex align-items-center flex-nowrap gap-2">
+                {{ form_widget(edit_form.useMap) }}
+                {{ form_label(edit_form.useMap, null, { 'label_attr': { 'class': 'mb-0' } }) }}
+                &nbsp;/&nbsp;{{ form_label(edit_form.initZoom, null, { 'label_attr': { 'class': 'mb-0' } }) }}
+                {{ form_widget(edit_form.initZoom, { 'attr': { 'size': 2, 'maxlength': 2, 'class': 'form-control form-control-sm d-inline-block', 'style': 'width: 6ch; min-width: 6ch;' } }) }}
+			</div>
+	   </div>
+	</div>
+</fieldset>
+    <hr>
+<fieldset class="step-4-2">
+	<legend>JSON API </legend>
+	<div class="row">
+		<div class="col-12">
+			<div class="d-flex align-items-center flex-nowrap gap-2">
+				{{ form_widget(edit_form.allowApi) }}
+                {{ form_label(edit_form.allowApi, null, { 'label_attr': { 'class': 'mb-0' } }) }}
+                &nbsp;/&nbsp;{{ form_label(edit_form.maxApiItems, null, { 'label_attr': { 'class': 'mb-0' } }) }}
+                {{ form_widget(edit_form.maxApiItems, { 'attr': { 'size': 4, 'maxlength': 4, 'class': 'form-control form-control-sm d-inline-block', 'style': 'width: 7ch; min-width: 7ch;' } }) }}
+                &nbsp;/&nbsp;{{ form_label(edit_form.pageApiItems, null, { 'label_attr': { 'class': 'mb-0' } }) }}
+                {{ form_widget(edit_form.pageApiItems, { 'attr': { 'size': 2, 'maxlength': 2, 'class': 'form-control form-control-sm d-inline-block', 'style': 'width: 5ch; min-width: 5ch;' } }) }}
+            </div>
+     	</div>
+     </div>
+</fieldset>
+    <hr>
+<fieldset class="step-55">
+    <legend>Dateneingabe aus dem Internet</legend>
+    {% for field in [ 'allowInputAll', 'allowPubAll'] %}
+		{% if (attribute(edit_form, field) is defined) %}
+			{{ form_row(attribute(edit_form, field)) }}
+		{% endif %}
+
+    {% endfor %}
+</fieldset>
+<hr>
+<fieldset class="step-6">
+    <legend>Community</legend>
+    <div class="row">
+    	<div class="col-6 col-sm-4 col-md-3">
+    		{{ form_row(edit_form.allowSocial) }}
+    	</div>
+    	<div class="col-6 col-sm-4 col-md-3">
+    	 {{ form_row(edit_form.allowRemind) }}
+    	</div>
+    	<div class="col-6 col-sm-4 col-md-3">
+			{{ form_row(edit_form.allowMail) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-6 col-sm-4 col-md-3">
+    		{{ form_row(edit_form.allowExport) }}
+    	</div>
+    	<div class="col-6 col-sm-4 col-md-3">
+    	 {{ form_row(edit_form.allowPrint) }}
+    	</div>
+    	<div class="col-6 col-sm-4 col-md-3">
+			{{ form_row(edit_form.useIcons) }}
+    	</div>
+    </div>
+</fieldset>
+    <hr>
+
+{% if is_granted('ROLE_SUPER_ADMIN') %}
+    {% set hidefield ='' %}
+{% else %}
+    {% set hidefield ="style=display:none" %}
+{% endif %}
+<fieldset class="step-6">
+    <legend>Archivierung, Meta- und Gruppenkalender</legend>
+    <div class="row">
+        <div class="col-sm10 col-md-5">
+            <strong>Tage bis zum Entfernen nicht archivierter Termine nach Ablauf:</strong><br>
+        </div>
+        <div class="col-sm2 col-md-1">
+            {{ form_row(edit_form.archivTage) }}
+        </div>
+
+    </div>
+    <div class="row">
+
+    	<div class="col-sm-4 col-md-3" {{ hidefield }}>
+    		{{ form_row(edit_form.isMeta) }}
+    	</div>
+    	<div class="col-sm-4 col-md-3" {{ hidefield }}>
+    		{{ form_row(edit_form.isGroup) }}
+    	</div>
+    	<div class="col-sm-4 col-md-3" {{ hidefield }}>
+            Diesen Kalender einem oder mehreren Gruppenkalendern zuordnen
+    		{{ form_row(edit_form.toGroup) }}
+    	</div>
+      </div>
+
+      <div class="row">
+       	<div class="col-sm-4 col-md-3" {{ hidefield }}>
+    		{{ form_row(edit_form.pubMetaAll) }}
+    	</div>
+    	<div class="col-sm-4 col-md-3" {{ hidefield }}>
+    		{{ form_row(edit_form.pubGroupAll) }}
+    	</div>
+     </div>
+     <div class="row">
+       	<div class="col-sm-4 col-md-3">
+    		{{ form_row(edit_form.inheritMeta) }}
+    	</div>
+    	<div class="col-sm-4 col-md-3">
+    		{{ form_row(edit_form.inheritGroup) }}
+    	</div>
+     </div>
+     <div class="row">
+       	<div class="col-sm-4 col-md-3">
+    		{{ form_row(edit_form.inheritZielgruppenMeta) }}
+    	</div>
+    	<div class="col-sm-4 col-md-3">
+    		{{ form_row(edit_form.inheritZielgruppenGroup) }}
+    	</div>
+     </div>
+
+
+ </fieldset>
+<hr>
+<div class="row">
+	  <div class="col-6">
+	  	{{ form_row(edit_form.submit) }}
+	  </div>
+	  <div class="col-6">
+	  	{{ form_row(edit_form.reset) }}
+	  </div>
+</div>
+{{ form_row(edit_form._token) }}
+{{ form_end(edit_form, {'render_rest': false}) }}
+
+{% endblock body %}
+{% block javascript_onload %}
+	{% if entity.inheritMeta != 1 and entity.inheritGroup != 1 %}
+	if(rubrikCount == 0){
+		addField();
+		addField();
+		addField();
+		addField();
+	}
+	(function() {
+		var btn = document.getElementById('add-rubrik');
+		if (!btn) return;
+		btn.addEventListener('click', function(e) {
+			e.preventDefault();
+			addField();
+		});
+	})();
+	{% endif %}
+
+    {% if zielgruppe %}
+        {% if entity.inheritZielgruppenMeta != 1 and entity.inheritZielgruppenGroup != 1 %}
+			if(zielgruppenCount == 0){
+				addZielgruppenField();
+				addZielgruppenField();
+				addZielgruppenField();
+				addZielgruppenField();
+			}
+			(function() {
+				var btn = document.getElementById('add-zielgruppe');
+				if (!btn) return;
+				btn.addEventListener('click', function(e) {
+					e.preventDefault();
+					addZielgruppenField();
+				});
+			})();
+		{% endif %}
+    {% endif %}
+
+
+{% endblock javascript_onload %}
+{% block javascript_functions %}
+    {% if entity.inheritMeta != 1 and entity.inheritGroup != 1 %}
+	function addField(){
+            var rubrikList = document.getElementById('rubrik-fields-list');
+            if (!rubrikList) return null;
+            var newWidget = rubrikList.getAttribute('data-prototype');
+            newWidget = newWidget.replace(/__name__/g, parseInt(rubrikCount, 10));
+            rubrikCount++;
+            var newLi = document.createElement('div');
+            newLi.className = 'col-12 col-sm-4 col-md-3';
+            newLi.style.marginBottom = '10px';
+            newLi.innerHTML = newWidget;
+            rubrikList.appendChild(newLi);
+            return newLi;
+        }
+    {% endif %}
+    {% if zielgruppe %}
+        {% if entity.inheritZielgruppenMeta != 1 and entity.inheritZielgruppenGroup != 1 %}
+            function addZielgruppenField(){
+                var zielgruppenList = document.getElementById('zielgruppe-fields-list');
+                if (!zielgruppenList) return null;
+                var newWidgetZielgruppen = zielgruppenList.getAttribute('data-prototype');
+                newWidgetZielgruppen = newWidgetZielgruppen.replace(/__name__/g, parseInt(zielgruppenCount, 10));
+                zielgruppenCount++;
+                var newLi = document.createElement('div');
+                newLi.className = 'col-12 col-sm-4 col-md-3';
+                newLi.style.marginBottom = '10px';
+                newLi.innerHTML = newWidgetZielgruppen;
+                zielgruppenList.appendChild(newLi);
+                return newLi;
+            }
+        {% endif %}
+    {% endif %}
+
+{% endblock javascript_functions %}
+{% block javascript_var %}
+	var rubrikCount = '{{ edit_form.rubriken|length }}';
+        var zielgruppenCount = '{{ edit_form.zielgruppen|length }}';
+{% endblock javascript_var %}
+

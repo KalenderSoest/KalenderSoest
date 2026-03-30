@@ -1,0 +1,69 @@
+<div class="back-to-list"><a href="{{ url('news_fe', { kid: konf.id }) }}" data-dfx-news-list="1" data-dfx-ajax-url="{{ datefix_url }}/js/news/{{ konf.id }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+<h2>{{ 'Artikel als als E-Mail verschicken'|trans }}</h2>
+<h3>{{ artikel.titel }}, {{ artikel.datumInput|date('d.m.Y') }} }}</h3>
+{% if error is defined %}
+ <p class="bg-danger">{{ error }}</p>
+{% endif %}
+{{ form_start(form) }}
+ <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.sendNachname) }}
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    	 {{ form_row(form.sendVorname) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.sendEmail) }}
+    	</div>
+    	<div class="col-sm-4 col-md-6">
+    	 	{{ form_row(form.empfEmail) }}
+    	</div>
+   </div>
+   <div class="row">
+    	<div class="col-sm-12">
+    		{{ form_row(form.kommentar) }}
+    	</div>
+   </div>
+   <div id="cCode" class="row">
+    	<div class="col-sm-12 col-md-3">
+    	   <label class="required" for="form_code">{{ 'sicherheitscode'|trans }}</label>
+    		{{ code.code|raw }}{{ form_row(form.cCode) }}
+    	</div>
+    	<div id="cCodeStatus" class="col-sm-12 col-md-6">
+    	   
+    	</div>
+   </div>
+   {{ form_row(form.key) }}
+   <div class="row" style="margin-bottom: 20px">
+        <div class="col-1">
+               {{ form_row(form.datenschutz) }}
+        </div>
+        <div class="col-11" style="padding-top: 10px">
+              {{ 'datenschutz_1'|trans }} ( <a class="dfx-nojson" href="{{ konf.datenschutzUrl }}" target="_blank">{{ 'datenschutz_linktext'|trans }}</a> ) {{ 'datenschutz_2'|trans }}
+        </div>
+    </div>
+   <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.submit) }}
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.reset) }}
+    	</div>
+    </div>
+{{ form_row(form._token) }}
+{{ form_end(form, {'render_rest': false}) }}
+<hr>
+<p>{{ 'rechtshinweis mail'|trans }}</p>
+<p>{{ 'datenschutz mail'|trans }}</p>
+<hr>
+<div class="row">
+    	<div class="col-12 col-sm-6">
+    		<a href="{{ url('news_fe', { kid: konf.id }) }}" data-dfx-news-list="1" data-dfx-ajax-url="{{ datefix_url }}/js/news/{{ konf.id }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a>
+    	</div>
+    	<div class="col-12 col-sm-6 text-right">
+    		{{'pflichtfelder'|trans}}
+    	</div>
+</div>
+<div id="dfx_konf" data-tpl="form" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="0" style="display: none"></div>

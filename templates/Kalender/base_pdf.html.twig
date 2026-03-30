@@ -1,0 +1,103 @@
+{% block dfx_termine %}
+	{% set konf = termin.datefix %}
+	{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+	{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+	{% set tz = konf.trennzeichen %}
+	{% set daynr =  termin.datumVon|date('w') %}
+	{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+	{% set daynr =  termin.datumVon|date('w') %}
+	{% set daynrto =  termin.datum|date('w') %}
+	{% set monthnr =  termin.datumVon|date('n') %}
+	{% set monthnrto =  termin.datum|date('n') %}
+	{% if termin.datum == termin.datumVon %}
+		{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+	{% else %}
+		{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+	{% endif %}
+	{% set strMetadate = termin.datumVon|date('Y-m-d') %}
+	{% set strMetadate = termin.zeit != NULL ? '<meta content="' ~ strMetadate ~ 'T' ~ termin.zeit|date('H:i') ~ '" itemprop="startDate">' : '<meta content="' ~ strMetadate ~ '" itemprop="startDate">' %}
+
+	{% set strTime = termin.zeit != NULL ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+	{% set strTime = termin.zeitBis != NULL ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+	{% set strLokalText =  termin.lokal is not null ? termin.lokal : null%}
+	{%  if termin.lokal is not null %}
+		{% set strLokal = termin.idLocation is not null ? '<a href ="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('location_show', { 'id': termin.idLocation.id } ) ~ '">' ~ termin.lokal ~ '</a>' : termin.lokal  %}
+		{%  if termin.idLocation is not null %}
+	    	{% set strLocationKom = termin.idLocation.telefon != NULL ? "#{'<br />' ~ 'telefon'|trans ~ ': ' ~ termin.idLocation.telefon}" : NULL %}
+			{% set strLocationKom = termin.idLocation.email != NULL ? strLocationKom ~ '<br /><a href="mailto:' ~ termin.idLocation.email ~ '">' ~ termin.idLocation.email ~ '</a>' : strLocationKom %}
+			{% set strLocationKom = termin.idLocation.www != NULL ? strLocationKom ~ '<br /> <a href="' ~ termin.idLocation.www ~ '">' ~ termin.idLocation.www ~ '</a>' : strLocationKom %}
+		{%  else %}
+			{%  set strLocationKom = NULL %}
+		{%  endif %}
+	{%  elseif termin.idLocation is not null and konf.showLokal == 1 %}
+		{% set strLokal = '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('location_show', { 'id': termin.idLocation.id } ) ~ '">' ~ termin.idLocation.name ~ '</a>' %}
+		{% set strLocationKom = termin.idLocation.telefon != NULL ? "#{'<br />' ~ 'telefon'|trans ~ ': ' ~ termin.idLocation.telefon}" : NULL %}
+		{% set strLocationKom = termin.idLocation.email != NULL ? strLocationKom ~ '<br /><a href="mailto:' ~ termin.idLocation.email ~ '">' ~ termin.idLocation.email ~ '</a>' : strLocationKom %}
+		{% set strLocationKom = termin.idLocation.www != NULL ? strLocationKom ~ '<br /> <a href="' ~ termin.idLocation.www ~ '" target="_blank">' ~ termin.idLocation.www ~ '</a>' : strLocationKom %}
+		{% set strLokalText = termin.idLocation.name  %}
+	{% else %}
+		{% set strLokal = NULL %}
+		{% set strLokalText = NULL %}
+		{%  set strLocationKom = NULL %}
+	{% endif %}
+	{%  if termin.lokalStrasse and konf.showStrasse == 1 %}
+		{% set strStrasse =  termin.lokalStrasse %}
+	{%  else %}
+		{% set strStrasse = NULL %}
+	{%  endif %}
+	{%  if termin.ort %}
+		{% if termin.plz %}
+			{% set strOrt = termin.plz  ~ " " ~ termin.ort %}
+		{% else %}
+			{% set strOrt =termin.ort %}
+		{% endif %}
+	{%  else %}
+		{% set strOrt = NULL %}
+	{%  endif %}
+	{%  if termin.veranstalter is defined %}
+		{% set strVeranstalter = termin.idVeranstalter.id is defined ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('veranstalter_show', { 'id': termin.idVeranstalter.id } ) ~ '">' ~ termin.veranstalter ~ '</a>' : "#{ termin.veranstalter }" %}
+		{% if termin.idVeranstalter.id is defined %}
+			{% set strVeranstalterAdr = termin.idVeranstalter.strasse != NULL ? "#{'<br />' ~ termin.idVeranstalter.strasse}" : NULL %}
+			{% set strVeranstalterAdr = termin.idVeranstalter.ort != NULL ? "#{strVeranstalterAdr ~ '<br />' ~ termin.idVeranstalter.plz ~ ' ' ~ termin.idVeranstalter.ort}" : strVeranstalterAdr %}
+			{% set strVeranstalterKom = termin.idVeranstalter.telefon != NULL ? "#{'<br />' ~ 'telefon'|trans ~ ': ' ~ termin.idVeranstalter.telefon}" : NULL %}
+			{% set strVeranstalterKom = termin.idVeranstalter.email != NULL ? strVeranstalterKom ~ '<br /><a href="mailto:' ~ termin.idVeranstalter.email ~ '">' ~ termin.idVeranstalter.email ~ '</a>' : strVeranstalterKom %}
+			{% set strVeranstalterKom = termin.idVeranstalter.www != NULL ? strVeranstalterKom ~ '<br /><a href="' ~ termin.idVeranstalter.www ~ '" target="_blank">' ~ termin.idVeranstalter.www ~ '</a>' : strVeranstalterKom  %}
+		{%  else %}
+			{%  set strVeranstalterAdr = NULL %}
+			{%  set strVeranstalterKom = NULL %}
+		{%  endif %}
+
+	{% else %}
+		{% set strVeranstalter = NULL %}
+	{% endif %}
+    {% set strLogo = konf.imgLogo is not null ? '<img class="pdf-logo" src="'  ~   kernelProjectDir ~ '/web/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo ~ '" />':NULL %}
+    {% set strLogoUrl = konf.imgLogo is not null ? '<img class="pdf-logo" src="'  ~ absolute_url(asset('/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo)) ~ '" />':NULL %}
+	{% set strAdresse = konf.adresse is not null ? konf.adresse|nl2br : NULL %}
+	{% set detailbild = {"thumbnail": {"size": [konf.imgWidth,konf.imgHeight] }} %}
+	{% if termin.img != NULL %}
+		{% set strImg = '<img class="dfx-image dfx-detail-image" src="'  ~ kernelProjectDir ~ '/web/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img  ~ '" />' %}
+        {% set strImgUrl = '<img class="dfx-image dfx-detail-image" src="' ~ absolute_url(asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img)) ~ '" />' %}
+	{% else %}
+		{% set strImg = NULL %}
+	{%  endif %}
+	{% set strImg = termin.imgtext is not null ? strImg  ~ '<p class="pdf-bu">' ~ termin.imgtext  ~ '</p>' : strImg %}
+    {% set strImgUrl = termin.imgtext is not null ? strImgUrl  ~ '<p class="pdf-bu">' ~ termin.imgtext  ~ '</p>' : strImgUrl %}
+
+	{% set strLead = termin.lead is not null ? termin.lead : "" %}
+	{% set strText = termin.beschreibung is not null ? termin.beschreibung : null %}
+	{% set strEintritt = termin.eintritt is not null ? termin.eintritt : null %}
+
+	{% set ticketlink = termin.ticketlink is not null ? 'karten'|trans ~ ': <a href="' ~ termin.ticketlink   ~ '">' ~ termin.ticketlink   ~ '</a>': NULL %}
+	{% set ticketlink2 = termin.mailTyp == 'karten' ? 'karten'|trans ~ ': <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ ' ">' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id, 'kid': konf.id } ) ~ '</a>' : null %}
+	{% set anmeldelink = termin.mailTyp == 'anmeldung' ? 'anmelden'|trans ~ ': <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '">' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id, 'kid': konf.id } ) ~ '</a>' : null %}
+
+
+	{% if termin.pdf is not null %}
+		{% set pdfInfo =  'pdf download'|trans ~ ': <a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ termin.pdf ~'">' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ termin.pdf ~'</a>' %}
+	{%  else %}
+		{% set pdfInfo =  NULL %}
+	{%  endif %}
+	{% set infolink = termin.link is not null ? 'Weitere Informationen'|trans  ~ ': <a href = "' ~ termin.link  ~ '">' ~ termin.link ~ '</a>' : NULL %}
+
+	{{ block('dfx_termin_detail') }}
+{% endblock %}

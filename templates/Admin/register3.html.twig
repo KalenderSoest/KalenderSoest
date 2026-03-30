@@ -1,0 +1,46 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title %}Veranstaltungskalender anlegen :: Datefix - Veranstaltungskalender{% endblock %}
+{% block body -%} 
+<!-- Page Content -->
+    <div class="container">
+
+        <!-- Page Heading/Breadcrumbs -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="mb-3 pb-2 border-bottom">Veranstaltungskalender anlegen
+                    <small></small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('home') }}">Startseite</a>
+                    </li>
+                    <li class="active">Registrierung abgeschlossen</li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+		<h2>Registrierung abgeschlossen, Account angelegt</h2>
+        <!-- Content Row -->
+        <div class="row">
+	    	<div class="col-sm-12 col-md-7">
+	    	
+	    	<h4>Ihre Login-Daten:</h4>
+	    	{% if msg is defined %}
+	    		<p>Importbericht: {{ msg }}</p>
+	    	{% endif %}
+		    	<p>Usernummer: <strong>{{ user.username }}</strong></p>
+		    	<p>Passwort: Das von Ihnen gewählte Passwort</p>
+		    	<p><a href="{{ path('app_login') }}" target="_blank">Zum Login</a></p>
+		    	<p>Hier geht es zum Kalender in einer neutralen Umgebung: <a href="{{ path('kalender_fe', { 'kid': user.datefix.id }) }}" target="_blank">Zum Kalender</a></p>
+		    <h4>Einbau</h4>
+		        <p>Fügen Sie folgenden Code an der Stelle in Ihrer Internetseite ein, an der der Kalender stehen soll:</p>
+		    	<p><textarea rows="2" class="form-control" readonly="">
+&lt;script id=&quot;dfx&quot; data-kid=&quot;{{ user.datefix.id }}&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_ajax.js&quot;&gt;&lt;/script&gt;
+&lt;div id=&quot;datefix&quot;&gt;&lt;/div&gt;</textarea><form></form></p>
+		    	<p>Sofern Sie Zugriff auf den Header- oder den Footer-Bereich Ihrer Seite haben, sollten Sie den Javascript-Einbindung (erste Zeile) dort vornehmen. Die zweite Zeile muss an der Stelle stehen, an der der Kalender erscheinen soll. Er füllt immer die gesamte Breite des umschließenden Elements aus.  </p>
+		    	<h5>Alternativer Aufruf</h5>
+		    	<p>Ihr Kalender ist alternativ auch unter der Adresse <a href="{{ url('kalender_fe', { 'kid': user.datefix.id }) }}" target="_blank">{{ url('kalender_fe', { 'kid': user.datefix.id }) }}</a> erreichbar und kann so auch in einem Iframe eingebunden werden.</p>
+		    	
+         	</div>
+         	
+        </div>
+{%  endblock %}

@@ -1,0 +1,42 @@
+{% extends 'Kalender/' ~ custom ~ 'termine.html.twig' %}
+{% block dfx_termin %}	
+<div itemscope itemtype="http://schema.org/Event" class="fx-raster">
+	<div class="row">
+            <div itemprop="name" class="col-9 col-md-10"><h4 class="dfx-titel-liste-kompakt">{{ titel|raw }}</h4></div>
+            <div class="col-3 col-md-2 text-right">{{ rowInfo|raw }}  {{ printLinks|raw }}</div>
+            {% if termin.subtitel != NULL %}
+                <div class="col-12 dfx-detail-subtitel">{{'subtitel-fe'|trans}}{{ termin.subtitel }} </div>
+            {% endif %}
+	</div>
+	<div class="row">
+    {% if termin.img !=NULL %}
+	<div itemprop="image" class="col-12 col-sm-6">
+   		{{ strImgPrev|raw }}
+   	</div>
+   	<div class="col-12 col-sm-6">
+   	{% else %}
+   	<div class="col-12">
+   	{% endif %}
+   		 <div>
+			{% if strDate !='' %}<span class="dfx-datum-liste">{{ strDate }}</span>{% endif %}{% if strTime !='' %}<span class="dfx-zeit-liste">{% if strDate !='' %}{{ tz }}{% endif %} {{ strTime }}</span>{% endif %}{{ strMetadate|raw }}<br>
+			<div itemprop="location" itemscope itemtype="http://schema.org/Place">
+			    {% if strLokal !='' %}<span itemprop="name" class="dfx-lokal-liste">{{ strLokal|raw }}</span><br />{% endif %}
+			    {% if strOrt !='' or strStrasse !='' %}
+			     	<span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+			        {% if strOrt !='' %}<span class="dfx-ort">{{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="dfx-strasse">, {{ strStrasse|raw }}</span>{% endif %} {{ strMapLink|raw }}
+			        </span>
+			    {% endif %}
+			    {{ strGeoItemprop|raw }}
+			</div>
+		 	{% if strText !='' %}<div itemprop="description" class="dfx-text">{{ strText|raw }}</div>{% endif %}
+			{% if strEintritt !='' %}<div class="dfx-eintritt">{{'eintritt'|trans}}: {{ strEintritt|raw }}</div>{% endif %}
+   			{% if strVeranstalter !='' %}<div class="dfx-veranstalter">{{'veranstalter'|trans}}: {{ strVeranstalter|raw }}</div>{% endif %}
+   			{% if rowSocial !='' %}<div class="dfx-social">{{ rowSocial|raw }}</div>{%  endif %}
+	   		 
+	   		</div>
+		</div>
+	</div>
+	{{ strMapWindow|raw }}
+	{{ strMapClose|raw }}
+</div>
+{%  endblock %}

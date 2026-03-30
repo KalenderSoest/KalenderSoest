@@ -1,0 +1,58 @@
+{% extends 'News/news_solo.html.twig' %}
+{% block dfx_news %}
+    <style type="text/css">
+        {{ konf.boxCss }}
+    </style>
+    <div id="dfx-newsbox">
+    {% set frontendBaseUrl = konf.boxTerminUrl ?: datefix.frontendUrl %}
+    {% set frontendUrlQ = '?' in frontendBaseUrl ? frontendBaseUrl ~ '&' : frontendBaseUrl ~ '?' %}
+    {% if artikel|length > 0 %}
+        {% for news in artikel %}
+            {% if konf.boxImage and news.img is not null %}
+                {% set imageHtml = '<div class="dfx-newsbox-image-wrap"><img class="dfx-newsbox-image" src="' ~ asset('/images/dfx/' ~ news.datefix.id ~ '/' ~ news.img) | imagine_filter('thumb') ~ '" alt="' ~ news.titel|default('')|e('html_attr') ~ '" /></div>' %}
+            {% else %}
+                {% set imageHtml = null %}
+            {% endif %}
+
+            {% if konf.boxSubtitel == 1 and news.subtitel is not null %}
+                {% set subtitel = '<div class="dfx-newsbox-subtitel">' ~ news.subtitel ~ '</div>' %}
+            {% else %}
+                {% set subtitel = null %}
+            {% endif %}
+
+            {% if konf.boxLead == 1 %}
+                {% set strText = news.kurztext is not null ? '<div class="dfx-newsbox-lead">' ~ news.kurztext|nl2br ~ '</div>' : null %}
+            {% elseif konf.boxBeschreibung == 1 %}
+                {% set strText = news.beschreibung is not null ? '<div class="dfx-newsbox-lead">' ~ news.beschreibung|raw ~ '</div>' : null %}
+            {% else %}
+                {% set strText = null %}
+            {% endif %}
+
+            {% set meta = [] %}
+            {% if konf.boxDatum and news.datumInput is not null %}
+                {% set meta = meta|merge(['<span class="dfx-newsbox-datum">' ~ news.datumInput|date('d.m.Y') ~ '</span>']) %}
+            {% endif %}
+            {% if konf.boxVeranstalter and news.autor is not null %}
+                {% set meta = meta|merge(['<span class="dfx-newsbox-autor">' ~ news.autor ~ '</span>']) %}
+            {% endif %}
+
+            <article class="dfx-newsbox-item">
+                {{ imageHtml|raw }}
+                {% if meta|length > 0 %}
+                    <div class="dfx-newsbox-meta">{{ meta|join(' | ')|raw }}</div>
+                {% endif %}
+                {% if konf.boxTitel %}
+                    <div class="dfx-newsbox-titel">{{ news.titel }}</div>
+                {% endif %}
+                {{ subtitel|raw }}
+                {{ strText|raw }}
+                <div class="dfx-newsbox-mehr"><a href="{{ frontendUrlQ }}nfxid={{ news.id }}"{% if konf.boxTarget %} target="{{ konf.boxTarget }}"{% endif %}>{{ 'mehr'|trans }}</a></div>
+                <hr class="dfx-trennlinie">
+            </article>
+        {% endfor %}
+        <div class="dfx-newsbox-alle"><a href="{{ frontendBaseUrl }}"{% if konf.boxTarget %} target="{{ konf.boxTarget }}"{% endif %}>{{ 'Alle Artikel'|trans }}</a></div>
+    {% else %}
+        <div class="dfx-newsbox-text">{{ 'keine Artikel'|trans }}</div>
+    {% endif %}
+    </div>
+{% endblock %}

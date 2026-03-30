@@ -1,0 +1,395 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Artikel' %}
+{% block pageheader 'Artikel / Seiten' %}
+{% block subheader 'Listenansicht' %}
+
+
+{% block body -%}
+{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+
+{% block dfx_nav_filter_top %}
+		<a href="{{ path('artikel_new') }}">Artikel hinzufügen</a>
+		<hr>
+		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+		<div class="row">
+		 	<div class="col-sm-6 col-md-3">
+		  		{{ form_row(filter_form.datum_von) }}
+		 	</div>
+		  	<div class="col-sm-6 col-md-3">
+		  		{{ form_row(filter_form.datum_bis) }}
+		  	</div>
+		  	<div class="col-sm-12 col-md-3">
+		  		{{ form_row(filter_form.rubrik) }}
+		 	</div>
+            {% if zielgruppe %}
+                <div class="col-sm-12 col-md-3">
+                        {{ form_row(filter_form.zielgruppe) }}
+                </div>
+            {% endif %}
+                        
+		</div>
+		<div class="row">
+			<div class="col-sm-12 col-md-6">
+		  		{{ form_row(filter_form.suche) }}
+		  	</div>
+		    
+		</div>
+		
+	{% if is_granted('ROLE_DFX_META') or is_granted('ROLE_DFX_GROUP') %}
+	<fieldset>
+    	<legend>Filter für Meta- und Gruppenaccounts</legend>
+		<div class="row">
+		  	<div class="col-sm-6 col-md-6 ">
+		  		{{ form_row(filter_form.hideSub) }}
+		  	</div>
+		  	<div class="col-sm-6 col-md-6">
+		  		{{ form_row(filter_form.filterPub) }}
+		  	</div>
+		</div>
+	</fieldset>	
+	{% endif %}
+		<div class="row">
+		  <div class="col-6 col-sm-4 col-md-4">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div class="col-6 col-sm-4 col-md-4">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		</div>
+        {{ form_row(filter_form._token) }}
+        {{ form_end(filter_form, {render_rest: false}) }}
+        {% if filter != ''%}
+            <hr>
+            <div class="row alert-info" style="padding: 10px; margin: 20px 0">
+                <div class="col-12 col-sm-10">{{ filter|raw }} </div>
+                <div class="col-12 col-sm-2"><input id="filterreset" value="Filter löschen" class="btn btn-secondary form-control" type="button"></div>
+            </div>
+        {% endif %}
+{% endblock %}
+<hr>
+<a href="{{ path('artikel_new') }}">Artikel hinzufügen</a>
+<hr>
+<h4>Veröffentlichte Artikel</h4>
+{%  if news.getTotalItemCount == 0 %}
+            Keine veröffentlichten Artikel gefunden	
+{% else %}
+
+<form action="{{ path('news_delete_liste') }}" method="POST">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Titel</th>
+                <th>Pub</th>
+                {% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
+                    <th>PubMeta</th>
+                {% endif %}
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                    <th>PubGroup</th>
+                {% endif %}
+                <th colspan="3">Actions/Aufrufe</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>PDF</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {%  if news is not defined %}
+            Keine Artikel gefunden	
+        {% endif %}
+		{% for artikel in news %}
+			{% set strDate =  artikel.datumInput|date('d.m.Y') %}
+			 <tr>
+                <td><input type="checkbox" name="deleteList[]" class="checkall" value="{{ artikel.id }}" id="checkbox_{{ artikel.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ artikel.titel|raw }} </td>
+                <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz deaktivieren" href="{{ path('news_unpub', { 'id': artikel.id }) }}"><i class="fa-solid fa-eye"> </i></a>{%  endif %}</td>
+                {% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
+                	<td class="pub" id="meta_{{ artikel.id }}_{{ artikel.pubMeta }}"
+						data-state="{{ artikel.pubMeta ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('news_unpubmeta', { 'id': artikel.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('news_pubmeta', { 'id': artikel.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if artikel.pubMeta == 1 %}<a href="{{ path('news_unpubmeta', { 'id': artikel.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('news_pubmeta', { 'id': artikel.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif %} 
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                	<td class="pub" id="group_{{ artikel.id }}_{{ artikel.pubGroup }}"
+						data-state="{{ artikel.pubGroup ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('news_unpubgroup', { 'id': artikel.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('news_pubgroup', { 'id': artikel.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if artikel.pubGroup == 1 %}<a href="{{ path('news_unpubgroup', { 'id': artikel.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('news_pubgroup', { 'id': artikel.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif%}
+				<td><a href="{{ path('news_edit', { 'id': artikel.id }) }}" title="Datensatz {{ artikel.titel }} bearbeiten"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+				<td><a class="delete" title="Datensatz {{ artikel.titel }} löschen" href="{{ path('news_delete', { 'id': artikel.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+                <td>{{ artikel.counter }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                     <td><a href="{{ path('news_pdf', { 'id': artikel.id }) }}" title="PDF erzeugen"><i class="fa-solid fa-file-pdf"> </i></a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <input type="submit" value="Markierte Einträge löschen" title="Markierte Einträge löschen" class="delete">
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(news) }}
+	</div>
+	{% endif %}
+	<hr>
+    <a href="{{ path('artikel_new') }}">Artikel hinzufügen</a>
+    <hr>
+    <h4>Unveröffentlichte Artikel ab heute</h4>
+    {%  if news2.getTotalItemCount == 0 %}
+            Keine unveröffentlichten Artikel gefunden	
+    {% else %}
+    <form action="{{ path('news_delete_liste') }}" method="POST">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Titel</th>
+                <th>Pub</th>
+            	{% if is_granted('ROLE_DFX_META') %}
+            		<th>PubMeta</th>
+            	{% endif %}
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            		<th>PubGroup</th>
+            	{% endif %}
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+		{% for artikel in news2 %}
+            {% set strDate =  artikel.datumInput|date('d.m.Y') %}
+		    	
+            <tr>
+                <td><input type="checkbox" name="deleteList[]" class="checkall" value="{{ artikel.id }}" id="checkbox_{{ artikel.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ artikel.titel|raw }} </td>
+                <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz veröffentlichen" href="{{ path('news_pub', { 'id': artikel.id }) }}"><i class="fa-solid fa-eye-slash"> </i></a>{% endif %}</td>
+		{% if is_granted('ROLE_DFX_META') %}
+                	<td class="pub" id="meta_{{ artikel.id }}_{{ artikel.pubMeta }}"
+						data-state="{{ artikel.pubMeta ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('news_unpubmeta', { 'id': artikel.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('news_pubmeta', { 'id': artikel.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if artikel.pubMeta == 1 %}<a href="{{ path('news_unpubmeta', { 'id': artikel.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('news_pubmeta', { 'id': artikel.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif %} 
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                	<td class="pub" id="group_{{ artikel.id }}_{{ artikel.pubGroup }}"
+						data-state="{{ artikel.pubGroup ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('news_unpubgroup', { 'id': artikel.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('news_pubgroup', { 'id': artikel.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if artikel.pubGroup == 1 %}<a href="{{ path('news_unpubgroup', { 'id': artikel.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('news_pubgroup', { 'id': artikel.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif%}
+				<td><a title="Datensatz bearbeiten" href="{{ path('news_edit', { 'id': artikel.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+				<td><a class="delete" title="Datensatz {{ artikel.titel }} löschen" href="{{ path('news_delete', { 'id': artikel.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <input type="submit" value="Markierte Einträge löschen" title="Markierte Einträge löschen" class="delete">
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(news2) }}
+	</div>
+	{% endif %}
+	{% if is_granted('ROLE_DFX_META') %}
+	<hr>
+    <h4>Artikel ohne Entscheidung über Meta-Status</h4>
+    {%  if newsMeta.getTotalItemCount == 0 %}
+            Keine Artikel mit offenem Meta-Status gefunden	
+    {% else %}   
+    <table class="table table-striped">
+       <thead>
+            <tr>
+            	<th>Datum</th>
+            	<th>Titel</th>
+            	{% if is_granted('ROLE_DFX_META') %}
+            		<th>PubMeta</th>
+            	{% endif %}
+            	<th colspan="3">Actions/Aufrufe</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>PDF</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        
+		{% for artikel in newsMeta %}
+        {% set strDate =  artikel.datumInput|date('d.m.Y') %}
+        <tr>
+                <td>{{ strDate }}</td>
+                <td>{{ artikel.titel|raw }} </td>
+                {% if is_granted('ROLE_DFX_META') %}
+                	<td class="pub" id="meta_{{ artikel.id }}_{{ artikel.pubMeta }}"
+						data-state="{{ artikel.pubMeta ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('news_unpubmeta', { 'id': artikel.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('news_pubmeta', { 'id': artikel.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if artikel.pubMeta == 1 %}<a href="{{ path('news_unpubmeta', { 'id': artikel.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('news_pubmeta', { 'id': artikel.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif %}
+               
+				<td><a title="Datensatz bearbeiten" href="{{ path('news_edit', { 'id': artikel.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ artikel.titel }} löschen" href="{{ path('news_delete', { 'id': artikel.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+                <td>{{ artikel.counter }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td><a href="{{ path('news_pdf', { 'id': artikel.id }) }}" title="PDF erzeugen"><i class="fa-solid fa-file-pdf"> </i></a></td>
+
+                {% endif %}
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+    	{{ knp_pagination_render(newsMeta) }}
+	</div>
+	{%  endif %}
+	
+	<hr>
+	{%  endif %}
+	
+	
+    {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+	<hr>
+    <h4>Artikel ohne Entscheidung über Group-Status</h4>
+    {%  if newsGroup.getTotalItemCount == 0 %}
+            Keine Artikel mit offenem Group-Status gefunden	
+    {% else %}   
+    <table class="table table-striped">
+       <thead>
+            <tr>
+            	<th>Datum</th>
+            	<th>Titel</th>
+            	{% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            		<th>PubGroup</th>
+            	{% endif %}
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+		{% for artikel in newsGroup %}
+        {% set strDate =  artikel.datumInput|date('d.m.Y') %}
+		    	
+            <tr>
+                <td>{{ strDate }}</td>
+                <td>{{ artikel.titel|raw }} </td>
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                	<td class="pub" id="group_{{ artikel.id }}_{{ artikel.pubGroup }}"
+						data-state="{{ artikel.pubGroup ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('news_unpubgroup', { 'id': artikel.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('news_pubgroup', { 'id': artikel.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if artikel.pubGroup == 1 %}<a href="{{ path('news_unpubgroup', { 'id': artikel.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('news_pubgroup', { 'id': artikel.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif%}
+				<td><a title="Datensatz bearbeiten" href="{{ path('news_edit', { 'id': artikel.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ artikel.titel }} löschen" href="{{ path('news_delete', { 'id': artikel.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+    	{{ knp_pagination_render(newsMeta) }}
+	</div>
+	{%  endif %}
+	
+	<hr>
+	{%  endif %}
+	
+	<h4>Abgelaufene Artikel</h4>
+	 {%  if news3.getTotalItemCount == 0 %}
+            Keine abgelaufenen Artikel gefunden	
+    {% else %}
+    <form action="{{ path('news_delete_liste') }}" method="POST">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Titel</th>
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for artikel in news3 %}
+            {% set strDate =  artikel.datumInput|date('d.m.Y') %}
+            <tr>
+                <td><input type="checkbox" name="deleteList[]" class="checkall" value="{{ artikel.id }}" id="checkbox_{{ artikel.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ artikel.titel|raw }} </td>
+                
+                {%  if artikel.pub == false %}
+                	<td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz veröffentlichen" href="{{ path('news_pub', { 'id': artikel.id }) }}"><i class="fa-solid fa-eye-slash"> </i></a>{% endif %}</td>
+                {%  else %}
+                     <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz deaktivieren" href="{{ path('news_unpub', { 'id': artikel.id }) }}"><i class="fa-solid fa-eye"> </i></a>{%  endif %}</td>
+                {% endif %}          
+				<td><a href="{{ path('news_edit', { 'id': artikel.id }) }}" title="Datensatz {{ artikel.titel }} bearbeiten"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+				<td><a class="delete" title="Datensatz {{ artikel.titel }} löschen" href="{{ path('news_delete', { 'id': artikel.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <input type="submit" value="Markierte Einträge löschen" title="Markierte Einträge löschen" class="delete">
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(news3) }}
+	</div>
+	{% endif %}
+	<hr>
+	<a href="{{ path('artikel_new') }}">Artikel hinzufügen</a>
+	
+{% endblock %}  
+{% block footer %}
+
+{% endblock footer %}
+{% block javascript_onload %}
+    var filterReset = document.getElementById('filterreset');
+    if (filterReset) {
+        filterReset.addEventListener('click', function() {
+            location.href = '/admin/news/reset';
+        });
+    }
+
+    document.addEventListener('click', function(event) {
+        var link = event.target.closest('.pub a');
+        if (!link) {
+            return;
+        }
+
+        event.preventDefault();
+
+        var cell = link.closest('.pub');
+        if (!cell) {
+            return;
+        }
+
+        var state = Number(cell.dataset.state) || 0;
+        var targetUrl = link.getAttribute('href');
+        var prevHtml = cell.innerHTML;
+
+        cell.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        fetch(targetUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(data) {
+                if (data === 'ok') {
+                    var nextState = state === 1 ? 0 : 1;
+                    cell.dataset.state = String(nextState);
+                    cell.innerHTML = nextState === 1 ? (cell.dataset.htmlOn || '') : (cell.dataset.htmlOff || '');
+                    return;
+                }
+
+                cell.innerHTML = 'err';
+            })
+            .catch(function() {
+                cell.innerHTML = prevHtml;
+            });
+    });
+{% endblock %}
+
+
+

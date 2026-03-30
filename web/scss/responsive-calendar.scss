@@ -1,0 +1,95 @@
+.responsive-calendar .controls {
+  text-align: center;
+  line-height: 2;
+}
+.responsive-calendar .controls a {
+  cursor: pointer;
+}
+.responsive-calendar .controls i.fa {
+   margin: 0;
+   line-height: 2;
+}
+
+.responsive-calendar .month-header {
+ 	display: inline-block;
+ 	font-style: normal;
+ 	font-weight: normal;
+ 	line-height: 2;
+ 	position: relative;
+ 	font-size: $font-size-base * 1.2;
+}
+
+.responsive-calendar .day-headers,
+.responsive-calendar .days {
+  font-size: 0;
+}
+.responsive-calendar .day-headers{
+	
+   
+}
+
+.responsive-calendar .rc-header {
+  float:left;
+  font-size: $font-size-base;
+  width: 14.285714285714286%;
+  text-align: center;
+  border-bottom: 1px gray solid;
+}
+
+.responsive-calendar .rc-day {
+  display: inline-block;
+  position: relative;
+  font-size: $font-size-base;
+  width: 14.285714285714286%;
+  text-align: center;
+}
+.responsive-calendar .rc-day a {
+  color: #000000 !important; 
+  display: block;
+  cursor: pointer;
+  text-decoration: none !important;
+  margin: 5%;
+  padding: 15% 0 15% 0;
+  border-radius: $border-radius-base;
+    
+}
+.responsive-calendar .rc-day a:hover {
+  background-color: #eee !important;
+  text-decoration: none !important;
+}
+.responsive-calendar rc-header {
+  
+}
+.responsive-calendar .rc-day.active a {
+  background-color: $dfx-color !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+.responsive-calendar .rc-day.active a:hover {
+  background-color: rgba($dfx-color, 0.7) !important;
+}
+.responsive-calendar .rc-day.active .not-current {
+  background-color: rgba($dfx-color, 0.15) !important;
+  color: #ffffff;
+}
+.responsive-calendar .rc-day.active .not-current:hover {
+  background-color: rgba($dfx-color, 0.3) !important;
+}
+.responsive-calendar .rc-day.not-current a {
+  color: #8a8a8a !important;
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none !important;
+}
+.responsive-calendar .rc-day .badge {
+  border-radius: 0 2px 0 5px;
+    
+    font-weight: bold;
+    padding: 2px 4px;
+    position: absolute;
+    right: -3px;
+    top: -3px;
+    z-index: 1;
+}
+
+

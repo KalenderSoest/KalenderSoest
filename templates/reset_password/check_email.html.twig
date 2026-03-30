@@ -1,0 +1,17 @@
+{% extends 'Admin/base_admin.html.twig' %}
+
+{% block title %}E-Mail zum Zurücksetzen versendet{% endblock %}
+
+{% block body %}
+    <h1>Passwort zurücksetzen</h1>
+
+    <p>
+        Falls ein passendes Benutzerkonto gefunden wurde, ist soeben eine E-Mail mit einem Link zum Zurücksetzen des Passworts versendet worden.
+        Der Link ist {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }} gueltig.
+    </p>
+
+    <p>
+        Wenn keine E-Mail ankommt, pruefen Sie bitte auch den Spam-Ordner oder
+        <a href="{{ path('app_forgot_password_request') }}">starten Sie den Vorgang erneut</a>.
+    </p>
+{% endblock %}

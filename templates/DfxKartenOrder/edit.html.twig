@@ -1,0 +1,78 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% if termin.datum == termin.datumVon %}
+	{% set strDate =  termin.datumVon|date('d.m.Y') %}
+{% else %}	
+	{% set strDate = termin.datumVon|date('d.m.Y') ~ ' bis '|trans ~ termin.datum|date('m.d.Y') %}
+{% endif %}	
+{% set strTime = termin.zeit != NULL ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+{% block title 'Kartenreservierungen' %}
+{% block pageheader 'Kartenreservierung bearbeiten' %}
+{% block subheader "#{ termin.titel|raw ~', ' ~  strDate ~ ' ' ~ strTime }" %}
+
+{% block footer %}
+
+{% endblock footer %}
+
+{% block body -%}
+{% if error is defined %}
+ <p class="bg-danger">{{ error }}</p>
+{% endif %}
+{{ form_start(form) }}
+ <div class="row">
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.nachname) }}
+    	</div>
+    	<div class="col-12 col-sm-6">
+    	 {{ form_row(form.vorname) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.strasse) }}
+    	</div>
+    	<div class="col-sm-4 col-sm-2">
+    	 	{{ form_row(form.plz) }}
+    	</div>
+    	<div class="col-sm-8 col-sm-4">
+    	 	{{ form_row(form.ort) }}
+    	</div>
+   </div>
+    <div class="row">
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.tel) }}
+    	</div>
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.mobil) }}
+    	</div>
+    </div>
+    <div class="row">
+   	    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.email) }}
+    	</div>
+    	   	
+    </div>
+    <div class="row">
+   	 	<div class="col-sm-6 col-sm-3">
+    		{{ form_row(form.anzahl) }}
+    	</div>
+    </div>
+    
+    <div class="row">
+    <div class="col-12">
+    		{{ form_row(form.notiz) }}
+    </div>
+    </div>
+    
+    <div class="row">
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.submit) }}
+    	</div>
+    	<div class="col-12 col-sm-6">
+    		{{ form_row(form.reset) }}
+    	</div>
+    </div>
+	{{ form_row(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+	<hr>
+    <div><a href="{{ path('admin_karten_liste', { 'tid': termin.id })  }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    {%  endblock %}

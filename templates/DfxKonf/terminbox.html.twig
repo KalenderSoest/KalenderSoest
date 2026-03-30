@@ -1,0 +1,70 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Konfiguration Terminbox' %}
+{% block pageheader 'Konfiguration Terminbox' %}
+{% block subheader 'Einstellungen bearbeiten'  %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block body -%}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    <div class="text-danger">{{ form_errors(form) }}</div>
+    {{ form_start(form) }}
+    <div class="row">
+    	<div class="col-3 col-sm-2 col-md-1">
+    		{{ form_row(form.boxItems) }}
+    	</div>
+     </div>
+     <h4>Folgende Felder in Terminbox anzeigen</h4>
+     <div class="row">
+    	<div class="col-12 col-sm-6 col-md-3">
+    		{{ form_row(form.boxDatum) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+    	 {{ form_row(form.boxUhr) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+			{{ form_row(form.boxTitel) }}
+    	</div>
+		 <div class="col-12 col-sm-6 col-md-3">
+			 {{ form_row(form.boxSubtitel) }}
+		 </div>
+    	<div class="col-12 col-sm-6 col-md-3">
+			{{ form_row(form.boxLokal) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-6 col-md-3">
+    		{{ form_row(form.boxOrt) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+    	 {{ form_row(form.boxLead) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+			{{ form_row(form.boxBeschreibung) }}
+    	</div>
+    	<div class="col-12 col-sm-6 col-md-3">
+			{{ form_row(form.boxVeranstalter) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-12 col-sm-12 col-md-6">
+    		{{ form_row(form.boxCss) }}
+    	</div>
+     </div>
+	{{ form_row(form._token) }}
+     <div class="row">
+		  <div class="col-6">
+		  {{ form_row(form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(form.reset) }}
+		  </div>
+		
+	</div>
+
+    <div><br /><a href="{{ path('admin_dfxkonf') }}">Zurück zur Startseite ohne zu speichern</a></div>
+{% endblock body %}
+

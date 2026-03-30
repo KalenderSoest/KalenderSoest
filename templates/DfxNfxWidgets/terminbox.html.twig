@@ -1,0 +1,85 @@
+{% extends 'Kalender/termine_solo.html.twig' %}
+{% block dfx_termine %}
+	<style type="text/css">
+		{{ konf.boxCss }}
+	</style>
+	<div id="dfx-terminbox">
+	{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+	{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+	{% set tz = ' | ' %}
+	{% set frontendUrlQ = '?' in datefix.frontendUrl ? datefix.frontendUrl ~ '&' : datefix.frontendUrl ~ '?' %}
+	{% set rowCount = 0 %}
+	{% if termine|length > 0 %}
+	{% for termin in termine %}
+			
+	        {% set daynr =  termin.datumVon|date('w') %}
+			{% set daynrto =  termin.datum|date('w') %}
+			{% set monthnr =  termin.datumVon|date('n') %}
+			{% set monthnrto =  termin.datum|date('n') %}
+			{% if termin.datum == termin.datumVon %}
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d.m.Y') }" %}
+			{% else %}	
+				{% set strDate =  "#{ termin.datumVon|date('d.m.') }  - #{ termin.datum|date('d.m.Y') }" %}
+			{% endif %}	
+			
+			{% set strMetadate = termin.datumVon|date('Y-m-d') %}
+			{% set strMetadate = termin.zeit != null ? strMetadate ~ 'T' ~ termin.zeit|date('H:i') : strMetadate %}
+			{% set strTime = termin.zeit != null ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+			{% set strTime = termin.zeitBis != null ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+			{% if termin.img != null %}
+				{% set strImgPrev = '<img class="dfx-terminbox-image" src="'~ asset('/images/dfx/' ~ datefix.id ~ '/' ~ termin.img) | imagine_filter('thumb') ~ '" />' %}
+			{% else %}
+				{% set strImgPrev = null %}
+			{%  endif %}
+
+			{% if konf.boxSubtitel == 1 and termin.subtitel is not null %}
+				{%  set subtitel = '<div class="dfx-terminbox-subtitel">' ~ termin.subtitel ~ '</div>'  %}
+			{% else %}
+				{%  set subtitel=null %}
+			{% endif %}
+			
+			
+			{% if konf.boxLead == 1 %}
+				{% set strText = termin.lead is not null ? '<div class="dfx-terminbox-lead">' ~ termin.lead|nl2br ~ '</div>': null %}
+			{% elseif konf.boxBeschreibung == 1 %}
+				{% set strText = termin.beschreibung is not null ? '<div class="dfx-terminbox-lead">' ~ termin.beschreibung|raw ~ '</div>': null %}
+			{% else %}
+				{% set strText = null %}
+			{% endif %}
+				
+			{% if konf.boxOrt == 1 and termin.ort is not null %}
+				{%  set ort= '<span class="dfx-terminbox-ort">' ~ termin.ort ~ '</span>' %}
+				{% set tz = datefix.trennzeichen %}
+			{% else %}
+				{% set ort = null %}
+				{% set tz = null %}
+			{% endif %}
+			
+			{% if konf.boxLokal == 1 and termin.lokal is not null %}
+				{%  set lokal= ort is not null ? ' ' ~ tz ~' <span class="dfx-terminbox-lokal">' ~ termin.lokal ~ '</span>' : ' <span class="dfx-terminbox-lokal">' ~ termin.lokal ~ '</span>'  %}
+			{% else %}
+				{%  set lokal=null %}
+			{% endif %}
+			
+			<article id="" class="dfx-terminbox-item">
+			<div>
+			{% if konf.boxDatum %}<span class="dfx-terminbox-datum">{{ strDate }}</span>{%  endif %}
+			{% if konf.boxUhr %}<span class="dfx-terminbox-zeit"> {{ strTime }}</span>{% endif %}
+			</div>
+				<div class="dfx-terminbox-titel">
+					{{ termin.titel }}
+				</div>
+				<div class="dfx-terminbox-text">
+					{{ ort|raw }}{{ lokal|raw }} 
+				</div>
+				   {{ strText|raw }}
+				<div class="dfx-terminbox-mehr"><a href="{{ frontendUrlQ }}dfxid={{ termin.id }}">{{ 'mehr'|trans }}</a></div>
+				<hr class="dfx-trennlinie">
+			</article>
+	{% endfor %}
+	    <div class="dfx-terminbox-alle"><a href="{{ datefix.frontendUrl }}">{{ 'Alle Veranstaltungen'|trans }}</a></div>
+	{% else %}
+		<div class="dfx-terminbox-text">{{ 'keine Termine'|trans }}</div>
+	{% endif %}
+	</div>
+{% endblock %}

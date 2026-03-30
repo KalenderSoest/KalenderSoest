@@ -1,0 +1,9 @@
+<h1>Passwort zuruecksetzen</h1>
+
+<p>ueber den folgenden Link koennen Sie ein neues Passwort fuer Ihren Datefix-Zugang vergeben:</p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+<p>Der Link ist {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }} gueltig.</p>
+
+<p>Wenn Sie diese Anforderung nicht selbst ausgelöst haben, koennen Sie diese E-Mail ignorieren.</p>

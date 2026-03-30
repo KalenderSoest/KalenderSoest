@@ -1,0 +1,90 @@
+{% extends 'Kalender/' ~ custom ~ 'base_detail.html.twig' %}
+{% block dfx_termin_detail %}		
+{% if konf.dfxTpl == 'block' %}
+   <div itemscope itemtype="http://schema.org/Event">
+{% else %}
+	<div itemscope itemtype="http://schema.org/Event" class="fx-{{ konf.dfxTpl }}">
+{% endif %}
+    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    
+    {% if konf.dfxTpl == 'block' %}
+   		<h3 itemprop="name" class="dfx-titel fx-block">{{ titel|raw }}</h3>
+	{% else %}
+		<h3 itemprop="name" class="dfx-titel">{{ titel|raw }}</h3>
+	{% endif %}
+	{% if termin.subtitel != NULL %}
+		<div class="dfx-detail-subtitel">{{'subtitel-fe'|trans}}{{ termin.subtitel }} </div>
+	{% endif %}
+	{% if strSlider != NULL or strImg != NULL %}
+	<div class="row">
+    		<div class="col-12">
+		    {% if strSlider != NULL %}
+				{{ strSlider|raw }}	
+			{% else %}
+				{{ strImg|raw }}
+			{% endif %}
+		</div>
+    </div>
+    {% endif %}
+    <div class="row">		
+	  <div class="col-12">
+		<p class="dfx-datum-detail"><strong>{{ strDate }}{% if strTime !='' %}{{ tz }}{{ strTime }}{% endif %}{{ strMetadate|raw }}</strong></p>
+		{% if strLocationKom == NULL %}
+		    {% if strLokal !='' %}<p class="dfx-location-detail"><strong><span itemprop="location" class="dfx-lokal-detail">{{ strLokal|raw }}</span>{% endif %}{% if strOrt !='' and strLokal !='' %} {{ tz }} {% endif %}{% if strOrt !='' %}<span class="dfx-ort-detail">  {{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="dfx-strasse-detail">, {{ strStrasse|raw }}</span>{% endif %} {{ strMapLink|raw }}</strong></p>
+		{%  endif %}    
+		{% if strText != NULL %}<div class="dfx-text-detail">{{ strText|raw }}</div>{% endif %}
+	    {% if strEintritt != NULL %}<div class="dfx-eintritt-detail">{{ strEintritt|raw }}</div>{% endif %}
+	    {% if termin.video != NULL %}<div class="dfx-detail-video">{{ termin.video|raw }} </div> {% endif %}
+		{{ strSerie|raw }}
+	</div>
+	</div>
+	{% if strLocationKom !=NULL %}
+    <div class="row">
+		<div class="col-12">
+        	<div class="dfx-detail-zwue-linie">{{ 'veranstaltungsort'|trans }}</div>
+		    {% if strLokal != NULL %}<div itemprop="location" class="dfx-detail-lokal"> {{ strLokal|raw }} </div>{% endif %}
+			{% if strStrasse != NULL %}<div class="dfx-detail-strasse"> {{ strStrasse|raw }}</div>{% endif %}
+			{% if strOrt !=NULL %}<div class="dfx-detail-ort"> {{ strOrt|raw }}</div>{% endif %}
+     		<div class="dfx-detail-location-kom"> {{ strLocationKom|raw }}</div>
+            <br />
+		</div>
+     </div>
+	{% endif %}
+	{% if strVeranstalter != NULL %}
+    <div class="row">
+		<div class="col-12">
+			<div class="dfx-detail-zwue-linie">{{ 'veranstalter'|trans }}</div>
+			<div class="dfx-detail-veranstalter"> {{ strVeranstalter|raw }} </div>
+			{% if strVeranstalterAdr != NULL %}<div class="dfx-detail-veranstalter-adr"> {{ strVeranstalterAdr|raw }}</div>{% endif %}
+			{% if strVeranstalterKom != NULL %}<div class="dfx-detail-veranstalter-kom"> {{ strVeranstalterKom|raw }}</div>{% endif %}
+            <br />
+		</div>
+     </div>
+	{% endif %}
+	{% if infoHeader != NULL %}
+    <div class="row">
+		<div class="col-12">
+			<div class="dfx-detail-zwue-linie">{{ infoHeader|raw }}</div>
+			<div class="dfx-detail-info"> {{ rowInfo|raw }} </div>
+            <br />
+		</div>
+    </div>		
+	{% endif %}
+	{% if socialHeader != NULL %}
+    <div class="row">
+		<div class="col-12">
+			<div class="dfx-detail-zwue-linie">{{socialHeader|raw }}</div>
+			{% if rowSocial != NULL %}<div class="dfx-social">{{ rowSocial|raw }}</div>{%  endif %}
+            <br />
+		</div>
+     </div>			
+	{% endif %}
+	{{ strMapWindow|raw }}
+	{{ strMapClose|raw }}
+	<br />
+	<div class="row dfx-detail-footer">
+		<div class="col-6 back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+		<div class="col-6 text-right">{{ printLinks|raw }}</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxNews" table="pool_dfx_news">
+    <indexes>
+      <index name="kalender_id" columns="kalender_id"/>
+      <index name="user_id" columns="user_id"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+    <field name="datumVon" type="date" column="datum_von" nullable="true"/>
+    <field name="datumBis" type="date" column="datum_bis" nullable="true"/>
+    <field name="rubrik" type="json" column="rubrik" nullable="true"/>
+    <field name="titel"  column="titel" length="255"/>
+    <field name="kurztitel"  column="kurztitel" length="255" nullable="true"/>
+    <field name="menueeintrag" type="boolean" column="menueeintrag" nullable="true"/>
+    <field name="kurztext" type="text" column="kurztext" nullable="true"/>
+    <field name="beschreibung" type="text" column="beschreibung" nullable="true"/>
+    <field name="newsTyp"  column="news_typ" length="100" nullable="true"/>
+    <field name="link"  column="link" length="255" nullable="true"/>
+    <field name="pdf"  column="pdf" length="255" nullable="true"/>
+    <field name="pdflinktext"  column="pdflinktext" length="255" nullable="true"/>
+    <field name="img"  column="img" length="250" nullable="true"/>
+    <field name="img2"  column="img2" length="250" nullable="true"/>
+    <field name="img3"  column="img3" length="250" nullable="true"/>
+    <field name="img4"  column="img4" length="250" nullable="true"/>
+    <field name="img5"  column="img5" length="250" nullable="true"/>
+    <field name="imgtext"  column="imgtext" length="255" nullable="true"/>
+    <field name="imgcopyright"  column="imgcopyright" length="255" nullable="true"/>
+    <field name="imgcopycheck" type="boolean" column="imgcopycheck" nullable="true"/>
+    <field name="imgtext2"  column="imgtext2" length="255" nullable="true"/>
+    <field name="imgcopyright2"  column="imgcopyright2" length="255" nullable="true"/>
+    <field name="imgcopycheck2" type="boolean" column="imgcopycheck2" nullable="true"/>
+    <field name="video" type="text" column="video" nullable="true"/>
+    <field name="pubMeta" type="boolean" column="pub_meta" nullable="true"/>
+    <field name="pubGroup" type="boolean" column="pub_group" nullable="true"/>
+    <field name="pub" type="boolean" column="pub" nullable="true"/>
+    <field name="code"  column="code" length="150" nullable="true"/>
+    <field name="autor"  column="autor" length="50" nullable="true"/>
+    <field name="nlNr" type="integer" column="nl" nullable="true"/>
+    <field name="nlSent" type="boolean" column="nl_sent" nullable="true"/>
+    <field name="reihenfolge" type="integer" column="reihenfolge" nullable="true"/>
+    <field name="counter" type="integer" column="counter" nullable="true"/>
+    <field name="archiv" type="boolean" column="archiv" nullable="true"/>
+    <field name="filter1" type="boolean" column="filter_1" nullable="true"/>
+    <field name="filter2" type="boolean" column="filter_2" nullable="true"/>
+    <field name="filter3" type="boolean" column="filter_3" nullable="true"/>
+    <field name="filter4" type="boolean" column="filter_4" nullable="true"/>
+    <field name="filter5" type="boolean" column="filter_5" nullable="true"/>
+    <field name="text1"  column="text_1" length="256" nullable="true"/>
+    <field name="text2"  column="text_2" length="256" nullable="true"/>
+    <field name="text3"  column="text_3" length="256" nullable="true"/>
+    <field name="text4"  column="text_4" length="256" nullable="true"/>
+    <field name="text5"  column="text_5" length="256" nullable="true"/>
+    <field name="textbox1" type="text" column="textbox_1" nullable="true"/>
+    <field name="textbox2" type="text" column="textbox_2" nullable="true"/>
+    <field name="datumInput" type="datetime" column="datum_input" nullable="true"/>
+    <field name="datumModified" type="datetime" column="datum_modified" nullable="true"/>
+    <many-to-one field="user" target-entity="DfxNfxUser">
+      <join-columns>
+        <join-column name="user_id"  on-delete="SET NULL" />
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="datefix" target-entity="DfxKonf">
+      <join-columns>
+        <join-column name="kalender_id"  on-delete="CASCADE" />
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

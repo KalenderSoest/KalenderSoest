@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxVeranstalter" table="pool_dfx_veranstalter">
+    <indexes>
+      <index name="user_id" columns="user_id"/>
+      <index name="kalender_id" columns="kalender_id"/>
+      <index name="id_location" columns="id_location"/>
+    </indexes>
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+    <field name="name"  column="name" length="255"/>
+    <field name="strasse"  column="strasse" length="100" nullable="true"/>
+    <field name="nat"  column="nat" length="10" nullable="true"/>
+    <field name="plz"  column="plz" length="10" nullable="true"/>
+    <field name="ort"  column="ort" length="100" nullable="true"/>
+    <field name="lg" type="float" column="lg" precision="10" scale="0" nullable="true"/>
+    <field name="bg" type="float" column="bg" precision="10" scale="0" nullable="true"/>
+    <field name="telefon"  column="telefon" length="50" nullable="true"/>
+    <field name="mobil"  column="mobil" length="50" nullable="true"/>
+    <field name="fax"  column="fax" length="50" nullable="true"/>
+    <field name="email"  column="email" length="100" nullable="true"/>
+    <field name="www"  column="www" length="100" nullable="true"/>
+    <field name="ansprech"  column="ansprech" length="255" nullable="true"/>
+    <field name="imgVer"  column="img_ver" length="150" nullable="true"/>
+    <field name="imgVerPos"  column="img_ver_pos" length="15" nullable="true"/>
+    <field name="img2"  column="img2" length="150" nullable="true"/>
+    <field name="img3"  column="img3" length="150" nullable="true"/>
+    <field name="img4"  column="img4" length="150" nullable="true"/>
+    <field name="img5"  column="img5" length="150" nullable="true"/>
+    <field name="imgtext"  column="imgtext" length="255" nullable="true"/>
+    <field name="imgcopyright"  column="imgcopyright" length="255" nullable="true"/>
+    <field name="imgcopycheck" type="boolean" column="imgcopycheck" nullable="true"/>
+    <field name="zusatz" type="text" column="zusatz" nullable="true"/>
+    <field name="extid"  column="extid" length="255" nullable="true"/>
+    <field name="code"  column="code" length="255" nullable="true"/>
+    <field name="filter1" type="boolean" column="filter_1" nullable="true"/>
+    <field name="filter2" type="boolean" column="filter_2" nullable="true"/>
+    <field name="filter3" type="boolean" column="filter_3" nullable="true"/>
+    <field name="filter4" type="boolean" column="filter_4" nullable="true"/>
+    <field name="filter5" type="boolean" column="filter_5" nullable="true"/>
+    <field name="filter6" type="boolean" column="filter_6" nullable="true"/>
+    <field name="filter7" type="boolean" column="filter_7" nullable="true"/>
+    <field name="filter8" type="boolean" column="filter_8" nullable="true"/>
+    <field name="filter9" type="boolean" column="filter_9" nullable="true"/>
+    <field name="filter10" type="boolean" column="filter_10" nullable="true"/>
+    <field name="text1"  column="text_1" length="256" nullable="true"/>
+    <field name="text2"  column="text_2" length="256" nullable="true"/>
+    <field name="text3"  column="text_3" length="256" nullable="true"/>
+    <field name="text4"  column="text_4" length="256" nullable="true"/>
+    <field name="text5"  column="text_5" length="256" nullable="true"/>
+    <field name="text6"  column="text_6" length="256" nullable="true"/>
+    <field name="text7"  column="text_7" length="256" nullable="true"/>
+    <field name="text8"  column="text_8" length="256" nullable="true"/>
+    <field name="text9"  column="text_9" length="256" nullable="true"/>
+    <field name="text10"  column="text_10" length="256" nullable="true"/>
+    <field name="textbox1" type="text" column="textbox_1" nullable="true"/>
+    <field name="textbox2" type="text" column="textbox_2" nullable="true"/>
+    <field name="datumInput" type="datetime" column="datum_input" nullable="true"/>
+    <field name="datumModified" type="datetime" column="datum_modified" nullable="true"/>
+    <many-to-one field="region" target-entity="DfxRegion">
+      <join-columns>
+        <join-column name="id_region"  on-delete="SET NULL" />
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="user" target-entity="DfxNfxUser">
+      <join-columns>
+        <join-column name="user_id"  on-delete="SET NULL"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="idOrt" target-entity="DfxOrte">
+      <join-columns>
+        <join-column name="id_ort"  on-delete="SET NULL" />
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="location" target-entity="DfxLocation">
+      <join-columns>
+        <join-column name="id_location"  on-delete="SET NULL"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="datefix" target-entity="DfxKonf">
+      <join-columns>
+        <join-column name="kalender_id"  on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

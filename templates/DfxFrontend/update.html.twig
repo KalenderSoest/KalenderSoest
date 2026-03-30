@@ -1,0 +1,14 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Update' %}
+{% block pageheader 'Update' %}
+{% block subheader 'Tools' %}
+{% block footer %}{% endblock footer %}
+{% block body -%}
+    <p>Aktualisiere Datenbank nach Update-Upload</p>
+    <p><a href="{{ path('update_daba') }}">Update starten</a></p>
+    <p>Clear cache</p>
+    <p><a href="{{ path('update_clearcache') }}">Clear Cache</a></p>
+{% endblock %} 
+
+
+

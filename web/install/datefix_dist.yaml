@@ -1,0 +1,66 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    datefix_url: #dfxUrl#
+    dfx_version: multi
+    dfx_mail: #dfxMail#
+    metaId: 1
+    zielgruppe: true
+    isTicket: true
+    isSeminar: false
+    PaypalClientId: ~
+    PaypalSecret: ~
+    PaypalDevClientId: ~
+    PaypalDevSecret: ~
+    backend: ~
+    mapkey: ~
+    tileserver: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    mapset: smerc
+    copyright: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+    initbg: 50
+    initlg: 10
+    initzoom: 7
+    html2pdf:
+        orientation: 'P'
+        format: 'A4'
+        lang: 'de'
+        unicode: true
+        encoding: 'UTF-8'
+        margins: [10, 10, 10, 10]
+        default_font: null
+        display_mode: 'fullpage'
+    # Parameter für Optionale Formularobjekte
+    optionsRadio: []
+    optionsMenue: []
+    optionsCheckboxes: []
+    optionsMenueMulti: []
+    # aktivieren für individuelles Admin-Template
+    # backend: custom/
+
+    # Übersetzung geläufige Rubriken in schema.org EventTypes für API - Bei Bedarf anpassen oder ergänzen
+    theater: ['Theater','Bühne']
+    dance: ['Tanz','Tanzen','Balett','Dance']
+    sports: ['Sport']
+    music: ['Musik','Konzert','Konzerte','Oper','Operette','Musical','Rock','Pop','Klassik','Jazz']
+    comedy: ['Kleinkunst','Kabarett','Comedy','Humor']
+    exhibition: ['Ausstellung','Ausstellungen','Kunst']
+    screening: ['Kino','Kinos','Film','Filme']
+    literary: ['Lesung','Literatur']
+    education: ['Vortrag','Vorträge','Seminar','Seminare','Workshop','Workshops','Bildung','Volkshochschule','Vhs', 'VHS']
+    social: ['Politik','Parteien','Verbände','Verbände','Verein','Vereine']
+    business: ['Markt','Märkte','Messe','Messen','Unternehmen','Wirtschaft']
+    festival: ['Stadtfest','Fest','Feste','Festival','Festivals']
+    childrens: ['Kinder','Kids','Jugend','Jugendliche','Kinder & Jugend','Kinder & Jugendliche', 'Kinder&Jugend','Kinder&Jugendliche']
+
+    # Aktuell nicht genutzte Types, bei Verwendung ist auch API anzupassen
+    courseInstance: []
+    delivery: []
+    eventSeries: []
+    food: []
+    hackathon: []
+    publication: []
+    sale: []
+    visualArts: []

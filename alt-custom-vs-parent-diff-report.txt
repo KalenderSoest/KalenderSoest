@@ -1,0 +1,1724 @@
+FILE: Admin/custom/io.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/Admin/custom/io.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/Admin/io.html.twig
+STATUS: different
+--- Admin/io.html.twig
++++ Admin/custom/io.html.twig
+@@ -3,14 +3,23 @@
+ {% block pageheader 'Termine importieren oder exportieren' %}
+ 
+ {% block footer %}
+-	
+-	
+-	
+ 	<script src="{{ asset('js/dfx_functions.js') }}" type="text/javascript"></script>
+ {% endblock footer %}
+ 
+ {% block body -%}
+ <h3>Termine importieren</h3>
++	{% if konf.id == 4 %}
++		{# Button Import Schlachthof #}
++		<a class="btn btn-primary" href="/admin/custom/eventbrain/">Termine von Eventbrain importieren</a>
++
++	{% elseif konf.id == 81 %}
++		{# Button Import Kino #}
++		<a class="btn btn-primary" href="/admin/custom/kino/">Termine von Cinetixx importieren</a>
++	{% elseif konf.id == 134 %}
++		{# Button Import Kirche #}
++		<a class="btn btn-primary" href="/admin/custom/kirche/">Termine von Ev Termine importieren</a>
++	{% endif %}
++	<hr>
+ 	<strong>Beim Import aus Excel- oder OpenOfficeCalc-Dateien beachten Sie bitte unbedingt folgende Hinweise:</strong>
+ 	<ul>
+ 		<li>Verwenden Sie ausschließlich .xls-Dateien auf Basis dieser Vorlage: <a href="/data/import_muster.xls">import_muster.xls</a></li>
+
+FILE: DfxFrontend/custom/index.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxFrontend/custom/index.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxFrontend/index.html.twig
+STATUS: different
+--- DfxFrontend/index.html.twig
++++ DfxFrontend/custom/index.html.twig
+@@ -49,7 +49,7 @@
+    </style>
+    <script src="{{ datefix_url }}/js/jquery.min.js"></script>
+    <script src="{{ datefix_url }}/js/bootstrap_all.min.js" type="text/javascript"></script>
+-   <script id="dfx" data-kid={{ konf.id }} data-dfx-url="{{ datefix_url }}" src="{{ datefix_url }}/js/dfx_functions_curl.js" type="text/javascript"></script>
++   <script id="dfx" data-ort="Soest" data-kid={{ konf.id }} data-dfx-url="{{ datefix_url }}" src="{{ datefix_url }}/js/dfx_functions_curl.js" type="text/javascript"></script>
+    <link href="{{ datefix_url }}/js/leaflet/leaflet.css" rel="stylesheet">
+    <script src="{{ datefix_url }}/js/leaflet/leaflet.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="{{ datefix_url }}/css/{{ cssFile }}">
+
+FILE: DfxLocation/custom/edit.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxLocation/custom/edit.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxLocation/edit.html.twig
+STATUS: different
+--- DfxLocation/edit.html.twig
++++ DfxLocation/custom/edit.html.twig
+@@ -60,6 +60,11 @@
+ 	    </div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-9">
++            {{ form_row(form.text1, { 'attr':{'placeholder' : 'Raum/Örlichkeit' }}) }}
++        </div>
++    </div>
++    <div class="row">
+ 	    <div class="col-sm-12 col-md-9">
+ 	    {{ form_row(form.strasse) }}
+ 	    </div>
+@@ -128,6 +133,16 @@
+     	</div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text6, { 'attr':{'placeholder' : 'Telefon 2' }}) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.fax) }}
++        </div>
++    </div>
++    <div class="row">
+     	<div class="col-sm-12 col-md-6">
+     	 	{{ form_row(form.email) }}
+     	</div>
+@@ -138,6 +153,26 @@
+     	</div>
+    </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text2, {'attr':{'placeholder' : 'Link zu Facebook https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text3, {'attr':{'placeholder' : 'Link zu Instagram https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text4, {'attr':{'placeholder' : 'Link zu Twitter https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text5, {'attr':{'placeholder' : 'Link zu YouTube https://...'} }) }}
++        </div>
++    </div>
++   <div class="row">
+     	<div class="col-sm-12 col-md-9">
+        		{{ form_row(form.zusatz) }}
+        	</div>
+
+FILE: DfxLocation/custom/new.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxLocation/custom/new.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxLocation/new.html.twig
+STATUS: different
+--- DfxLocation/new.html.twig
++++ DfxLocation/custom/new.html.twig
+@@ -59,6 +59,11 @@
+ 	    </div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-9">
++            {{ form_row(form.text1, { 'attr':{'placeholder' : 'Raum/Örlichkeit' }}) }}
++        </div>
++    </div>
++    <div class="row">
+ 	    <div class="col-sm-12 col-md-9">
+ 	    {{ form_row(form.strasse) }}
+ 	    </div>
+@@ -132,6 +137,16 @@
+     	</div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text6, { 'attr':{'placeholder' : 'Telefon 2' }}) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.fax) }}
++        </div>
++    </div>
++    <div class="row">
+     	<div class="col-sm-12 col-md-6">
+     	 	{{ form_row(form.email) }}
+     	</div>
+@@ -141,16 +156,36 @@
+     		 {{ form_row(form.www) }}
+     	</div>
+    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text2, {'attr':{'placeholder' : 'Link zu Facebook https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text3, {'attr':{'placeholder' : 'Link zu Instagram https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text4, {'attr':{'placeholder' : 'Link zu Twitter https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text5, {'attr':{'placeholder' : 'Link zu YouTube https://...'} }) }}
++        </div>
++    </div>
+     <div class="row">
+     	<div class="col-sm-12 col-md-9">
+        		{{ form_row(form.zusatz) }}
+        	</div>
+     </div>
+     <div class="row">
+-    	<div class="col-sm-12 col-md-4">
+-    		{{ form_row(form.imageFile, {'label' : 'Foto/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
+-    	</div>
+-     </div>
++        <div class="col-sm-12 col-md-4">
++            {{ form_row(form.imageFile, {'label' : 'Foto/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
++        </div>
++    </div>
+     {% if konf.feldGalerie == 1 %}
+         <div class="row">
+             <div class="col-sm-12">
+@@ -158,11 +193,11 @@
+                 Bitte beachten Sie, dass bei Nutzung der Galeriefunktion alle Bilder die gleiche Größe, bzw. mindestens das gleiche Seitenverhältnis haben müssen!
+             </div>
+         </div>
+-         <div class="row">
++        <div class="row">
+             <div class="col-sm-12 col-md-4">
+                 {{ form_row(form.imageFile2, {'label' : 'Foto2/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
+             </div>
+-           <div class="col-sm-12 col-md-4">
++            <div class="col-sm-12 col-md-4">
+                 {{ form_row(form.imageFile3, {'label' : 'Foto3/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
+             </div>
+             <div class="col-sm-12 col-md-4">
+
+FILE: DfxTermine/custom/copy.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/custom/copy.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/copy.html.twig
+STATUS: different
+--- DfxTermine/copy.html.twig
++++ DfxTermine/custom/copy.html.twig
+@@ -105,38 +105,6 @@
+             $(".showOnline").hide(200);
+         }
+     });
+-    {%  if entity.img is not null or entity.imgSerie is not null %}
+-        $('#imageInfoBlock').show();
+-        $("#termine_imgcopycheck").attr("required", true);
+-    {% endif %}
+-
+-    $("#termine_imageFileDelete").change(function() {
+-        if(this.checked) {
+-            $('#imageInfoBlock').hide();
+-            $("#termine_imgcopycheck").attr("required", false);
+-        }else{
+-            $('#imageInfoBlock').show();
+-            $("#termine_imgcopycheck").attr("required", true);
+-        }
+-    });
+-    $('#termine_imageFile').change(function(){
+-        if($('#termine_imageFile').val() !== null)
+-        {
+-            $('#imageInfoBlock').show();
+-            $("#termine_imgcopycheck").attr("required", true);
+-        }else{
+-            $('#imageInfoBlock').hide();
+-            $("#termine_imgcopycheck").attr("required", false);
+-        }
+-    });
+-
+-    $("form[name='termine']").on('reset', function(e){
+-        if($('#termine_imageFile_file').val() !== null)
+-        {
+-            $('#imageInfoBlock').hide();
+-            $("#termine_imgcopycheck").attr("required", false);
+-        }
+-    });
+ {% endblock %}
+ {% block javascript_functions %}
+ function datefixLocation(data) {
+@@ -180,6 +148,8 @@
+     return true;
+ }
+ {% endblock %}
++
++
+ {% block body -%}
+ 	<div id="dfx" data-kid="{{ konf.id }}" data-dfx-url="{{ datefix_url }}" style="display:none"></div>
+ 	{{ form_start(form) }}
+@@ -285,7 +255,7 @@
+                 {{ form_row(form.konferenzlink) }}
+             </div>
+             <div class="col-sm-12 col-md-6">
+-                <br>{{ form_row(form.konferenzlinktext) }}
++               {{ form_row(form.konferenzlinktext) }}
+             </div>
+         </div>
+     {% endif %}
+@@ -336,7 +306,7 @@
+             {% endif %}
+            {%  if konf.feldPlz == 1 %}
+                 <div class="col-sm-2 col-md-2">
+-                 {{ form_row(form.plz) }}
++                    {{ form_row(form.plz, {'attr' : {'required' : true, 'placeholder': 'PLZ *' }}) }}
+                 </div>
+             {% endif %}
+             {%  if konf.feldRegion == 1 %}
+@@ -345,7 +315,7 @@
+                 </div>
+             {% endif %}
+             <div class="col-sm-12 col-md-6">
+-                {{ form_row(form.ort) }}
++                {{ form_row(form.ort, {'attr' : {'required' : true, 'placeholder': 'Ort *' }}) }}
+             </div>
+         {% endif %}  
+         </div>
+@@ -553,7 +523,7 @@
+     		{{ form_row(form.idVeranstalter) }}
+     	</div>
+     	<div class="col-sm-12 col-md-6">
+-    		{{ form_row(form.veranstalter) }}
++    		{{ form_row(form.veranstalter, {'attr' : {'required' : true, 'placeholder' : 'Veranstalter *'}}) }}
+     	</div>
+     </div>
+     {%  endif %}
+@@ -599,6 +569,26 @@
+     {% endif %}
+     </fieldset>
+ <fieldset class="step-6">
++    <legend>Eigenschaften & Status</legend>
++    <div class="row">
++        <div class="col-sm-12 col-md-3">
++            {{ form_row(form.optionsMenue,{'label' : 'Termin- und Verkaufsstatus'}) }}
++            <br>&nbsp;<br>
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12">
++            <label>Verarbeitung</label><br>
++            {% for radio in form.optionsRadio.children  %}
++                <div class="form-check radio-inline">
++                    {{ form_label(radio) }}
++                    {{ form_widget(radio) }}
++                    {{ form_errors(radio) }}
++                </div>
++            {% endfor %}
++            <br>&nbsp;<br>
++        </div>
++    </div>
+     <legend>Veröffentlichen & archivieren</legend>
+     <div class="row">
+     	{% if is_granted('ROLE_DFX_PUB')  %}
+
+FILE: DfxTermine/custom/edit.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/custom/edit.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/edit.html.twig
+STATUS: different
+--- DfxTermine/edit.html.twig
++++ DfxTermine/custom/edit.html.twig
+@@ -34,8 +34,7 @@
+ 		        return true;
+ 		    }
+ 		});
+-	{% endif %}
+-    {%  if konf.feldLocation == 1 %} 
++	{% endif %}{%  if konf.feldLocation == 1 %} 
+             $('body').on('change', '#termine_idLocation', function(){
+                 if($(this).val() > 0){
+                     $.get(url+"/js/kalender/json/location/"+$(this).val(), false, false,'jsonp');
+@@ -106,11 +105,11 @@
+             $(".showOnline").hide(200);
+         }
+     });
++    $('#imageInfoBlock').hide();
+     {%  if entity.img is not null or entity.imgSerie is not null %}
+         $('#imageInfoBlock').show();
+         $("#termine_imgcopycheck").attr("required", true);
+     {% endif %}
+-
+     $("#termine_imageFileDelete").change(function() {
+         if(this.checked) {
+             $('#imageInfoBlock').hide();
+@@ -128,15 +127,14 @@
+         }else{
+             $('#imageInfoBlock').hide();
+             $("#termine_imgcopycheck").attr("required", false);
+-       }
++        }
+     });
+-
+     $("form[name='termine']").on('reset', function(e){
+-        if($('#termine_imageFile_file').val() !== null)
++        if($('#termine_imageFile').val() !== null)
+         {
+             $('#imageInfoBlock').hide();
+             $("#termine_imgcopycheck").attr("required", false);
+-       }
++        }
+     });
+ {% endblock %}
+ {% block javascript_functions %}
+@@ -224,9 +222,9 @@
+     		{{ form_row(form.subtitel) }}
+     	</div>
+     </div>
+-{% endif %}
+-        {%  if konf.feldOnlinetermin == 1 %}
+-            <div class="row">
++   {% endif %}
++    {%  if konf.feldOnlinetermin == 1 %}
++        <div class="row">
+             <div class="col-sm-12 col-md-4">
+                 {{ form_row(form.online) }}
+             </div>
+@@ -236,11 +234,11 @@
+                 {{ form_row(form.konferenzlink) }}
+             </div>
+             <div class="col-sm-12 col-md-6">
+-                <br>{{ form_row(form.konferenzlinktext) }}
+-            </div>
+-        </div>
+-        {% endif %}
+-    
++                {{ form_row(form.konferenzlinktext) }}
++            </div>
++        </div>
++
++    {% endif %}
+     {%  if konf.feldLocation == 1 %} 
+     <div class="row hideOnline">
+     	<div class="col-sm-12 col-md-4">
+@@ -288,7 +286,7 @@
+             {% endif %}
+            {%  if konf.feldPlz == 1 %}
+                 <div class="col-sm-2 col-md-2">
+-                 {{ form_row(form.plz) }}
++                    {{ form_row(form.plz, {'attr' : {'required' : true, 'placeholder': 'PLZ *' }}) }}
+                 </div>
+             {% endif %}
+             {%  if konf.feldRegion == 1 %}
+@@ -297,7 +295,7 @@
+                 </div>
+             {% endif %}
+             <div class="col-sm-12 col-md-6">
+-                {{ form_row(form.ort) }}
++                {{ form_row(form.ort, {'attr' : {'required' : true, 'placeholder': 'Ort *' }}) }}
+             </div>
+         {% endif %}  
+         </div>
+@@ -381,66 +379,66 @@
+     </div>
+     {%  endif %}
+     {%  if konf.feldImg == 1 %}
+-        <div class="row">
+-            <div class="col-sm-12 col-md-4">
+-                {{ form_row(form.imageFile) }}
+-                {%  if entity.img is not null %}
+-                    {{ form_row(form.imageFileDelete) }}
+-                {% endif %}
+-            </div>
+-            <div class="col-sm-12 col-md-2">
+-                {%  if entity.img is not null %}
+-                    {% set strImgPrev = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" />" %}
+-                {%  elseif entity.imgSerie is not null %}
+-                    {% set strImgPrev = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" />" %}
+-                {% else %}
+-                    {% set strImgPrev = NULL %}
+-                {%  endif %}
+-                {{ strImgPrev|raw }}
+-            </div>
+-
+-        </div>
+-
+-        {%  if konf.feldGalerie == 1 %}
+-            <div class="row">
+-                <div class="col-xs-12">
+-                    <h4>Weitere Bilder für Galeriefunktion</h4>
+-                </div>
+-                <div class="col-xs-12 col-md-4">
+-                    {{ form_row(form.imageFile2) }}
+-                    {%  if entity.img2 is not null %}
+-                        {% set strImgPrev2 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img2).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete2)  %}
+-                    {%  elseif entity.imgSerie2 is not null %}
+-                        {% set strImgPrev2 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie2).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete2) %}
+-                    {% else %}
+-                        {% set strImgPrev2 = NULL %}
+-                    {%  endif %}
+-                    {{ strImgPrev2|raw }}
+-                </div>
+-                <div class="col-xs-12 col-md-4">
+-                    {{ form_row(form.imageFile3) }}
+-                    {%  if entity.img3 is not null %}
+-                        {% set strImgPrev3 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img3).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete3) %}
+-                    {%  elseif entity.imgSerie3 is not null %}
+-                        {% set strImgPrev3 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie3).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete3) %}
+-                    {% else %}
+-                        {% set strImgPrev3 = NULL %}
+-                    {%  endif %}
+-                    {{ strImgPrev3|raw }}
+-
+-                </div>
+-                <div class="col-xs-12 col-md-4">
+-                    {{ form_row(form.imageFile4) }}
+-                    {%  if entity.img4 is not null %}
+-                        {% set strImgPrev4 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img4).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete4) %}
+-                    {%  elseif entity.imgSerie4 is not null %}
+-                        {% set strImgPrev4 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie4).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete4) %}
+-                    {% else %}
+-                        {% set strImgPrev4 = NULL %}
+-                    {%  endif %}
+-                    {{ strImgPrev4|raw }}
+-                </div>
+-            </div>
++    <div class="row">
++    	<div class="col-sm-12 col-md-4">
++    		{{ form_row(form.imageFile) }}
++            {%  if entity.img is not null %}
++                {{ form_row(form.imageFileDelete) }}
++            {% endif %}
++    	</div>
++    	<div class="col-sm-12 col-md-2">
++            {%  if entity.img is not null %}
++				{% set strImgPrev = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" />" %}
++			{%  elseif entity.imgSerie is not null %}
++				{% set strImgPrev = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" />" %}
++			{% else %}
++				{% set strImgPrev = NULL %}
++			{%  endif %}
++			{{ strImgPrev|raw }}
++    	</div>
++
++    </div>
++
++	{%  if konf.feldGalerie == 1 %}
++	    <div class="row">
++	        <div class="col-xs-12">
++	    		<h4>Weitere Bilder für Galeriefunktion</h4>
++	    	</div>
++	    	<div class="col-xs-12 col-md-4">
++	    		{{ form_row(form.imageFile2) }}
++	    		{%  if entity.img2 is not null %}
++					{% set strImgPrev2 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img2).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete2)  %}
++				{%  elseif entity.imgSerie2 is not null %}
++					{% set strImgPrev2 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie2).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete2) %}
++				{% else %}
++					{% set strImgPrev2 = NULL %}
++				{%  endif %}
++				{{ strImgPrev2|raw }}
++	    	</div>
++	    	<div class="col-xs-12 col-md-4">
++	    		{{ form_row(form.imageFile3) }}
++	    		{%  if entity.img3 is not null %}
++					{% set strImgPrev3 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img3).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete3) %}
++				{%  elseif entity.imgSerie3 is not null %}
++					{% set strImgPrev3 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie3).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete3) %}
++				{% else %}
++					{% set strImgPrev3 = NULL %}
++				{%  endif %}
++				{{ strImgPrev3|raw }}
++	    		
++	    	</div>
++	    	<div class="col-xs-12 col-md-4">
++	    		{{ form_row(form.imageFile4) }}
++	    		{%  if entity.img4 is not null %}
++					{% set strImgPrev4 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img4).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete4) %}
++				{%  elseif entity.imgSerie4 is not null %}
++					{% set strImgPrev4 = "<img class=\"dfx-image\" src=\"#{web_image('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.imgSerie4).resize(konf.imgPrevWidth,konf.imgPrevHeight) }\" /><br>" ~ form_row(form.imageFileDelete4) %}
++				{% else %}
++					{% set strImgPrev4 = NULL %}
++				{%  endif %}
++				{{ strImgPrev4|raw }}
++	    	</div>
++	    </div>
+         {% endif %}
+         <div class="row">
+             <div class="col-sm-12">
+@@ -503,7 +501,7 @@
+     		{{ form_row(form.idVeranstalter) }}
+     	</div>
+     	<div class="col-sm-12 col-md-6">
+-    		{{ form_row(form.veranstalter) }}
++    		{{ form_row(form.veranstalter, {'attr' : {'required' : true, 'placeholder' : 'Veranstalter *'}}) }}
+     	</div>
+     </div>
+     {%  endif %}
+@@ -549,8 +547,27 @@
+     {% endif %}
+     </fieldset>
+ <fieldset class="step-6">
++    <legend>Eigenschaften & Status</legend>
++    <div class="row">
++        <div class="col-sm-12 col-md-3">
++            {{ form_row(form.optionsMenue,{'label' : 'Termin- und Verkaufsstatus'}) }}
++            <br>&nbsp;<br>
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12">
++            <label>Verarbeitung</label><br>
++            {% for radio in form.optionsRadio.children  %}
++                <div class="form-check radio-inline">
++                    {{ form_label(radio) }}
++                    {{ form_widget(radio) }}
++                    {{ form_errors(radio) }}
++                </div>
++            {% endfor %}
++            <br>&nbsp;<br>
++        </div>
++    </div>
+     <legend>Veröffentlichen & archivieren</legend>
+-
+     <div class="row">
+     	{% if is_granted('ROLE_DFX_PUB')  %}
+     	<div class="col-sm-12 col-md-3">
+@@ -560,7 +577,7 @@
+     	<div class="col-sm-12 col-md-3">
+     		{{ form_row(form.archiv) }}
+     	</div>
+-		{% if is_granted('ROLE_DFX_META') or konf.pubMetaAll == 1 %}
++		{% if is_granted('ROLE_DFX_META_PUB') or konf.pubMetaAll == 1 %}
+     	<div class="col-sm-12 col-md-3">
+     		{{ form_row(form.pubMeta) }}
+     	</div>
+
+FILE: DfxTermine/custom/import.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/custom/import.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/import.html.twig
+STATUS: different
+--- DfxTermine/import.html.twig
++++ DfxTermine/custom/import.html.twig
+@@ -1,12 +1,20 @@
+ {% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+-{% block title 'Termine importieren' %}
+-{% block pageheader 'Termine importieren' %}
+-{% block subheader 'Excel-Datei auswählen'  %}
+-{% block footer %}{% endblock footer %}
++{% block title 'Bericht Terminimport' %}
++{% block pageheader 'Bericht Terminimport' %}
++{% block subheader ''  %}
++
++{% block footer %}
++
++{% endblock footer %}
++{% block javascript_onload %}
++
++{% endblock %}
++{% block javascript_functions %}
++
++{% endblock %}
+ 
+ {% block body -%}
+-	<div id="dfx" data-kid="{{ entity.id }}" data-dfx-url="{{ datefix_url }}" style="display:none"></div>
+-	Diese Funktion steht im Moment in Version noch nicht zur Verfügung    	
+-    <div><br /><a href="{{ path('admin_termine') }}">Zurück zur Liste </a></div>
++    <div>{{ log|raw }}</div>
++    <a class="btn btn-primary" href="/admin/termine">Zurück zur Terminübersicht</a>
++
+ {% endblock body %}
+-            
+
+FILE: DfxTermine/custom/index.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/custom/index.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/index.html.twig
+STATUS: different
+--- DfxTermine/index.html.twig
++++ DfxTermine/custom/index.html.twig
+@@ -2,15 +2,26 @@
+ {% block title 'Termine' %}
+ {% block pageheader 'Veranstaltungen' %}
+ {% block subheader 'Listenansicht' %}
+-
+-
+ {% block body -%}
+ {% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+ {% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
++{% set statusfarben = {'0': 'yellow','1':'orange','2':'green'} %}
+ 
+ {% block dfx_nav_filter_top %}
+ 		<a href="{{ path('termine_new') }}">Termin hinzufügen</a>
+ 		<hr>
++    {% if konf.id == 4 %}
++        {# Button Import Schlachthof #}
++        <a class="btn btn-primary" href="/admin/custom/eventbrain/">Termine von Eventbrain importieren</a>
++
++    {% elseif konf.id == 81 %}
++        {# Button Import Kino #}
++        <a class="btn btn-primary" href="/admin/custom/kino/">Termine von Cinetixx importieren</a> Achtung, Abfrage kann drei bis fünf Minuten dauern!
++    {% elseif konf.id == 134 %}
++        {# Button Import Kirche #}
++        <a class="btn btn-primary" href="/admin/custom/kirche/">Termine von Ev Termine importieren</a>
++    {% endif %}
++        <hr>
+ 		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+ 		<div class="row">
+ 		 	<div class="col-sm-6 col-md-3">
+@@ -22,13 +33,13 @@
+ 		  	<div class="col-sm-12 col-md-3">
+ 		  		{{ form_row(filter_form.rubrik) }}
+ 		 	</div>
+-                        {% if zielgruppe %}
+-                            <div class="col-sm-12 col-md-3">
+-                                    {{ form_row(filter_form.zielgruppe) }}
+-                            </div>
+-                        {% endif %}
++                {% if zielgruppe %}
++                    <div class="col-sm-12 col-md-3">
++                            {{ form_row(filter_form.zielgruppe) }}
++                    </div>
++                {% endif %}
+                         
+-		</div>
++        </div>
+ 		<div class="row">
+ 			<div class="col-sm-12 col-md-6">
+ 		  		{{ form_row(filter_form.suche) }}
+@@ -41,13 +52,16 @@
+ 		  	</div>
+ 		</div>
+ 		<div class="row">
+-		  	<div class="col-sm-12 col-md-6">
++		  	<div class="col-sm-12 col-md-4">
+ 		  		{{ form_row(filter_form.lokal) }}
+ 		  	</div>
+ 		
+-		  	<div class="col-sm-12 col-md-6">
++		  	<div class="col-sm-12 col-md-4">
+ 		  		{{ form_row(filter_form.veranstalter) }}
+ 		  	</div>
++            <div class="col-sm-12 col-md-4">
++                {{ form_row(filter_form.optionsRadio) }}
++            </div>
+ 		</div>
+ 	{% if is_granted('ROLE_DFX_META') or is_granted('ROLE_DFX_GROUP') %}
+ 	<fieldset>
+@@ -72,16 +86,16 @@
+ 		</div>
+         {{ form_row(filter_form._token) }}
+         {{ form_end(filter_form, {render_rest: false}) }}
+-        {% if filter != ''%}
+-            <hr>
+-            <div class="row alert-info" style="padding: 10px; margin: 20px 0">
+-                <div class="col-xs-12 col-sm-10">{{ filter|raw }} </div>
+-                <div class="col-xs-12 col-sm-2"><input id="filterreset" value="Filter löschen" class="btn btn-default form-control" type="button"></div>
+-            </div>
+-        {% endif %}
+-
+-
++    {% if filter != ''%}
++        <hr>
++        <div class="row alert-info" style="padding: 10px; margin: 20px 0">
++            <div class="col-xs-12 col-sm-10">{{ filter|raw }} </div>
++            <div class="col-xs-12 col-sm-2"><input id="filterreset" value="Filter löschen" class="btn btn-default form-control" type="button"></div>
++        </div>
++    {% endif %}
++	
+ {% endblock %}
++
+ <hr>
+ <a href="{{ path('termine_new') }}">Termin hinzufügen</a>
+ <hr>
+@@ -91,23 +105,23 @@
+ {% else %}
+ 
+ <form action="{{ path('termine_delete_liste') }}" method="POST">
+-    <table class="table table-striped">
+-        <thead>
++<table class="table table-striped">
++       <thead>
+             <tr>
+                 <th>&nbsp;</th>
+             	<th>Datum</th>
+             	<th>Uhrzeit</th>
+             	<th>Titel</th>
+-                <th>Pub</th>
+-                {% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
+-                    <th>PubMeta</th>
+-                {% endif %}
++            	<th>Pub</th>
++            	{% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
++            		<th>PubMeta</th>
++            	{% endif %}
+                 {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+-                    <th>PubGroup</th>
+-                {% endif %}
++            		<th>PubGroup</th>
++            	{% endif %}
+                 <th colspan="4">Actions/Aufrufe</th>
+                 {% if is_granted('ROLE_ADMIN') %}
+-                    <th>PDF</th>
++                <th>PDF</th>
+                 {% endif %}
+             </tr>
+         </thead>
+@@ -145,8 +159,9 @@
+                 <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa fa-trash"> </i></a></td>
+                 <td>{{ termin.counter }}</td>
+                 {% if is_granted('ROLE_ADMIN') %}
+-                     <td><a href="{{ path('termin_pdf', { 'id': termin.id }) }}" title="PDF erzeugen"><i class="fa fa-file-pdf-o"> </i></a></td>
+-                {% endif %}
++                <td><a href="{{ path('termin_pdf', { 'id': termin.id }) }}" title="PDF erzeugen"><i class="fa fa-file-pdf-o"> </i></a></td>
++
++               {% endif %}
+             </tr>
+         {% endfor %}
+         </tbody>
+@@ -165,8 +180,8 @@
+             Keine unveröffentlichten Termine gefunden	
+     {% else %}
+     <form action="{{ path('termine_delete_liste') }}" method="POST">
+-        <table class="table table-striped">
+-            <thead>
++    <table class="table table-striped">
++       <thead>
+             <tr>
+                 <th>&nbsp;</th>
+             	<th>Datum</th>
+@@ -176,10 +191,10 @@
+             	{% if is_granted('ROLE_DFX_META') %}
+             		<th>PubMeta</th>
+             	{% endif %}
+-                {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
++                {% if konf.isGroup is not null or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+             		<th>PubGroup</th>
+             	{% endif %}
+-                <th colspan="2">Actions</th>
++                <th colspan="3">Actions</th>
+             </tr>
+         </thead>
+         <tbody>
+@@ -206,12 +221,13 @@
+ 		{% if is_granted('ROLE_DFX_META') %}
+                 	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}">{% if termin.pubMeta == 1 %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id }) }}"><i class="text-success fa fa-check-square-o"></i> <i class="fa fa-exchange"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id }) }}"><i class="text-danger fa fa-times"></i> <i class="fa fa-exchange"></i></a>{%  endif %}</td>
+                 {% endif %} 
+-                {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
++                {% if konf.isGroup is not null or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+                 	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}">{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa fa-check-square-o"></i> <i class="fa fa-exchange"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa fa-times"></i> <i class="fa fa-exchange"></i></a>{%  endif %}</td>
+                 {% endif%}
+ 				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa fa-pencil-square-o"> </i></a></td>
+ 				<td><a href="{{ path('termine_copy', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} kopieren"><i class="fa fa-files-o"> </i></a></td>
+                 <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa fa-trash"> </i></a></td>
++                <td><i class="fa fa-square" style="{{ termin.optionsRadio is not null ? 'color: ' ~ statusfarben[termin.optionsRadio] : 'display:none' }}"> </i></td>
+             </tr>
+         {% endfor %}
+         </tbody>
+@@ -238,10 +254,7 @@
+                 {% if is_granted('ROLE_DFX_META') %}
+             		<th>PubMeta</th>
+             	{% endif %}
+-            	<th colspan="4">Actions/Aufrufe</th>
+-                {% if is_granted('ROLE_ADMIN') %}
+-                    <th>PDF</th>
+-                {% endif %}
++            	<th colspan="2">Actions</th>
+             </tr>
+         </thead>
+         <tbody>
+@@ -270,12 +283,6 @@
+                
+ 				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa fa-pencil-square-o"> </i></a></td>
+                 <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa fa-trash"> </i></a></td>
+-                <td>{{ termin.counter }}</td>
+-                {% if is_granted('ROLE_ADMIN') %}
+-                    <td><a href="{{ path('termin_pdf', { 'id': termin.id }) }}" title="PDF erzeugen"><i class="fa fa-file-pdf-o"> </i></a></td>
+-
+-                {% endif %}
+-
+             </tr>
+         {% endfor %}
+         </tbody>
+@@ -289,7 +296,7 @@
+ 	{%  endif %}
+ 	
+ 	
+-    {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
++    {% if konf.isGroup is not null or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+ 	<hr>
+     <h4>Termine ohne Entscheidung über Group-Status</h4>
+     {%  if termineGroup.getTotalItemCount == 0 %}
+@@ -302,7 +309,7 @@
+             	<th>Uhrzeit</th>
+             	<th>Titel</th>
+             	<th>Lokal</th>
+-                {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
++                {% if konf.isGroup is not null or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+             		<th>PubGroup</th>
+             	{% endif %}
+                 <th colspan="2">Actions</th>
+@@ -328,7 +335,7 @@
+                 <td>{{ strTime }}</td>
+                 <td>{{ termin.titel|raw }} </td>
+                 <td>{{ termin.lokal|raw }} </td>
+-                {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
++                {% if konf.isGroup is not null or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+                 	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}">{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa fa-check-square-o"></i> <i class="fa fa-exchange"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa fa-times"></i> <i class="fa fa-exchange"></i></a>{%  endif %}</td>
+                 {% endif%}
+ 				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa fa-pencil-square-o"> </i></a></td>
+@@ -350,8 +357,8 @@
+             Keine abgelaufenen Termine gefunden	
+     {% else %}
+     <form action="{{ path('termine_delete_liste') }}" method="POST">
+-        <table class="table table-striped">
+-            <thead>
++    <table class="table table-striped">
++       <thead>
+             <tr>
+                 <th>&nbsp;</th>
+             	<th>Datum</th>
+@@ -415,10 +422,11 @@
+             	{% if is_granted('ROLE_DFX_META') %}
+             		<th>PubMeta</th>
+             	{% endif %}
+-                {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
++                {% if konf.isGroup is not null or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+             		<th>PubGroup</th>
+             	{% endif %}
+                 <th colspan="2">Actions</th>
++            	<th colspan="2">Actions</th>
+             </tr>
+         </thead>
+         <tbody>
+@@ -439,8 +447,8 @@
+                 <td>{{ strDate }}</td>
+                 <td>{{ strTime }}</td>
+                 <td>{{ termin.titel|raw }} </td>
+-                {%  if termin.pub == false %}
+-                	<td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz veröffentlichen" href="{{ path('termine_pub', { 'id': termin.id, 'code' : termin.code }) }}"><i class="fa fa-eye-slash"> </i></a>{% endif %}</td>    
++                {%  if termin.pub == 0 %}
++                	<td>{{termin.pub}}{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz veröffentlichen" href="{{ path('termine_pub', { 'id': termin.id, 'code' : termin.code }) }}"><i class="fa fa-eye-slash"> </i></a>{% endif %}</td>    
+                 {%  else %}
+                      <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz deaktivieren" href="{{ path('termine_unpub', { 'id': termin.id, 'code' : termin.code }) }}"><i class="fa fa-eye"> </i></a>{%  endif %}</td>
+                 {% endif %}
+@@ -448,7 +456,7 @@
+                 {% if is_granted('ROLE_DFX_META') %}
+                 	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}_{{ termin.code }}">{% if termin.pubMeta == true %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id, 'code' : termin.code   }) }}"><i class="text-success fa fa-check-square-o"></i> <i class="fa fa-exchange"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-danger fa fa-times"></i> <i class="fa fa-exchange"></i></a>{%  endif %}</td>
+                 {% endif %} 
+-                {% if konf.isGroup == true or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
++                {% if konf.isGroup is not null or (konf.toGroup is not null and is_granted('ROLE_DFX_GROUP')) %}
+                 	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}_{{ termin.code }}">{% if termin.pubGroup == true %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-success fa fa-check-square-o"></i> <i class="fa fa-exchange"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-danger fa fa-times"></i> <i class="fa fa-exchange"></i></a>{%  endif %}</td>
+                 {% endif%}
+                 
+
+FILE: DfxTermine/custom/new.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/custom/new.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/new.html.twig
+STATUS: different
+--- DfxTermine/new.html.twig
++++ DfxTermine/custom/new.html.twig
+@@ -92,7 +92,7 @@
+         {% endif %}
+     $('body').on('click', '#termincheck', function(){
+         if($('#termine_datum_von').val().length > 0 ) {
+-            $.get(url+"/admin/termine/json/check/"+$('#termine_datum_von').val(),  function (html) {
++            $.get(url+"/admin/termine/json/check/"+$('#termine_datum_von').val(),  function ( html) {
+                 $('#terminliste').html(html);
+             });
+         }
+@@ -100,13 +100,13 @@
+     $(".hideOnline").show();
+     $(".showOnline").hide();
+     $("#termine_online").click(function() {
+-        if($(this).is(":checked")) {
+-            $(".hideOnline").hide(200);
+-            $(".showOnline").show(300);
+-        } else {
+-            $(".hideOnline").show(300);
+-            $(".showOnline").hide(200);
+-        }
++    if($(this).is(":checked")) {
++        $(".hideOnline").hide(200);
++        $(".showOnline").show(300);
++    } else {
++        $(".hideOnline").show(300);
++        $(".showOnline").hide(200);
++    }
+     });
+     $('#imageInfoBlock').hide();
+     $('#termine_imageFile').change(function(){
+@@ -115,7 +115,7 @@
+             $('#imageInfoBlock').show();
+             $("#termine_imgcopycheck").attr("required", true);
+         }else{
+-         $('#imageInfoBlock').hide();
++            $('#imageInfoBlock').hide();
+             $("#termine_imgcopycheck").attr("required", false);
+         }
+     });
+@@ -177,6 +177,18 @@
+ {% endblock %}
+ 
+ {% block body -%}
++    {% if konf.id == 4 %}
++        {# Button Import Schlachthof #}
++        <a class="btn btn-primary" href="/admin/custom/eventbrain/">Termine von Eventbrain importieren</a>
++
++    {% elseif konf.id == 81 %}
++        {# Button Import Kino #}
++        <a class="btn btn-primary" href="/admin/custom/kino/">Termine von Cinetixx importieren</a> Achtung, Abfrage kann drei bis fünf Minuten dauern!
++    {% elseif konf.id == 134 %}
++        {# Button Import Kirche #}
++        <a class="btn btn-primary" href="/admin/custom/kirche/">Termine von Ev Termine importieren</a>
++    {% endif %}
++    <hr>
+ <div id="dfx" data-kid="{{ konf.id }}" data-dfx-url="{{ datefix_url }}" style="display:none"></div>
+ 	{{ form_start(form) }}
+   <!-- Nav tabs -->
+@@ -249,7 +261,7 @@
+      </div>
+   </div>
+ <fieldset>
+-<legend>Wann, Was & wo</legend>   
++<legend>Wann, Was & wo</legend>
+     <div class="row">
+     	<div class="col-sm-6 col-md-3">
+     		{{ form_row(form.zeit) }}
+@@ -286,7 +298,7 @@
+                 {{ form_row(form.konferenzlink) }}
+             </div>
+             <div class="col-sm-12 col-md-6">
+-               {{ form_row(form.konferenzlinktext) }}
++                {{ form_row(form.konferenzlinktext) }}
+             </div>
+         </div>
+     {% endif %}
+@@ -337,7 +349,7 @@
+             {% endif %}
+            {%  if konf.feldPlz == 1 %}
+                 <div class="col-sm-2 col-md-2">
+-                 {{ form_row(form.plz) }}
++                 {{ form_row(form.plz, {'attr' : {'required' : true, 'placeholder': 'PLZ *' }}) }}
+                 </div>
+             {% endif %}
+             {%  if konf.feldRegion == 1 %}
+@@ -346,7 +358,7 @@
+                 </div>
+             {% endif %}
+             <div class="col-sm-12 col-md-6">
+-                {{ form_row(form.ort) }}
++                {{ form_row(form.ort, {'attr' : {'required' : true, 'placeholder': 'Ort *' }}) }}
+             </div>
+         {% endif %}  
+         </div>
+@@ -468,7 +480,7 @@
+                 <br>{{ form_row(form.imgtext) }}
+             </div>
+         </div>
+-        <div class="row" id="imageInfoBlock">
++        <div id="imageInfoBlock" class="row">
+             <div class="col-sm-12 col-md-6">
+                 {{ form_row(form.imgcopycheck) }}
+             </div>
+@@ -524,7 +536,7 @@
+     		{{ form_row(form.idVeranstalter) }}
+     	</div>
+     	<div class="col-sm-12 col-md-6">
+-    		{{ form_row(form.veranstalter) }}
++    		{{ form_row(form.veranstalter, {'attr' : {'required' : true, 'placeholder' : 'Veranstalter *'}}) }}
+     	</div>
+     </div>
+     {%  endif %}
+@@ -570,6 +582,26 @@
+     {% endif %}
+     </fieldset>
+ <fieldset class="step-6">
++    <legend>Eigenschaften & Status</legend>
++    <div class="row">
++        <div class="col-sm-12 col-md-3">
++            {{ form_row(form.optionsMenue,{'label' : 'Termin- und Verkaufsstatus'}) }}
++            <br>&nbsp;<br>
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12">
++            <label>Verarbeitung</label><br>
++            {% for radio in form.optionsRadio.children  %}
++                <div class="form-check radio-inline">
++                    {{ form_label(radio) }}
++                    {{ form_widget(radio) }}
++                    {{ form_errors(radio) }}
++                </div>
++            {% endfor %}
++            <br>&nbsp;<br>
++        </div>
++    </div>
+     <legend>Veröffentlichen & archivieren</legend>
+     <div class="row">
+     	{% if is_granted('ROLE_DFX_PUB')  %}
+@@ -580,7 +612,7 @@
+     	<div class="col-sm-12 col-md-3">
+     		{{ form_row(form.archiv) }}
+     	</div>
+-    	{% if is_granted('ROLE_DFX_META') or konf.pubMetaAll == 1 %}
++    	{% if is_granted('ROLE_DFX_META_PUB') or konf.pubMetaAll == 1 %}
+     	<div class="col-sm-12 col-md-3">
+     		{% set metaAll = konf.pubMetaAll == 1 ? true : false %}
+     		{{ form_row(form.pubMeta, {'checked' : metaAll }) }}
+
+FILE: DfxTermine/custom/termincheck.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/custom/termincheck.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxTermine/termincheck.html.twig
+STATUS: different
+--- DfxTermine/termincheck.html.twig
++++ DfxTermine/custom/termincheck.html.twig
+@@ -1,7 +1,8 @@
++{% set statusfarben = {'0': 'yellow','1':'orange','2':'green'} %}
+ <table>
+-    {%  if termine.getTotalItemCount > 0   %}
++    {%  if termine|length > 0   %}
+             {% for termin in termine %}
+-                <tr><td style="padding-right:20px;">{{ termin.datumVon }} </td><td style="padding-right:20px;">{{ termin.zeit }} </td><td>{{ termin.titel }}</td></tr>
++                <tr><td style="padding-right:20px;">{{ termin.datumVon }} </td><td style="padding-right:20px;">{{ termin.zeit }} </td><td style="padding-right:20px;">{{ termin.titel }}</td><td>{{ termin.rubrik|join(', ') }}</td><td style="padding-right:20px;">{{ termin.lokal }}, {{ termin.ort }}</td><td><i class="fa fa-square" style="{{ termin.optionsRadio is not null ? 'color: ' ~ statusfarben[termin.optionsRadio] : 'display:none' }}"> </i></td></tr>
+             {% endfor %}
+         {% else %}
+                 <tr><td style="padding-right:20px;">Keine Termine gefunden</td></tr>
+
+FILE: DfxVeranstalter/custom/edit.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxVeranstalter/custom/edit.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxVeranstalter/edit.html.twig
+STATUS: different
+--- DfxVeranstalter/edit.html.twig
++++ DfxVeranstalter/custom/edit.html.twig
+@@ -60,6 +60,11 @@
+ 	    </div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-9">
++            {{ form_row(form.text1, { 'attr':{'placeholder' : 'Raum/Örlichkeit' }}) }}
++        </div>
++    </div>
++    <div class="row">
+ 	    <div class="col-sm-12 col-md-9">
+ 	    {{ form_row(form.strasse) }}
+ 	    </div>
+@@ -128,6 +133,16 @@
+     	</div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text6, { 'attr':{'placeholder' : 'Telefon 2' }}) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.fax) }}
++        </div>
++    </div>
++    <div class="row">
+     	<div class="col-sm-12 col-md-6">
+     	 	{{ form_row(form.email) }}
+     	</div>
+@@ -137,6 +152,26 @@
+     		 {{ form_row(form.www) }}
+     	</div>
+    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text2, {'attr':{'placeholder' : 'Link zu Facebook https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text3, {'attr':{'placeholder' : 'Link zu Instagram https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text4, {'attr':{'placeholder' : 'Link zu Twitter https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text5, {'attr':{'placeholder' : 'Link zu YouTube https://...'} }) }}
++        </div>
++    </div>
+    <div class="row">
+     	<div class="col-sm-12 col-md-6">
+     		 {{ form_row(form.ansprech) }}
+@@ -149,7 +184,7 @@
+     </div>
+     <div class="row">
+         <div class="col-sm-12 col-md-4">
+-            {{ form_row(form.imageFile, {'label' : 'Foto/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
++            {{ form_row(form.imageFile, {'label' : 'Foto - nur jpg, png und gif erlaubt' }) }}
+             {%  if entity.imgVer is not null %}
+                 {{ form_row(form.imageFileDelete) }}
+             {% endif %}
+@@ -172,7 +207,7 @@
+         </div>
+         <div class="row">
+             <div class="col-sm-12 col-md-4">
+-                {{ form_row(form.imageFile2, {'label' : 'Foto2/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
++                {{ form_row(form.imageFile2, {'label' : 'Foto2 - nur jpg, png und gif erlaubt' }) }}
+                 {%  if entity.img2 is not null %}
+                     {% set strImgPrev2 = '<img class="dfx-image" src="' ~ datefix_url ~ web_image('/images/dfx/' ~ konf.id ~ '/' ~ entity.img2).resize(konf.imgPrevWidth,konf.imgPrevHeight) ~ '" /><br>' ~ form_row(form.imageFileDelete2) %}
+                 {% else %}
+@@ -181,7 +216,7 @@
+                 {{ strImgPrev2|raw }}
+             </div>
+             <div class="col-sm-12 col-md-4">
+-                {{ form_row(form.imageFile3, {'label' : 'Foto3/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
++                {{ form_row(form.imageFile3, {'label' : 'Foto3 - nur jpg, png und gif erlaubt' }) }}
+                 {%  if entity.img3 is not null %}
+                     {% set strImgPrev3 = '<img class="dfx-image" src="' ~ datefix_url ~ web_image('/images/dfx/' ~ konf.id ~ '/' ~ entity.img3).resize(konf.imgPrevWidth,konf.imgPrevHeight) ~ '" /><br>' ~ form_row(form.imageFileDelete3) %}
+                 {% else %}
+@@ -190,7 +225,7 @@
+                 {{ strImgPrev3|raw }}
+             </div>
+             <div class="col-sm-12 col-md-4">
+-                {{ form_row(form.imageFile4, {'label' : 'Foto4/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
++                {{ form_row(form.imageFile4, {'label' : 'Foto4 - nur jpg, png und gif erlaubt' }) }}
+                 {%  if entity.img4 is not null %}
+                     {% set strImgPrev4 = '<img class="dfx-image" src="' ~ datefix_url ~ web_image('/images/dfx/' ~ konf.id ~ '/' ~ entity.img4).resize(konf.imgPrevWidth,konf.imgPrevHeight) ~ '" /><br>' ~ form_row(form.imageFileDelete4) %}
+                 {% else %}
+@@ -217,7 +252,7 @@
+             <br>{{ form_row(form.imgtext) }}
+         </div>
+     </div>
+-     <div class="row">
++    <div class="row">
+         <div class="col-sm-12 col-md-6">
+             {{ form_row(form.imgcopycheck) }}
+         </div>
+@@ -240,7 +275,9 @@
+             </ul>
+     	</div>
+     </div>    
+-
++        
++        
++        
+         
+     <div class="row">
+ 		  <div class="col-xs-6">
+
+FILE: DfxVeranstalter/custom/new.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/DfxVeranstalter/custom/new.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/DfxVeranstalter/new.html.twig
+STATUS: different
+--- DfxVeranstalter/new.html.twig
++++ DfxVeranstalter/custom/new.html.twig
+@@ -58,6 +58,11 @@
+ 	    </div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-9">
++            {{ form_row(form.text1, { 'attr':{'placeholder' : 'Raum/Örlichkeit' }}) }}
++        </div>
++    </div>
++    <div class="row">
+ 	    <div class="col-sm-12 col-md-9">
+ 	    {{ form_row(form.strasse) }}
+ 	    </div>
+@@ -126,6 +131,16 @@
+     	</div>
+     </div>
+     <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text6, { 'attr':{'placeholder' : 'Telefon 2' }}) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.fax) }}
++        </div>
++    </div>
++    <div class="row">
+     	<div class="col-sm-12 col-md-6">
+     	 	{{ form_row(form.email) }}
+     	</div>
+@@ -135,6 +150,26 @@
+     		 {{ form_row(form.www) }}
+     	</div>
+    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text2, {'attr':{'placeholder' : 'Link zu Facebook https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text3, {'attr':{'placeholder' : 'Link zu Instagram https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text4, {'attr':{'placeholder' : 'Link zu Twitter https://...'} }) }}
++        </div>
++    </div>
++    <div class="row">
++        <div class="col-sm-12 col-md-6">
++            {{ form_row(form.text5, {'attr':{'placeholder' : 'Link zu YouTube https://...'} }) }}
++        </div>
++    </div>
+    <div class="row">
+     	<div class="col-sm-12 col-md-6">
+     		 {{ form_row(form.ansprech) }}
+@@ -151,7 +186,7 @@
+         </div>
+     </div>
+     {% if konf.feldGalerie == 1 %}
+-        <div class="row">
++         <div class="row">
+             <div class="col-sm-12">
+                 <legend>Zusatzbilder für Galerie-Funktion</legend>
+                 Bitte beachten Sie, dass bei Nutzung der Galeriefunktion alle Bilder die gleiche Größe, bzw. mindestens das gleiche Seitenverhältnis haben müssen!
+
+FILE: Kalender/custom/base_detail.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/custom/base_detail.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/base_detail.html.twig
+STATUS: different
+--- Kalender/base_detail.html.twig
++++ Kalender/custom/base_detail.html.twig
+@@ -3,7 +3,7 @@
+ {% set file =  filter_form is defined ? tplform : 'termine_solo'%}
+ {% extends 'Kalender/'~ file ~'.html.twig' %}
+ {% block dfx_termine %}
+-	{% set titel = termin.titel %}
++	{% set titel = termin.optionsMenue is not null ?  termin.titel ~ ' (' ~ optionsMenue[termin.optionsMenue] ~')' : termin.titel %}
+ 	{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+ 	{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+ 	{% set tz = konf.trennzeichen %}
+@@ -75,15 +75,15 @@
+ 	{% else %}
+             {% set strVeranstalter = NULL %}
+ 	{% endif %}
+-	{% set altText = termin.imgtext is not null ? 'Bildunterschrift: ' ~ termin.imgtext : 'Bild zu: ' ~ termin.titel %}
++	{% set altText = termin.imgtext is not null ? termin.imgtext : 'Bild zu '.termin.titel %}
++	{% set altText = termin.imgcopyright is not null ? altText ~ ' &copy; ' ~ termin.imgcopyright : altText %}
+ 	{% if termin.img != NULL %}
+-		{% set altText = termin.imgcopyright is not null ? altText ~ ' &copy; ' ~ termin.imgcopyright : altText %}
+ 		{% set strImg = '<img alt="'~ altText ~'" class="dfx-image dfx-detail-image" src="' ~ app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img).cropResize(konf.imgWidth,konf.imgHeight) ~ '" />' %}
+ 		{% set strImgPrev1 = "<img src=\"#{app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img).cropResize(konf.imgPrevWidth,konf.imgPrevHeight) }\" />" %}
+ 		{% set FbImg = app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img).resize(200,200) %}
+ 	{% elseif termin.imgSerie != NULL %}
+-		{% set strImg = '<img class="dfx-image dfx-detail-image" src="' ~ app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie).cropResize(konf.imgWidth,konf.imgHeight) ~ '" />' %}
+-		{% set strImgPrev1 = "<img src=\"#{app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie).cropResize(konf.imgPrevWidth,konf.imgPrevHeight) }\" />" %}
++		{% set strImg = '<img alt="'~ altText ~'" class="dfx-image dfx-detail-image" src="' ~ app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie).cropResize(konf.imgWidth,konf.imgHeight) ~ '" />' %}
++		{% set strImgPrev1 = "<img alt=\"'~ altText ~'\" src=\"#{app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie).cropResize(konf.imgPrevWidth,konf.imgPrevHeight) }\" />" %}
+ 		{% set FbImg = app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie).resize(200,200) %}
+ 	{% else %}
+ 		{% set strImg = NULL %}
+@@ -149,37 +149,43 @@
+ 		{% endif %}
+ 	{% endif %}
+ 	{% set strLogo = konf.imgLogo is not null ? "<img src=\"#{app.request.getSchemeAndHttpHost() ~ web_image('/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo).cropResize(400,200) }\" />":NULL %}
+-	{% set strAdresse = konf.adresse is not null ? konf.adresse|nl2br : NULL %}	
+-	
++	{% set strAdresse = konf.adresse is not null ? konf.adresse|nl2br : NULL %}
++	{% set rowInfo = NULL %}
++	{% set rowKartenInfo = NULL %}
+ 	{% if termin.mailTyp == 'anmeldung' or termin.mailTyp == 'karten' %}
+             {% if termin.plaetzeGesamt > 0 %}
+                 {% if termin.plaetzeAktuell > 0 and konf.showPlatzlimit == 1 %}
+-                        {% set rowInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i>#{ 'karten'|trans }<br>(" ~ termin.plaetzeAktuell ~  " " ~ 'karten verfuegbar'|trans ~ ")</a><br>" : "" %}
++                        {% set rowKartenInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i>#{ 'karten'|trans }<br>(" ~ termin.plaetzeAktuell ~  " " ~ 'karten verfuegbar'|trans ~ ")</a><br>" : "" %}
+                         {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ " " ~ "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } )} \" title=\"#{ 'anmelden'|trans }\"><i class=\"fa fa-edit\"></i>#{ 'anmelden'|trans }<br>(" ~ termin.plaetzeAktuell ~  " " ~ 'plaetze verfuegbar'|trans ~ ")</a><br>" : rowInfo %}
+-                {% elseif termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1 %}
+-                        {% set rowInfo = termin.mailTyp == 'karten' ? "#{ 'karten'|trans } ("~ 'ausgebucht'|trans ~ ")<br>" : "" %}
+-                        {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ "#{ 'anmelden'|trans } (" ~ 'ausverkauft'|trans ~ ")<br>" : rowInfo %}
++                {% elseif (termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1) or termin.optionsMenue == 'ausverkauft' %}
++                        {% set rowKartenInfo = termin.mailTyp == 'karten' ? "#{ 'karten'|trans } ("~ 'ausverkauft'|trans ~ ")<br>" : "" %}
++                        {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ "#{ 'anmelden'|trans } (" ~ 'ausgebucht'|trans ~ ")<br>" : rowInfo %}
+                 {% else %}
+-                        {% set rowInfo = termin.mailTyp == 'karten' ? "<i class=\"fa fa-ticket\"></i> <a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \">#{ 'karten'|trans }</a><br>" : null %}
++                        {% set rowKartenInfo = termin.mailTyp == 'karten' ? "<i class=\"fa fa-ticket\"></i> <a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \">#{ 'karten'|trans }</a><br>" : null %}
+                         {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ " " ~ "<i class=\"fa fa-edit\"></i> <a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } )}\">#{ 'anmelden'|trans }</a><br>" : rowInfo %}
+                 {% endif %}
+             {% else %}
+-                {% set rowInfo = termin.mailTyp == 'karten' ? "<i class=\"fa fa-ticket\"></i> <a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \">#{ 'karten'|trans }</a><br>" : null %}
++                {% set rowKartenInfo = termin.mailTyp == 'karten' ? "<i class=\"fa fa-ticket\"></i> <a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \">#{ 'karten'|trans }</a><br>" : null %}
+                 {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ " " ~ "<i class=\"fa fa-edit\"></i> <a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } )}\">#{ 'anmelden'|trans }</a><br>" : rowInfo %}
+             {% endif %}
+-	{% else %}
+-            {% set rowInfo = NULL %}
+-	{% endif %}		
++	{% endif %}
+ 	
+ 	
+ 	{% set ticketformtext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
+ 	{% set ticketlinktext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
+-	{% set infoHeader = termin.mailTyp == 'karten' or termin.ticketlink is not null ? 'kartenheader'|trans : null  %}
+-	{% set rowInfo = termin.ticketlink is not null ? rowInfo  ~ " " ~ "<i class=\"fa fa-ticket\"></i> <a href = \"" ~ termin.ticketlink  ~ "\" target=\"_blank\">#{ ticketlinktext }</a><br>" : rowInfo %}
+-
++	{% set rowKartenInfo = termin.ticketlink is not null ? "<i class=\"fa fa-ticket\"></i> <a href = \"" ~ termin.ticketlink  ~ "\" target=\"_blank\">#{ ticketlinktext }</a><br>" : NULL %}
++	{% if termin.optionsMenue is not null and optionsMenue[termin.optionsMenue] == 'ausverkauft' %}
++		{% set rowKartenInfo = optionsMenue[termin.optionsMenue] ~ '<br>' %}
++	{% elseif termin.optionsMenue is not null and optionsMenue[termin.optionsMenue] == 'Restkarten' %}
++		{% set rowKartenInfo = rowKartenInfo  ~ optionsMenue[termin.optionsMenue] ~ '<br>' %} %}
++	{% endif %}
++	{% set infoHeader = rowKartenInfo is not null ? 'kartenheader'|trans : null  %}
++	{% set rowInfo = rowKartenInfo is not null ? rowInfo ~ rowKartenInfo : rowInfo  %}
+ 	{% if termin.mailTyp == 'anmeldung' %}
+-            {% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'anmeldenheader'|trans : 'anmeldenheader'|trans  %}
+-	{%  endif %}
++		{% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'anmeldenheader'|trans : 'anmeldenheader'|trans  %}
++	{%  endif %}
++
++
+ 	{% if termin.mailTyp == 'kontakt' %}
+             {% set rowInfo = rowInfo  ~ " " ~ "<i class=\"fa fa-comment-o\"></i> <a href = \"mailto:" ~ termin.mail  ~ "\">#{ 'mail senden'|trans }</a><br>" %}
+             {% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'kontaktheader'|trans : 'kontaktheader'|trans  %}
+@@ -191,20 +197,18 @@
+     {% elseif termin.pdfSerie is not null %}
+ 		{% set rowInfo = rowInfo  ~ " " ~ "<i class=\"fa fa-download\" aria-hidden=\"true\"></i> <a href = \"#{datefix_url ~ '/pdf/dfx/' ~ termin.datefix.id ~ '/' ~ termin.pdfSerie}\" class=\"dfx-nojson\" target=\"_blank\">#{ pdflinktext } </a><br>" %}
+     {% endif %}
+-
+-
+ 	{% set linktext = termin.linktext is not null ? termin.linktext : 'Mehr Informationen'|trans %}
+ 	{% set rowInfo = termin.link is not null ? rowInfo  ~ " " ~ "<i class=\"fa fa-info-circle\"></i> <a href = \"" ~ termin.link  ~ "\" target=\"_blank\">#{ linktext }</a><br>" : rowInfo %}
+ 	{% if termin.pdf is not null or termin.pdfSerie is not null or termin.link is not null %}
+ 		{% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'infoheader'|trans : 'infoheader'|trans  %}
+ 	{% endif %}
+ 	{% if konf.allowSocial  %}
+-		{% set FbLink = 'https://www.facebook.com/sharer/sharer.php?u=' ~ frontendUrlQ ~ 'dfxpath=/js/kalender/' ~ konf.id ~ '/detail/' ~ termin.id  %}
+-	   {% set facebook = "<a onclick=\"window.open(this.href,'','width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" ><i class=\"fa fa-facebook\"></i></a>" %}
++	   {% set facebook = "<a onclick=\"window.open(this.href,'','width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" href=\"https://www.facebook.com/sharer/sharer.php?u=#{ frontendUrlQ }dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-facebook\"></i></a>" %}
+ 	   {% set rowSocial = "<div class=\"sm-box\">
+ <a class=\"sm-link\" data-tid=\"" ~ termin.id ~ "\" data-kid=\"" ~ konf.id ~ "\" onclick=\"javascript:return false;\" href=\"\"><i class=\"fa fa-share\"></i>Teilen</a>
+ 	<div class=\"sm-buttons\" style=\"display: none;\">" ~ facebook ~ "
+ 		<a onclick=\"window.open(this.href,'','width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" class=\"dfx-nojson\" href=\"https://twitter.com/intent/tweet?text=#{ termin.titel ~ ', ' ~ strDate ~ ' ' ~ strTime|url_encode }&url=#{ frontendUrlQ }?dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-twitter\"></i></a>\">
++		<a onclick=\"window.open(this.href,'','width=600,height=200,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" class=\"dfx-nojson\" href=\"https://plus.google.com/share?url=#{ frontendUrlQ }dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-google-plus\"></i></a>
+ 		<a onclick=\"window.open(this.href,'','width=600,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" title=\"\" rel=\"nofollow\" class=\"dfx-nojson\" href=\"https://www.xing-share.com/app/user?op=share;sc_p=xing-share;url=#{ frontendUrlQ }dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-xing\"></i></a>
+ 		<a onclick=\"window.open(this.href,'','width=600,height=200,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" class=\"dfx-nojson \" href=\"https://www.linkedin.com/shareArticle?mini=true&url=#{ frontendUrlQ }?dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-linkedin\"></i></a>
+ 	</div>
+@@ -220,7 +224,7 @@
+ 		{% set socialHeader = socialHeader is not null ? socialHeader ~ ' & ' ~  'merken'|trans : 'merken'|trans  %}
+ 	{% endif %}
+ 	
+-	{% set strLead = termin.lead is not null ? termin.lead|raw|nl2br  : "" %}
++	{% set strLead = termin.lead is not null ? termin.lead|raw|nl2br : "" %}
+ 	{% set strText = termin.beschreibung is not null ? termin.beschreibung|raw|nl2br : null %}
+ 	{% set strEintritt = termin.eintritt is not null ? termin.eintritt : null %}
+ 	{% if konf.useMap == 1 and termin.bg > 0 %}
+@@ -238,7 +242,7 @@
+ 		{% set strGeoItemprop = null %}
+ 		{% set strMapClose = null %}
+ 	{% endif %}
+-	{% if serie is defined and serie is not null and serie|length > 1 %}
++	{% if serie is defined and serie is not null %}
+ 		{% set strSerie = '<h4>Weitere Termine</h4><ul>' %}
+ 		{% for sTermin in serie %}
+ 			{% set strSerie = strSerie ~ '<li><a class="dfx-mehr" href="' ~ frontendUrlQ ~ 'dfxid=' ~ sTermin.id ~ '">' ~ sTermin.datumVon|format_datetime('full', 'none', locale='de') ~ ', ' ~ sTermin.zeit|date('H.i') ~ ' Uhr</a></li>' %}
+@@ -248,8 +252,8 @@
+ 		{% set strSerie = null %}
+ 	{% endif %}
+ 	{% set printLinks = konf.allowPrint == true ? "<a class=\"dfx-print\" title=\"Termin drucken\" href=\"#{ url('termin_print', { 'id': termin.id }) }\"><i class=\"fa fa-print\"></i></a> <a class=\"dfx-pdf\" target=\"_blank\" title=\"Termin als PDF\" href=\"#{ url('termin_fe_pdf', { 'id': termin.id }) }\"><i class=\"fa fa-file-pdf-o\"></i></a>" : null %}
+-	<main>
+-		<div id="dfx_detail_wrapper" class="container-fluid" data-bg="{{ termin.bg }}" data-lg="{{ termin.lg }}" data-lokal="{{ strLokalText }}" data-cssfile="{{ 'own/1.css' }}">
++ 	<main>
++	<div id="dfx_detail_wrapper" class="container-fluid" data-bg="{{ termin.bg }}" data-lg="{{ termin.lg }}" data-lokal="{{ strLokalText }}" data-cssfile="{{ 'own/1.css' }}">
+ 		{{ block('dfx_termin_detail') }}
+ 		{% block dfx_konf %}
+ 			<div id="dfx_konf" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-frontend="{{ konf.frontendUrl }}" data-tpl="detail" data-nav-pos="{{ konf.navPos }}" data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" data-kal="{{ kaldata }}" style="display: none"></div>
+
+FILE: Kalender/custom/footer.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/custom/footer.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/footer.html.twig
+STATUS: no matching parent file
+
+FILE: Kalender/custom/gast_termin_form.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/custom/gast_termin_form.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/gast_termin_form.html.twig
+STATUS: different
+--- Kalender/gast_termin_form.html.twig
++++ Kalender/custom/gast_termin_form.html.twig
+@@ -1,7 +1,8 @@
+ {% extends 'Kalender/base_gast_termin.html.twig' %}
+ {% block dfx_termin_detail %}
+-	<h1>Termineingabe als Gast</h1>
+-	<div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
++<h1>Termineingabe als Gast</h1>
++<div class="back-to-list"><a href="{{ url('kalender' , { 'kid': konf.id })}}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
++
+ <div id="dfx" data-kid="{{ konf.id }}" data-dfx-url="{{ datefix_url }}" style="display:none"></div>
+ {% if error is defined %}
+  <p class="bg-danger">{{ error }}</p>
+@@ -163,16 +164,16 @@
+     		{{ form_row(form.nat) }}
+     	</div>
+     	{% endif %}
+-    	 {%  if konf.feldPlz == 1 %}
+-    	<div class="col-xs-4 col-sm-2">
+-    	 {{ form_row(form.plz) }}
+-    	</div>
+-    	{% endif %}
+-    	 {%  if konf.feldOrt == 1 %}
+-    	<div class="col-xs-6">
+-    		 {{ form_row(form.ort) }}
+-    	</div>
+-    	{% endif %}
++		{%  if konf.feldPlz == 1 %}
++			<div class="col-xs-4 col-sm-2">
++				{{ form_row(form.plz, {'attr' : {'required' : true, 'placeholder': 'PLZ *' }}) }}
++			</div>
++		{% endif %}
++		{%  if konf.feldOrt == 1 %}
++			<div class="col-xs-6">
++				{{ form_row(form.ort, {'attr' : {'required' : true, 'placeholder': 'Ort *' }}) }}
++			</div>
++		{% endif %}
+     	{%  if konf.feldRegion == 1 %}
+     	<div class="col-sm-4 col-md-3">
+     		{{ form_row(form.region) }}
+@@ -315,7 +316,7 @@
+     		{{ form_row(form.idVeranstalter) }}
+     	</div>
+     	<div class="col-sm-6">
+-    		{{ form_row(form.veranstalter) }}
++    		{{ form_row(form.veranstalter, {'attr' : {'required' : true, 'placeholder' : 'Veranstalter *'}}) }}
+     	</div>
+     </div>
+     {%  endif %}
+@@ -329,7 +330,7 @@
+     		{{ form_row(form.mailTyp) }}
+     	</div>
+     </div>
+-    <!-- 
++    <!--
+     {%  if konf.feldPlatzlimit == 1 %}
+     <div class="row">
+     	<div class="col-sm-3 col-md-2">
+@@ -377,7 +378,7 @@
+                {{ form_row(form.datenschutz) }}
+         </div>
+         <div class="col-xs-11" style="padding-top: 10px">
+-	 		{{ 'datenschutz_1'|trans }} ( <a class="dfx-nojson" href="{{ konf.datenschutzUrl }}" target="_blank">{{ 'datenschutz_linktext'|trans }}</a> ) {{ 'datenschutz_2'|trans }}
++			Ja, ich habe die <a class="dfx-nojson" href="{{ konf.datenschutzUrl }}" target="_blank">Datenschutzerklärung</a> und <a class="dfx-nojson" href="https://kulturbuero-soest.de/agbs-veranstaltungs-kalender/" target="_blank">Allgemeinen Geschäftsbedingungen</a> zur Kenntnis genommen. Ich stimme den Allgemeinen Geschäftsbedingungen zu und bin damit einverstanden, dass die von mir angegebenen Daten elektronisch erhoben und gespeichert werden.
+         </div>
+     </div>
+     <div class="row">
+@@ -392,7 +393,7 @@
+ 	<hr>
+     <div class="row">
+     	<div class="col-xs-12 col-sm-6">
+-    		<a href="{{ konf.frontendUrl }}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a>
++    		<a href="{{ url('kalender' , { 'kid': konf.id })}}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a>
+     	</div>
+     	<div class="col-xs-12 col-sm-6 text-right">
+     		{{'pflichtfelder'|trans}}
+
+FILE: Kalender/custom/location.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/custom/location.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/location.html.twig
+STATUS: different
+--- Kalender/location.html.twig
++++ Kalender/custom/location.html.twig
+@@ -62,7 +62,7 @@
+ {% else %}
+ 	<div class="fx-{{ konf.dfxTpl }}">
+ {% endif %}
+-    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
++    <div class="back-to-list"><a href="{{ url('kalender' , { 'kid': konf.id })}}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+     
+     {% if konf.dfxTpl == 'block' %}
+    		<h3 class="dfx-titel fx-block">{{ entity.name|raw }}</h3>
+@@ -96,7 +96,7 @@
+ 			    <div class="dfx-detail-zwue-linie">{{ 'anfahrt'|trans }}</div>
+ 				<div id="dfxMap" class="dfx-map-window dfx-map-open-self"></div>
+ 				{% set strGeo = entity.bg ~ ',' ~ entity.lg %}
+-				<form action="http://maps.google.de/maps" method="get" target="_blank">
++				<form action="https://maps.google.de/maps" method="get" target="_blank">
+ 				<div class="row dfx-map-form-detail" id="dfxMapClose" style="display:none">
+ 					<div class="col-xs-12 col-md-8"><input placeholder="{{  'standort'|trans }}" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="{{ strGeo }}" /></div>
+ 					<div class="col-xs-12 col-md-4"><input type="submit" value="{{ 'route anzeigen'|trans }}" class="btn btn-primary" /></div>
+@@ -104,7 +104,7 @@
+ 				</form>
+ 			{% endif %}
+ 	
+-	<div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
++	<div class="back-to-list"><a href="{{ url('kalender' , { 'kid': konf.id })}}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+ </div>
+ </div>
+ <div id="dfx_konf" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-tpl="detail" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" style="display: none"></div>
+
+FILE: Kalender/custom/termine.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/custom/termine.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/termine.html.twig
+STATUS: different
+--- Kalender/termine.html.twig
++++ Kalender/custom/termine.html.twig
+@@ -6,22 +6,22 @@
+ 	{% set tz = konf.trennzeichen %}
+ 	{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+ 	{% if konf.imgListe == 2 %}
+-            {% set colXsImg = 3 %}
+-	    {% set colSmImg = 4 %}
+-	    {% set colMdImg = 3 %}
+-	    
+-	    {% set colXsText = 9 %}
+-	    {% set colSmText = 8 %}
+-	    {% set colMdText = 9 %}
+-        {% else %}
+-            {% set colXsImg = 2 %}
+-	    {% set colSmImg = 3 %}
+-	    {% set colMdImg = 2 %}
+-	    
+-	    {% set colXsText = 10 %}
+-	    {% set colSmText = 9 %}
+-	    {% set colMdText = 10 %}
+-        {%  endif %}
++		{% set colXsImg = 12 %}
++		{% set colSmImg = 4 %}
++		{% set colMdImg = 4 %}
++
++		{% set colXsText = 12 %}
++		{% set colSmText = 8 %}
++		{% set colMdText = 8 %}
++	{% else %}
++		{% set colXsImg = 12 %}
++		{% set colSmImg = 3 %}
++		{% set colMdImg = 3 %}
++
++		{% set colXsText = 12 %}
++		{% set colSmText = 9 %}
++		{% set colMdText = 9 %}
++	{%  endif %}
+ 	<div class="dfx-header">{{ 'Alle Veranstaltungen'|trans }} {{ headline }}</div>
+ 	{% if konf.paginationTop == 1 %}
+ 		{{ block('dfx_pagination') }}
+@@ -31,7 +31,7 @@
+ 	{% set rowCount = 0 %}
+ 	{% if termine|length > 0 %}
+ 	{% for termin in termine %}
+-		{% set titel = termin.titel %}
++		{% set titel = termin.optionsMenue is not null ?  termin.titel ~ ' (' ~ optionsMenue[termin.optionsMenue] ~')' : termin.titel %}
+ 		{% set daynr =  termin.datumVon|date('w') %}
+ 		{% set daynrto =  termin.datum|date('w') %}
+ 		{% set monthnr =  termin.datumVon|date('n') %}
+@@ -82,8 +82,8 @@
+ 			{% set strLokal = 'Online-Veranstaltung' %}
+ 			{% set strLokalText = 'Online-Veranstaltung'  %}
+ 			{% set konferenzlinktext = termin.konferenzlinktext is not null ? termin.konferenzlinktext : termin.konferenzlink %}
+-			{% set strStrasse = termin.konferenzlink is not null ? 'Link zur Online-Veranstaltung: <a href = "' ~ termin.konferenzlink  ~ '" title="' ~ konferenzlinktext ~ '" target="_blank">' ~ konferenzlinktext ~ '</a>' : null%}
+-			{% set strOrt = NULL %}
++			{% set strOrt = termin.konferenzlink is not null ? 'Link zur Videokonferenz: <a href = "' ~ termin.konferenzlink  ~ ' title="' ~ konferenzlinktext ~ '" target="_blank">' ~ konferenzlinktext ~ '</a>' : null%}
++			{% set strStrasse = NULL %}
+ 		{% else %}
+ 			{%  if termin.lokal and konf.showLokal == 1 %}
+ 				{% set strLokal = termin.idLocation.id is defined ? "<a href =\"#{ frontendUrlQ ~ 'dfxpath=' ~ path('location_show', { 'id': termin.idLocation.id } )}\">#{ termin.idLocation.name }</a>" : "#{ termin.lokal }" %}
+@@ -153,29 +153,32 @@
+ 		{% else %}
+ 			{% set strVeranstalter = NULL %}
+ 		{% endif %}
+-
++		{% set rowInfo = NULL %}
++		{% set rowKartenInfo = NULL %}
+ 		{% if termin.mailTyp == 'anmeldung' or termin.mailTyp == 'karten' %}
+ 			{% if termin.plaetzeGesamt > 0 %}
+ 					{% if termin.plaetzeAktuell > 0 and konf.showPlatzlimit == 1 %}
+-						{% set rowInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~ path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i> (" ~ termin.plaetzeAktuell ~  ")</a>" : "" %}
++						{% set rowKartenInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~ path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i> (" ~ termin.plaetzeAktuell ~  ")</a>" : NULL %}
+ 						{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ " " ~ "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } )} \" title=\"#{ 'anmelden'|trans }\"><i class=\"fa fa-edit\"></i> (" ~ termin.plaetzeAktuell ~  ")</a>" : rowInfo %}
+-					{% elseif termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1 %}
+-						{% set rowInfo = termin.mailTyp == 'karten' ? "<i class=\"fa fa-ticket\"></i> (0)" : "" %}
++					{% elseif termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1  %}
++						{% set rowKartenInfo = termin.mailTyp == 'karten' ? "<i class=\"fa fa-ticket\"></i> (0)" : "" %}
+ 						{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ " <i class=\"fa fa-edit\"></i> (0)" : rowInfo %}
+ 					{% else %}
+-						{% set rowInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i></a>" : "" %}
++						{% set rowKartenInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i></a>" : NULL %}
+ 						{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ " " ~ "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } )} \" title=\"#{ 'anmelden'|trans }\"><i class=\"fa fa-edit\"></i></a>" : rowInfo %}
+ 					{% endif %}
+ 			{% else %}
+-				{% set rowInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i></a>" : "" %}
++				{% set rowKartenInfo = termin.mailTyp == 'karten' ? "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } )} \" title=\"#{ 'karten'|trans }\"><i class=\"fa fa-ticket\"></i></a>" : NULL %}
+ 				{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ " " ~ "<a href = \"#{ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } )} \" title=\"#{ 'anmelden'|trans }\"><i class=\"fa fa-edit\"></i></a>" : rowInfo %}
+ 			{% endif %}
+-		{% else %}
+-			{% set rowInfo ='' %}
+-		{% endif %}
+-
+-		{% set ticketlinktext = termin.ticketlinktext is not null ? termin.ticketlinktext : termin.ticketlink %}
+-		{% set rowInfo = termin.ticketlink is not null ? rowInfo  ~ " " ~ "<a href = \"" ~ termin.ticketlink  ~ "\" title=\"#{ ticketlinktext }\" target=\"_blank\"><i class=\"fa fa-ticket\"></i></a>" : rowInfo %}
++		{% endif %}
++		{% set ticketlinktext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
++		{% set rowKartenInfo = termin.ticketlink is not null  ? "<a href = \"" ~ termin.ticketlink  ~ "\" title=\"#{ ticketlinktext }\" target=\"_blank\"><i class=\"fa fa-ticket\"></i></a>" : NULL %}
++		{% if termin.optionsMenue is not null and optionsMenue[termin.optionsMenue] == 'ausverkauft' %}
++			{% set rowKartenInfo = NULL %}
++		{% endif %}
++		{% set rowInfo = rowKartenInfo is not null  ? rowInfo  ~ " " ~ "<a href = \"" ~ termin.ticketlink  ~ "\" title=\"#{ ticketlinktext }\" target=\"_blank\"><i class=\"fa fa-ticket\"></i></a>" : rowInfo %}
++
+ 		{% set rowInfo = termin.mailTyp == 'kontakt' ? rowInfo  ~ " " ~ "<a href = \"mailto:" ~ termin.mail  ~ "\" title=\"#{ 'mail senden'|trans }\"><i class=\"fa fa-comment-o\"></i></a>" : rowInfo %}
+ 
+ 		{% if termin.pdfSerie is not null %}
+@@ -193,6 +196,7 @@
+ 	<a class=\"sm-link\" data-tid=\"" ~ termin.id ~ "\" data-kid=\"" ~ konf.id ~ "\" onclick=\"javascript:return false;\" href=\"\"><i class=\"fa fa-share\"></i>Teilen</a>
+ 		<div class=\"sm-buttons\" style=\"display: none;\">" ~ facebook ~ "
+ 			<a onclick=\"window.open(this.href,'','width=640,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" class=\"dfx-nojson\" href=\"https://twitter.com/intent/tweet?text=#{ termin.titel ~ ', ' ~ strDate ~ ' ' ~ strTime|url_encode }&url=#{ frontendUrlQ }?dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-twitter\"></i></a>\">
++			<a onclick=\"window.open(this.href,'','width=600,height=200,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" class=\"dfx-nojson\" href=\"https://plus.google.com/share?url=#{ frontendUrlQ }dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-google-plus\"></i></a>
+ 			<a onclick=\"window.open(this.href,'','width=600,height=380,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" title=\"\" rel=\"nofollow\" class=\"dfx-nojson\" href=\"https://www.xing-share.com/app/user?op=share;sc_p=xing-share;url=#{ frontendUrlQ }dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-xing\"></i></a>
+ 			<a onclick=\"window.open(this.href,'','width=600,height=200,modal=yes,left=100,top=50,location=no,menubar=no,resizable=yes,scrollbars=yes,status=no,toolbar=no');return false\" rel=\"nofollow\" class=\"dfx-nojson \" href=\"https://www.linkedin.com/shareArticle?mini=true&url=#{ frontendUrlQ }?dfxpath=/js/kalender/#{ konf.id }/detail/#{ termin.id }\"><i class=\"fa fa-linkedin\"></i></a>
+ 		</div>
+@@ -225,7 +229,7 @@
+ 					<meta itemprop="longitude" content="' ~ termin.lg ~ '" />
+ 				</div>' %}
+ 			{% set strGeo = termin.bg ~ ',' ~ termin.lg %}
+-			{% set strMapClose = '<div id="dfxMapClose' ~ termin.id ~ '" class="dfx-map-form row"><form action="http://maps.google.de/maps" method="get" target="_blank"><div class="col-xs-12 col-sm-6 col-md-6"><input placeholder="' ~ 'standort'|trans ~ '" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="' ~ strGeo ~'" /></div><div class="col-xs-12 col-sm-6 col-md-3"><input type="submit" value="' ~ 'route anzeigen'|trans ~ '" class="btn btn-primary" /></div><div class="col-xs-12 col-sm-6 col-md-3"><a href="#" data-tid="' ~ termin.id ~ '" class="dfx-map-close">' ~ 'karte schliessen'|trans ~ '</a></div></form></div>'|raw %}
++			{% set strMapClose = '<div id="dfxMapClose' ~ termin.id ~ '" class="dfx-map-form row"><form action="https://maps.google.de/maps" method="get" target="_blank"><div class="col-xs-12 col-sm-6 col-md-6"><input placeholder="' ~ 'standort'|trans ~ '" type="text" class="form-control" name="saddr" aria-label="Eigener Standort"  /> <input type="hidden" name="daddr" value="' ~ strGeo ~'" /></div><div class="col-xs-12 col-sm-6 col-md-3"><input type="submit" value="' ~ 'route anzeigen'|trans ~ '" class="btn btn-primary" /></div><div class="col-xs-12 col-sm-6 col-md-3"><a href="#" data-tid="' ~ termin.id ~ '" class="dfx-map-close">' ~ 'karte schliessen'|trans ~ '</a></div></form></div>'|raw %}
+ 		{% else %}
+ 			{% set strMapLink = null %}
+ 			{% set strMapWindow = null %}
+@@ -239,7 +243,7 @@
+ 	{% else %}
+ 		<div class=" row">
+ 			<div class="col-lg-12">
+-				<div class="dfx-zwue fx-linie">{{ 'keine Termine'|trans }}</div>
++						<div class="dfx-zwue fx-linie">{{ 'keine Termine'|trans }}</div>
+ 			</div>
+ 		</div>
+ 	{% endif %}
+@@ -247,8 +251,8 @@
+ 	<div id="dfx_konf" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-frontend="{{ konf.frontendUrl }}" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}" data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" data-tpl="liste" data-kal="{{ kaldata }}" style="display:none"></div>
+ {% endblock dfx_termine %}
+ {% block dfx_pagination %}
+-<div class="navigation row">
++<div class="row">
+     <div class="col-xs-12 col-sm-9 col-md-9">{{ knp_pagination_render(termine) }}</div>
+-    <div class="col-xs-12 col-sm-3 col-md-3 text-right" >{% if konf.allowInputAll ==1  %}<a class="dfx-termin-add-link"  href="{{ frontendUrlQ ~ 'dfxpath=' ~  path('gast_termin_new', { 'kid': konf.id}) }}">Termin hinzufügen</a>{% endif %}</div>
++    <div class="col-xs-12 col-sm-3 col-md-3 form-group">{% if konf.allowInputAll ==1  %}<a class="btn btn-primary dfx-termin-add-link" href="{{ frontendUrlQ ~ 'dfxpath=' ~  path('gast_termin_new', { 'kid': konf.id}) }}">Termin hinzufügen</a>{% endif %}</div>
+ </div>
+ {%  endblock %}
+
+FILE: Kalender/custom/veranstalter.html.twig
+CUSTOM: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/custom/veranstalter.html.twig
+PARENT: /mnt/c/htdocs/datefixSoestAlt/templates/Kalender/veranstalter.html.twig
+STATUS: different
+--- Kalender/veranstalter.html.twig
++++ Kalender/custom/veranstalter.html.twig
+@@ -53,7 +53,7 @@
+ {% else %}
+ 	<div class="fx-{{ konf.dfxTpl }}">
+ {% endif %}
+-    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
++    <div class="back-to-list"><a href="{{ url('kalender' , { 'kid': konf.id })}}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+     
+     {% if konf.dfxTpl == 'block' %}
+    		<h3 class="dfx-titel fx-block">{{ entity.name|raw }}</h3>
+@@ -87,7 +87,7 @@
+             <div class="dfx-detail-zwue-linie">{{ 'anfahrt'|trans }}</div>
+                 <div id="dfxMap" class="dfx-map-window dfx-map-open-self"></div>
+                 {% set strGeo = entity.bg ~ ',' ~ entity.lg %}
+-                <form action="http://maps.google.de/maps" method="get" target="_blank">
++                <form action="https://maps.google.de/maps" method="get" target="_blank">
+                 <div class="row dfx-map-form-detail" id="dfxMapClose" style="display:none">
+                         <div class="col-xs-12 col-md-8"><input placeholder="{{  'standort'|trans }}" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="{{ strGeo }}" /></div>
+                         <div class="col-xs-12 col-md-4"><input type="submit" value="{{ 'route anzeigen'|trans }}" class="btn btn-primary" /></div>
+@@ -95,7 +95,7 @@
+                 </form>
+         {% endif %}
+ 	
+-	<div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
++	<div class="back-to-list"><a href="{{ url('kalender' , { 'kid': konf.id })}}"><i class="fa fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+ </div>
+ {% block dfx_konf %}
+ 	<div id="dfx_konf" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-tpl="detail" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" style="display: none"></div>
+

@@ -1,0 +1,201 @@
+{% set skins = {'#818181':'gra', '#FF9900':'org','#F05513':'hro','#c63d4e':'dro','#996600':'brn','#5e95cc':'hbl','#4182C2':'dbl', '#84b231':'hgr', '#839636':'olv'} %}
+{% set radius = {'0':'k','1':'r' } %}
+{% set tz = konf.trennzeichen %}
+{% set frontendUrlQ = '?' in konf.frontendUrl ? konf.frontendUrl ~ '&' : konf.frontendUrl ~ '?' %}
+{% if konf.dfxFarbeEigen is not null or konf.dfxFarbeRasterEigen is not null or konf.dfxFontSize is not null or konf.dfxFontColor is not null or konf.dfxFontType is not null  %}
+   {% set cssFile = 'own/' ~ konf.id ~'.css' %}
+{% else %}
+   {% set cssFile = 'datefix.' ~ skins[konf.dfxFarbe] ~ '-' ~ radius[konf.dfxRadius] ~ '.css' %}
+{% endif %}
+{% if termin is not null %}
+	{% set metaTitle = termin.titel %}
+
+	{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+	{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+
+	{% set daynr =  termin.datumVon|date('w') %}
+	{% set daynrto =  termin.datum|date('w') %}
+	{% set monthnr =  termin.datumVon|date('n') %}
+	{% set monthnrto =  termin.datum|date('n') %}
+	{% if termin.datum == termin.datumVon %}
+       {% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+    {% else %}
+       {% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+    {% endif %}
+    {% set strTime = termin.zeit is not null and termin.zeit|date('H:i') !='00:00' ? ", #{ termin.zeit|date('H:i') } Uhr" : "" %}
+	{% set strTime = termin.zeitBis is not null and termin.zeitBis|date('H:i') !='00:00' ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+	{% set strLokalText = termin.lokal is not null ? ', ' ~ termin.lokal : null%}
+	{% set strStrasse = termin.lokalStrasse is not null ?  ', ' ~ termin.lokalStrasse : null %}
+    {% set strOrt = termin.ort is not null ? ', ' ~  termin.ort : null %}
+    {% set strLead = termin.lead is not null ? ' - ' ~  termin.lead : null   %}
+    {% set metaDesc = strDate ~ strTime ~ strLokalText ~ strStrasse ~ strOrt ~ strLead|raw %}
+ {%  else %}
+    {% set metaTitle = konf.titel is not null ? konf.titel : 'Veranstaltungskalender' %}
+    {% set metaDesc = 'Veranstaltungskalender' %}
+{% endif %}
+{% set bannerConfig = {"thumbnail": {"size": [1200, 350] }} %}
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+   <title>{{ metaTitle }}</title>
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   {% if metaDesc is not null %}
+        <meta name="description" content="{{ metaDesc }}">
+   {% endif %}
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta NAME="robots" content="INDEX, FOLLOW">
+   <style type="text/css">
+      html{
+         font-family: Arial, Helvetica, sans-serif
+      }
+      #datefix .navbar .nav-link{
+         font-weight: 700 !important;
+         position: relative;
+         z-index: 1;
+         padding-left: 1rem !important;
+         padding-right: 1rem !important;
+      }
+      #datefix .navbar .nav-item{
+         position: relative;
+      }
+      #datefix .navbar .nav-link:hover,
+      #datefix .navbar .nav-link:focus{
+         background-color: transparent !important;
+      }
+      #datefix .navbar .nav-link:hover::after,
+      #datefix .navbar .nav-link:focus::after{
+         content: "";
+         position: absolute;
+         left: 0;
+         right: 0;
+         top: calc(-1 * var(--bs-navbar-padding-y, .25rem));
+         bottom: calc(-1 * var(--bs-navbar-padding-y, .25rem));
+         background-color: rgba(255, 255, 255, 0.2);
+         z-index: -1;
+      }
+      #datefix .navbar .nav-link.active{
+         background-color: transparent !important;
+      }
+      #datefix .navbar .nav-link.active::before{
+         content: "";
+         position: absolute;
+         left: 0;
+         right: 0;
+         top: calc(-1 * var(--bs-navbar-padding-y, .25rem));
+         bottom: calc(-1 * var(--bs-navbar-padding-y, .25rem));
+         background-color: rgba(255, 255, 255, 0.28);
+         z-index: -1;
+      }
+      #datefix .navbar .nav-item + .nav-item::before{
+         content: "";
+         position: absolute;
+         left: 0;
+         top: calc(-1 * var(--bs-navbar-padding-y, .25rem));
+         bottom: calc(-1 * var(--bs-navbar-padding-y, .25rem));
+         width: 1px;
+         background-color: #fff;
+      }
+      @media (max-width: 991.98px){
+         #datefix .navbar .nav-link{
+            padding-top: .35rem !important;
+            padding-bottom: .35rem !important;
+         }
+         #datefix .navbar .nav-link:hover::after,
+         #datefix .navbar .nav-link:focus::after,
+         #datefix .navbar .nav-link.active::before{
+            top: 0;
+            bottom: 0;
+         }
+         #datefix .navbar .nav-item + .nav-item::before{
+            top: 0;
+            bottom: 0;
+         }
+      }
+   </style>
+   <script src="{{ datefix_url }}/js/bootstrap.bundle.min.js" defer type="text/javascript"></script>
+   <link href="{{ datefix_url }}/js/leaflet/leaflet.css" rel="stylesheet">
+   <script src="{{ datefix_url }}/js/leaflet/leaflet.js" defer type="text/javascript"></script>
+   <script src="{{ datefix_url }}/js/dfx_functions.js" defer type="text/javascript"></script>
+   <script id="dfx" data-kid={{ konf.id }} data-dfx-url="{{ datefix_url }}" src="{{ datefix_url }}/js/dfx_functions_curl.js" defer type="text/javascript"></script>
+   <link rel="stylesheet" href="{{ datefix_url }}/css/{{ cssFile }}">
+   <link rel="stylesheet" href="{{ datefix_url }}/fontawesome/css/all.min.css">
+   {% block head %}{% endblock %}
+</head>
+
+{% block body -%}
+   <body>
+      {% set strBanner = konf.imgBanner is not null ?  '<img  alt="Banner" class="dfx-image" style="margin-bottom: 20px; text-align: left" src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ konf.imgBanner)  ~'" />' : NULL %}
+      <div id="datefix" style="max-width: 1200px; margin: auto; margin-top: 20px;  padding:15px;  background-color: {{ konf.bgDatefix }}">
+          <div class="dfx-solo">
+              <div class="row dfx-banner">
+                  <div class="col-12">
+                      {{ strBanner|raw }}
+                  </div>
+
+              </div>
+              {% if arMenue|length > 0 %}
+              {% block dfx_artikel_menue -%}
+              <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-1 mb-3">
+
+                      <div class="container-fluid px-0">
+                          {% set currentNfxId = app.request ? app.request.get('nfxid') : null %}
+                          {% set currentRoute = app.request ? app.request.attributes.get('_route') : null %}
+                          {% set hasNfx = app.request ? (app.request.get('nfx') is not null or currentNfxId is not null or currentRoute == 'news_fe') : false %}
+                          {% set isHome = app.request ? app.request.query|length == 0 : false %}
+                          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dfxNavbar" aria-controls="dfxNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                              <span class="navbar-toggler-icon"></span>
+                          </button>
+                          <div class="collapse navbar-collapse" id="dfxNavbar">
+                              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                  <li class="nav-item">
+                                      <a class="nav-link dfx-top-menue text-white px-2 py-1{% if isHome %} active{% endif %}" href="{{ absolute_url('/') }}"{% if isHome %} aria-current="page"{% endif %} aria-label="Startseite" title="Startseite"><i class="fa-solid fa-house" aria-hidden="true"></i> Startseite</a>
+                                  </li>
+                                  <li class="nav-item">
+                                      <a class="nav-link dfx-top-menue text-white px-2 py-1{% if hasNfx %} active{% endif %}" href="{{ path('news_fe', { 'kid': konf.id }) }}"{% if hasNfx %} aria-current="page"{% endif %} aria-label="Aktuelles" title="Aktuelles">Aktuelles</a>
+                                  </li>
+                                  {%  for menueItem in arMenue %}
+                                      {% set detailUrl = frontendUrlQ ~ 'nfxid=' ~ menueItem.id  %}
+                                      <li class="nav-item">
+                                          <a class="nav-link dfx-top-menue text-white px-2 py-1{% if currentNfxId is not null and currentNfxId == menueItem.id %} active{% endif %}" href="{{ detailUrl }}"{% if currentNfxId is not null and currentNfxId == menueItem.id %} aria-current="page"{% endif %} aria-label="{{ menueItem.kurztitel }}" title="{{ menueItem.kurztitel }}">{{ menueItem.kurztitel }}</a>
+                                      </li>
+                                  {% endfor %}
+                              </ul>
+                          </div>
+                      </div>
+
+              </nav>
+             {% endblock dfx_artikel_menue %}
+             {% endif %}
+            {{ dfx_content|raw }}
+              <div class="row dfx-footer">
+                  <div class="col-12" style="text-align: center">
+                      {% if arMenue is not null %}
+
+                          {% block dfx_footer_menue -%}
+                               <a class="dfx-footer-menue" href="{{ absolute_url('/') }}" aria-label="Startseite" title="Startseite">Startseite</a>&nbsp;{{ tz }}&nbsp;
+                               <a class="dfx-footer-menue" href="{{ path('news_fe', { 'kid': konf.id }) }}" aria-label="Aktuelles" title="Aktuelles">Aktuelles</a>&nbsp;{{ tz }}&nbsp;
+                              {% set m = 0 %}
+                              {%  for menueItem in arMenue %}
+                                  {% set detailUrl = frontendUrlQ ~ 'nfxid=' ~ menueItem.id  %}
+                                  <a class="dfx-footer-menue" href="{{ detailUrl }}">{{ menueItem.kurztitel }}</a>
+                                  {% set m = m+1 %}
+                                  {% if m < arMenue|length %}
+                                      &nbsp;{{ tz }}&nbsp;
+                                  {% endif %}
+
+                              {% endfor %}
+                          {% endblock dfx_footer_menue %}
+                      {%  else %}
+                          <div style="text-align: right;margin-top: 20px"><a href="{{ konf.impressumUrl }}" target="_blank">Impressum</a> <a href="{{ konf.datenschutzUrl }}" target="_blank">Datenschutz</a></div>
+                      {% endif %}
+
+                  </div>
+              </div>
+          </div>
+      </div>
+   </body>
+{% endblock %}
+
+</html>

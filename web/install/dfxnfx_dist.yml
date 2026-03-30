@@ -1,0 +1,17 @@
+# This file is auto-generated during datefix/newsfix install
+parameters:
+   datefix_url: #dfxUrl#
+   dfx_version: multi
+   nfx_version: #version#
+   dfx_mail: #dfxMail#
+   nfx_mail: #nfxMail#
+   dfx_mail_norespond: #dfx_mail_norespond#
+   nfx_mail_norespond: #nfx_mail_norespond#
+   fb_id: #fb_id#
+   mapkey: #mapkey#
+   zielgruppe: false
+   # aktivieren für Standard-Template
+   backend: ~
+   # aktivieren für individuelles Admin-Template
+   # backend: custom/
+   

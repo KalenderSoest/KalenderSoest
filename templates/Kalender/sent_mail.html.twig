@@ -1,0 +1,18 @@
+{% extends 'Kalender/base_detail.html.twig' %}
+{% block dfx_termin_detail %}		
+<div>
+    <h3>{{ 'E-Mail erfolgreich verschickt'|trans }}</h3>
+   <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    <p>{{ 'Ihr Veranstaltungshinweis auf'|trans }} "{{ termin.titel }}" {{ 'wurde erfolgreich an'|trans }}  {{ empfEmail }} {{ 'verschickt'|trans }}.</p>
+</div>
+{% endblock %}
+{% block dfx_konf %}
+	{% set skins = {'#818181':'gra', '#FF9900':'org','#F05513':'hro','#c63d4e':'dro','#996600':'brn','#5e95cc':'hbl','#4182C2':'dbl', '#84b231':'hgr', '#839636':'olv'} %}
+	{% set radius = {'0':'k','1':'r' } %}
+	{% if konf.dfxFarbeEigen is not null or konf.dfxFarbeRasterEigen is not null or konf.dfxFontSize is not null or konf.dfxFontColor is not null or konf.dfxFontType is not null  %}
+		{% set cssFile = 'own/' ~ konf.id ~'.css' %}
+	{% else %}
+		{% set cssFile = 'datefix.' ~ skins[konf.dfxFarbe] ~ '-' ~ radius[konf.dfxRadius] ~ '.css' %}
+	{% endif %}
+	<div id="dfx_konf" data-cssfile="{{ cssFile }}" data-tpl="report" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" style="display: none"></div>
+{% endblock dfx_konf %}

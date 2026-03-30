@@ -1,0 +1,96 @@
+{% extends 'Kalender/base_detail.html.twig' %}
+{% block dfx_termin_detail %}
+<h2>{{ 'anmeldung'|trans }}</h2>
+<h3>{{ termin.titel|raw }}, {{ strDate }} {{ strTime }}</h3>
+{% if termin.subtitel != NULL %}
+    <div class="dfx-detail-subtitel">{{'subtitel-fe'|trans}}{{ termin.subtitel }} </div>
+{% endif %}
+{% if error is defined %}
+ <p class="bg-danger">{{ error }}</p>
+{% endif %}
+{{ form_start(form) }}
+ <div class="row">
+	 <div class="col-md-4">
+		 {{ form_row(form.nachname) }}
+	 </div>
+	 <div class="col-md-4">
+		 {{ form_row(form.vorname) }}
+	 </div>
+	 <div class="col-md-4">
+		 {{ form_row(form.org) }}
+	 </div>
+ </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.strasse) }}
+    	</div>
+    	<div class="col-sm-4 col-md-2">
+    	 	{{ form_row(form.plz) }}
+    	</div>
+    	<div class="col-sm-8 col-md-4">
+    	 	{{ form_row(form.ort) }}
+    	</div>
+   </div>
+    <div class="row">
+    	<div class="col-sm-6">
+    		{{ form_row(form.tel) }}
+    	</div>
+    	<div class="col-sm-6">
+    		{{ form_row(form.mobil) }}
+    	</div>
+    </div>
+    <div class="row">
+   	 	<div class="col-sm-4">
+    		{{ form_row(form.anzahl) }}
+    	</div>
+    	<div class="col-sm-8">
+    		{{ form_row(form.email) }}
+    	</div>
+    </div>
+    <div class="row">
+    <div class="col-md-4">
+    		{{ form_row(form.notiz) }}
+    </div>
+    </div>
+    <div id="cCode" class="row">
+    	<div class="col-sm-4 col-md-4">
+    	   <label class="required" for="form_code">{{ 'sicherheitscode'|trans }}</label>
+    		{{ code.code|raw }}{{ form_row(form.cCode) }}
+    	</div>
+    	<div id="cCodeStatus" class="col-sm-8 col-md-6">
+    	   
+    	</div>
+   </div>
+   {{ form_row(form.key) }}
+   <div class="row" style="margin-bottom: 20px">
+        <div class="col-1">
+               {{ form_row(form.datenschutz) }}
+        </div>
+        <div class="col-11" style="padding-top: 10px">
+              {{ 'datenschutz_1'|trans }}( <a class="dfx-nojson" href="{{ konf.datenschutzUrl  }}" target="_blank">{{ 'datenschutz_linktext'|trans }}</a> ){{ 'datenschutz_2'|trans }}
+        </div>
+    </div>
+    
+    <div class="row">
+    	<div class="col-sm-6">
+    		{{ form_row(form.submit) }}
+    	</div>
+    	<div class="col-sm-6">
+    		{{ form_row(form.reset) }}
+    	</div>
+    </div>
+	{{ form_row(form._token) }}
+	{{ form_end(form, {'render_rest': false}) }}
+	<hr>
+    <div class="row">
+    	<div class="col-12 col-sm-6">
+    		<a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a>
+    	</div>
+    	<div class="col-12 col-sm-6 text-right">
+    		{{'pflichtfelder'|trans}}
+    	</div>
+    </div>
+    {%  endblock dfx_termin_detail %}
+    {% block dfx_konf %}
+		<div id="dfx_konf" data-tpl="form" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="0" style="display: none"></div>
+    {% endblock dfx_konf %}

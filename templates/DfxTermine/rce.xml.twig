@@ -1,0 +1,205 @@
+﻿{% set weatherGood = termin.filter2 == 1 ? 'yes' : 'no'%}
+{% set themes = {
+    'Ausstellung' : 37,
+    'Wanderung/Exkursion' : 38,
+    'Fachtagung': 42,
+    'Kurs/Seminar/Beratungsgespräch': 48,
+    'Sonstige Veranstaltung': 176,
+    'Führung/Besichtigung': 45,
+    'Aktionstag': 176,
+    'Aufführung': 46,
+    'Konzert': 46,
+    'Vortrag/Diskussion': 42,
+    'Radtour': 179,
+    'Bootstour': 179
+    }
+%}
+
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE RCEMEDIEN.EVENTS SYSTEM "rcexml_import.dtd">
+<RCEMEDIEN.EVENTS version="3.01">
+    <ORIGIN id="451" mandator="1">
+    <TITLE>Ausgabe XML Schnittstelle Bayerisches Staatsministerium für Umwelt und Verbraucherschutz - Internetangebot Bayerisches Staatsministerium für Umwelt und Verbraucherschutz</TITLE>
+    <NAME>Bayern TourNatur</NAME>
+    <SUPPLY>Bayerisches Staatsministerium für Umwelt und Verbraucherschutz</SUPPLY>
+    <EMAIL>???</EMAIL>
+    <PHONE>???</PHONE>
+    <TECHNICAL_SUPPORT>Datefix - Pool Online Internetservice Michael Loy</TECHNICAL_SUPPORT>
+    <TECHNICAL_SUPPORT_EMAIL>info@datefix.de </TECHNICAL_SUPPORT_EMAIL>
+    <TECHNICAL_SUPPORT_PHONE>09081 6415</TECHNICAL_SUPPORT_PHONE> 
+    <CREATED>{{ "now"|date('Y-m-d H:i:s') }}</CREATED>
+    <RECORDS>{{ termine|length }}</RECORDS>
+    <EVENTDATES>{{ termine|length }}</EVENTDATES>
+</ORIGIN>
+<EVENTLIST>
+{% for termin in termine %}
+    {% set zielgruppen = termin.zielgruppe|default([]) %}
+    {% set children = 'Kinder' in zielgruppen ? 'yes' : 'no' %}
+    {% set youth = 'Jugendliche' in zielgruppen ? 'yes' : 'no' %}
+    {% set adult = 'Erwachsene' in zielgruppen ? 'yes' : 'no' %}
+    {% set families = 'Familien' in zielgruppen ? 'yes' : 'no' %}
+    {% set senioren = 'Senioren' in zielgruppen ? 'yes' : 'no' %}
+    {% set theme = null %}
+    {% set subtheme = null %}
+    {% set break = false %}
+    {% for rubrik in termin.rubrik %}
+        {% if themes[rubrik] is defined and break == false %}
+            {% set theme = themes[rubrik]  %}
+            {% set break = true %}
+            {% if rubrik == 'Radtour' %}
+                {% set subtheme = 90 %}
+            {% elseif rubrik == 'Bootstour' %}
+                {% set subtheme = 91 %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% if termin.idVeranstalter.id == ''%}
+        {% if 'atNight' in termin.titel %}
+            {% set theme = 45 %}
+            {% set subtheme = 1782 %}
+        {% elseif 'irdWatch' in termin.titel %}
+            {% set theme = 45 %}
+            {% set subtheme = 1781 %}
+        {% elseif 'Fest' in termin.titel %}
+            {% set theme = 43 %}
+            {% set subtheme = 1779 %}
+        {% elseif 'Tag der Artenvielfalt' in termin.titel %}
+            {% set theme = 176 %}
+            {% set subtheme = 1783 %}
+        {% elseif 'flegeeinsatz' in termin.titel %}
+            {% set theme = 38 %}
+            {% set subtheme = 1776 %}
+        {% elseif 'tunde der Gartenvögel' in termin.titel %}
+            {% set theme = 176 %}
+            {% set subtheme = 1780 %}
+         {% elseif 'tunde der Wintervögel' in termin.titel %}
+            {% set theme = 176 %}
+            {% set subtheme = 1785 %}
+         {% elseif 'ersammlung' in termin.titel %}
+            {% set theme = 39 %}
+            {% set subtheme = 1778 %}
+        {% endif %}
+        {% if 'Wanderung/Exkursion' in termin.rubrik %}
+            {% set subtheme = 1777 %}
+        {% elseif 'Kurs/Seminar/Beratungsgespräch' in termin.rubrik %}
+            {% set subtheme =  1774 %}
+        {% elseif 'Vortrag/Diskussion' in termin.rubrik %}
+            {% set subtheme = 1775 %}
+        {% endif %}
+    {% endif %}
+    <EVENT id="" fid="{{ termin.id }}" active="yes" www_publish="yes" isgroupevent="no" userid="{{ termin.user.id }}" isrceuserid="no" supply="{{ termin.veranstalter.name }}" supplyemail="{{ termin.veranstalter.email }}" supplyurl="{{ termin.veranstalter.www }}" supplyadditional="Zusätzliche Angaben Quelle" modified="{{ termin.datumModified|date('H-m-d H:i:s') }}">
+    <DATAPOOL id="1"></DATAPOOL>
+    <THEME id="{{ theme }}" />
+    <SUBTHEME id="{{ subtheme }}" />
+    <NAME>{{ termin.titel }}</NAME>
+    <SHORTDESCRIPTION>{{ termin.lead }}</SHORTDESCRIPTION>
+    <DESCRIPTION nationwide="no" highlight="no" press="no" no_print="no" association="no"><![CDATA[{{ strText|raw }}]]></DESCRIPTION>
+    <ADDRESSLIST>
+        {% if termin.idLocation is not null %}
+            <ADDRESS id="" fid="{{ termin.idLocation.id }}" type="location"/>
+            {% set modifiedLoc = termin.idLocation.datumModified %}
+        {%  else %}
+           {% set modifiedLoc = termin.datumModified %}
+        {% endif %}
+        <ADDRESS active="yes" www_publish="yes" type="location"  postal_address="yes" modified="{{ modifiedLoc }}">
+            <NAME> {{ termin.lokal }} </NAME>
+            <STREET>{{ termin.lokalStrasse }}</STREET>
+            <ZIP>{{ termin.plz }}</ZIP>
+            <CITY>{{ termin.ort }}</CITY>
+            <COUNTY>{{ termin.region.region }}</COUNTY>
+            <COUNTRY>Deutschland</COUNTRY>
+            <EMAIL>{{ termin.mail }}</EMAIL>
+            <LATITUDE>{{ termin.bg }}</LATITUDE>
+            <LONGITUDE>{{ termin.lg }}</LONGITUDE>
+            <DESCRIPTION>Musterbeschreibung</DESCRIPTION>
+            {% if termin.location is not null %}
+                <PHONE>{{ termin.location.telefon }}</PHONE>
+                <FAX>{{ termin.location.fax }}</FAX>
+                <MOBILE>{{ termin.location.mobil }}</MOBILE>
+                <URL>{{ termin.location.www }}</URL>
+            {% endif %}
+        </ADDRESS>
+        {% if termin.idVeranstalter is not null %}
+            <ADDRESS id="" fid="{{ termin.idVeranstalter.id }}" type="presenter"/>
+            <ADDRESS active="yes" www_publish="yes" type="presenter"  postal_address="yes" modified="{{ termin.idVeranstalter.datumModified }}">
+                <NAME>{{ termin.idVeranstalter.name }}</NAME>
+                <STREET>{{ termin.idVeranstalter.strasse }}</STREET>
+                <ZIP>{{ termin.idVeranstalter.plz }}</ZIP>
+                <CITY>{{ termin.idVeranstalter.ort }}</CITY>
+                <COUNTY>{{ termin.region.region }}</COUNTY>
+                <COUNTRY>Deutschland</COUNTRY>
+                <PHONE>{{ termin.idVeranstalter.telefon }}</PHONE>
+                <FAX>{{ termin.idVeranstalter.fax  }}</FAX>
+                <MOBILE>{{ termin.idVeranstalter.mobil }}</MOBILE>
+                <EMAIL>{{ termin.idVeranstalter.email }}</EMAIL>
+                <LATITUDE>{{ termin.idVeranstalter.bg }}</LATITUDE>
+                <LONGITUDE>{{ termin.idVeranstalter.lg }}</LONGITUDE>
+                <DESCRIPTION>{{ termin.idVeranstalter.zusatz }}</DESCRIPTION>
+                <URL>{{ termin.idVeranstalter.www }}</URL>
+            </ADDRESS>
+        {% endif %}
+    </ADDRESSLIST>
+    <DATELIST>
+        <DATE>
+            <STARTDATE>{{ termin.datumVon|date('Y-m-d') }}</STARTDATE>
+            {% if termin.datumVon != termin.datum %}
+                <ENDDATE>{{ termin.datum|date('Y-m-d') }}</ENDDATE>
+            {% endif %}
+            <STARTTIME>{{ termin.zeit|date('H:i:s') }}</STARTTIME>
+            <ENDTIME>{{ termin.zeitBis|date('H:i:s') }}</ENDTIME>
+        </DATE>
+    </DATELIST>
+    {% if termin.eintritt is not null %}
+        <ADMISSION free="no">
+            <ADMISSION_TEXT>{{ termin.eintritt }}</ADMISSION_TEXT>
+        </ADMISSION>
+    {% else %}
+        <ADMISSION free="yes" />
+    {% endif %}
+    <AUDIENCE  children="{{ children }}" youth="{{ youth }}" adult="{{ adult }}" families="{{ families }}" senioren="{{ senioren }}" />
+    <WEATHER good="{{ weatherGood }}" />
+    {% if termin.plaetzeGesamt > 0 and termin.mail is not null %}
+        <RESERVATION>{{ termin.mail }}</RESERVATION>
+    {% endif %}
+    <KEYWORD>Umwelt, Umweltschutz, Naturschutz</KEYWORD>
+    <ADDITIONALLIST>
+        {% if 'Kinder' in zielgruppen and 'Senioren' not in zielgruppen and 'Erwachsene' not in zielgruppen %}
+        <SPEZIELLES_ANGEBOT_FUER_KINDER>Besonders für Kinder geeignet</SPEZIELLES_ANGEBOT_FUER_KINDER>
+        {% endif %}
+        {% if 'Familien' in zielgruppen %}
+        <FUER_FAMILIEN_GEEIGNET>Für Familien geeignet</FUER_FAMILIEN_GEEIGNET>
+        {% endif %}
+        {% if termin.plaetzeGesamt >0 and termin.mail is not null %}
+            {% set anmeldeschluss = termin.anmeldeschluss is not null ? 'bis ' ~ termin.anmeldeschluss|date('d.m.Y') : null%}
+        <ANMELDEPFLICHT>Anmeldung erforderlich {{ anmeldeschluss }} unter {{ termin.mail }}</ANMELDEPFLICHT>
+        {% endif %}
+         {% if termin.eintritt is not null %}
+        <KOSTENPFLICHT_ERWACHSENE>{{ termin.eintritt }}</KOSTENPFLICHT_ERWACHSENE>
+        {% endif %}
+        {% if termin.filter3 == 1 %}
+        <FUER_KINDERWAGEN_UND_ROLLSTUEHLE_GEEIGNET>Für Kinderwagen und Rollstühle geeignet</FUER_KINDERWAGEN_UND_ROLLSTUEHLE_GEEIGNET>
+        {% endif %}
+        {% if termin.filter4 == 1 %}
+        <OEPNVERREICHBARKEIT>Ja</OEPNVERREICHBARKEIT>
+        {% endif %}
+        {% if termin.filter5 == 1 %}
+        <FUER_SEHBEHINDERTE_GEEIGNET>Für Sehbehinderte geeignet</FUER_SEHBEHINDERTE_GEEIGNET>
+        {% endif %}
+        {% set hinweise = null %}
+        {% set hinweise = termin.filter2 == 1 ? hinweise ~ 'Die Veranstaltung findet nur bei gutem Wetter statt.\n' : hinweise %}
+        {# Beschreibung Anfahrt/Treffpunkt #}
+        {% set hinweise = termin.text1 == 1 ? hinweise ~ termin.text1 ~ '\n' : hinweise  %}
+        {% set hinweise = termin.platzeGesamt > 0 ? hinweise ~ 'Beschränkte Teilnehmerzahl bzw. beschränkter Personenkreis.\n' : hinweise %}
+        {% set hinweise = termin.textbox1 is not null ?  hinweise ~ termin.textbox1 ~ '\n' : hinweise %}
+        <BESONDERE_HINWEISE>{{ hinweise }}</BESONDERE_HINWEISE>
+        <NR1_ANSPRECHPARTNER type="bereich" description="1 Ansprechpartner">
+            <NACHNAME description="Nachname">{{ termin.text3 }}</NACHNAME>
+            <TELEFON description="Telefon">{{ termin.text4 }}</TELEFON>
+            <EMAIL description="EMail">{{ termin.text5 }}</EMAIL>
+        </NR1_ANSPRECHPARTNER>
+    </ADDITIONALLIST>
+</EVENT>
+{% endfor %}        
+</EVENTLIST>
+</RCEMEDIEN.EVENTS>
+

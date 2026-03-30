@@ -1,0 +1,97 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Veranstalter' %}
+{% block pageheader 'Veranstalter bearbeiten' %}
+{% block subheader entity.name  %}
+{% block footer %}
+{% if konf.useMap == 1 %}
+    <link href="{{ asset('js/leaflet/leaflet.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/leaflet/leaflet.js') }}" type="text/javascript"></script>
+{% endif %}
+
+{% endblock footer %}
+{% block javascript_onload %}
+    
+{% endblock %}
+
+{% block body -%}
+    {{ form_start(form) }}
+    <div class="row">
+	    <div class="col-sm-12 col-md-9">
+	    {{ form_row(form.name) }}
+	    </div>
+    </div>
+    <div class="row">
+	    <div class="col-sm-12 col-md-9">
+	    {{ form_row(form.strasse) }}
+	    </div>
+    </div>
+    <div class="row">
+                   {%  if konf.feldNat == 1 %}
+                <div class="col-sm-4 col-md-1">
+                    {{ form_row(form.nat) }}
+                </div>
+            {% endif %}
+            <div class="col-sm-8 col-md-2">
+                {{ form_row(form.plz) }}
+            </div>
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(form.ort) }}
+            </div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.telefon) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    	 	{{ form_row(form.email) }}
+    	</div>
+    </div>
+   <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		 {{ form_row(form.www) }}
+    	</div>
+   </div>
+   <div class="row">
+    	<div class="col-sm-12 col-md-9">
+       		{{ form_row(form.zusatz) }}
+       	</div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		
+    	</div>
+    	<div class="col-sm-12 col-md-2">
+    		{%  if entity.imgDoz is not null %}
+				{% set strImgPrev = '<img class="dfx-image" src="' ~ asset('/images/dfx/' ~ konf.id ~ '/' ~ entity.imgDoz) | imagine_filter('thumb', {'thumbnail': {'size': [konf.imgPrevWidth,konf.imgPrevHeight] }}) ~ '" />' %}
+			{% else %}
+				{% set strImgPrev = NULL %}
+			{%  endif %}
+			{{ strImgPrev|raw }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    	     {{ form_row(form.location) }}
+    	</div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    	    {{ form_row(form.veranstalter) }}
+    	</div>
+    </div> 
+    <div class="row">
+		  <div class="col-6">
+		  {{ form_row(form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(form.reset) }}
+		  </div>
+		
+    </div>
+    {{ form_row(form._token) }}
+    {{ form_end(form, {'render_rest': false}) }}
+    <div><br /><a href="{{ path('admin_dozenten') }}">Zurück zur Liste ohne zu speichern</a></div>
+{% endblock %}
+

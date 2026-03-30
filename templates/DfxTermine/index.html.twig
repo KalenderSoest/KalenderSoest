@@ -1,0 +1,727 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Termine' %}
+{% block pageheader 'Veranstaltungen' %}
+{% block subheader 'Listenansicht' %}
+
+
+{% block body -%}
+{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
+{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
+
+{% block dfx_nav_filter_top %}
+		<a href="{{ path('termine_new') }}">Termin hinzufügen</a>
+		<hr>
+		{{ form_start(filter_form,  {'attr': {'class': ''} }) }}
+		<div class="row">
+		 	<div class="col-sm-6 col-md-3">
+		  		{{ form_row(filter_form.datum_von) }}
+		 	</div>
+		  	<div class="col-sm-6 col-md-3">
+		  		{{ form_row(filter_form.datum_bis) }}
+		  	</div>
+		  	<div class="col-sm-12 col-md-3">
+		  		{{ form_row(filter_form.rubrik) }}
+		 	</div>
+                        {% if zielgruppe %}
+                            <div class="col-sm-12 col-md-3">
+                                    {{ form_row(filter_form.zielgruppe) }}
+                            </div>
+                        {% endif %}
+                        
+		</div>
+		<div class="row">
+			<div class="col-sm-12 col-md-6">
+		  		{{ form_row(filter_form.suche) }}
+		  	</div>
+		    <div class="col-12 col-sm-3 col-md-2">
+		  		{{ form_row(filter_form.plz) }}
+		  	</div>
+		  	<div class="col-sm-12 col-md-4">
+		 		{{ form_row(filter_form.ort) }}
+		  	</div>
+		</div>
+		<div class="row">
+		  	<div class="col-sm-12 col-md-6">
+		  		{{ form_row(filter_form.lokal) }}
+		  	</div>
+		
+		  	<div class="col-sm-12 col-md-6">
+		  		{{ form_row(filter_form.veranstalter) }}
+		  	</div>
+		</div>
+	{% if is_granted('ROLE_DFX_META') or is_granted('ROLE_DFX_GROUP') %}
+	<fieldset>
+    	<legend>Filter für Meta- und Gruppenkalender</legend>
+		<div class="row">
+		  	<div class="col-sm-6 col-md-6 ">
+		  		{{ form_row(filter_form.hideSub) }}
+		  	</div>
+		  	<div class="col-sm-6 col-md-6">
+		  		{{ form_row(filter_form.filterPub) }}
+		  	</div>
+		</div>
+	</fieldset>	
+	{% endif %}
+		<div class="row">
+		  <div class="col-6 col-sm-4 col-md-4">
+		  {{ form_row(filter_form.submit) }}
+		  </div>
+		  <div class="col-6 col-sm-4 col-md-4">
+		  {{ form_row(filter_form.reset) }}
+		  </div>
+		</div>
+        {{ form_row(filter_form._token) }}
+        {{ form_end(filter_form, {render_rest: false}) }}
+        {% if filter != ''%}
+            <hr>
+            <div class="row alert-info" style="padding: 10px; margin: 20px 0">
+                <div class="col-12 col-sm-10">{{ filter|raw }} </div>
+                <div class="col-12 col-sm-2"><input id="filterreset" value="Filter löschen" class="btn btn-secondary form-control" type="button"></div>
+            </div>
+        {% endif %}
+
+
+{% endblock %}
+<hr>
+<a href="{{ path('termine_new') }}">Termin hinzufügen</a>
+<hr>
+<div id="termine-published-section" class="dfx-termine-section" data-section-id="termine-published-section">
+<h4>Veröffentlichte Termine ab heute</h4>
+{%  if termine.getTotalItemCount == 0 %}
+            Keine veröffentlichten Termine gefunden	
+{% else %}
+
+<form action="{{ path('termine_batch_action') }}" method="POST" class="dfx-batch-form">
+    <input type="hidden" name="batchAction" value="">
+    <input type="hidden" name="batchSection" value="published">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Uhrzeit</th>
+            	<th>Titel</th>
+                <th>Pub</th>
+                {% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
+                    <th>PubMeta</th>
+                {% endif %}
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                    <th>PubGroup</th>
+                {% endif %}
+                <th colspan="5">Actions/Aufrufe</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>PDF</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {%  if termine is not defined %}
+            Keine Termine gefunden	
+        {% endif %}
+		{% for termin in termine %}
+			{% set daynr =  termin.datumVon|date('w') %}
+			{% set daynrto =  termin.datum|date('w') %}
+			{% set monthnr =  termin.datumVon|date('n') %}
+			{% set monthnrto =  termin.datum|date('n') %}
+			{% if termin.datum == termin.datumVon %}
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d.m.Y') } " %}
+			{% else %}	
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+			{% endif %}	
+		    {% set strTime = termin.zeit != null ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+			{% set strTime = termin.zeitBis != null ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+		    	
+            <tr>
+                <td><input type="checkbox" name="selectedIds[]" class="checkall" value="{{ termin.id }}" id="checkbox_{{ termin.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ strTime }}</td>
+                <td>{{ termin.titel|raw }} </td>
+                <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz deaktivieren" href="{{ path('termine_unpub', { 'id': termin.id }) }}"><i class="fa-solid fa-eye"> </i></a>{%  endif %}</td>
+                {% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
+                	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}"
+						data-state="{{ termin.pubMeta ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubMeta == 1 %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif %} 
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}"
+						data-state="{{ termin.pubGroup ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif%}
+				<td><a href="{{ path('termine_edit', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} bearbeiten"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+				<td><a href="{{ path('termine_copy', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} kopieren"><i class="fa-solid fa-copy"> </i></a></td>
+                <td><a title="Datensatz ansehen" href="{{ termin.datefix.frontendUrl }}?dfxid={{ termin.id }}" target="_blank"><i class="fa-solid fa-globe"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+                <td>{{ termin.counter }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                     <td><a href="{{ path('termin_pdf', { 'id': termin.id }) }}" title="PDF erzeugen"><i class="fa-solid fa-file-pdf"> </i></a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="dfx-batch-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <button type="button" class="btn btn-outline-secondary dfx-toggle-all">Alle markieren / demarkieren</button>
+        {% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubmeta">Alle markierten: PubMeta</button>
+        {% endif %}
+        {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubgroup">Alle markierten: PubGroup</button>
+        {% endif %}
+        <button type="button" class="btn btn-danger dfx-batch-trigger" data-action="delete">Alle markierten löschen</button>
+    </div>
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(termine) }}
+	</div>
+	{% endif %}
+    </div>
+	<hr>
+    <a href="{{ path('termine_new') }}">Termin hinzufügen</a>
+    <hr>
+    <div id="termine-unpublished-section" class="dfx-termine-section" data-section-id="termine-unpublished-section">
+    <h4>Unveröffentlichte Termine ab heute</h4>
+    {%  if termine2.getTotalItemCount == 0 %}
+            Keine unveröffentlichten Termine gefunden	
+    {% else %}
+    <form action="{{ path('termine_batch_action') }}" method="POST" class="dfx-batch-form">
+        <input type="hidden" name="batchAction" value="">
+        <input type="hidden" name="batchSection" value="unpublished">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Uhrzeit</th>
+            	<th>Titel</th>
+                <th>Pub</th>
+            	{% if is_granted('ROLE_DFX_META') %}
+            		<th>PubMeta</th>
+            	{% endif %}
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            		<th>PubGroup</th>
+            	{% endif %}
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+		{% for termin in termine2 %}
+			{% set daynr =  termin.datumVon|date('w') %}
+			{% set daynrto =  termin.datum|date('w') %}
+			{% set monthnr =  termin.datumVon|date('n') %}
+			{% set monthnrto =  termin.datum|date('n') %}
+			{% if termin.datum == termin.datumVon %}
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+			{% else %}	
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+			{% endif %}	
+		    {% set strTime = termin.zeit != null ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+			{% set strTime = termin.zeitBis != null ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+		    	
+            <tr>
+                <td><input type="checkbox" name="selectedIds[]" class="checkall" value="{{ termin.id }}" id="checkbox_{{ termin.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ strTime }}</td>
+                <td>{{ termin.titel|raw }} </td>
+                <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz veröffentlichen" href="{{ path('termine_pub', { 'id': termin.id }) }}"><i class="fa-solid fa-eye-slash"> </i></a>{% endif %}</td>
+		{% if is_granted('ROLE_DFX_META') %}
+                	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}"
+						data-state="{{ termin.pubMeta ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubMeta == 1 %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif %} 
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}"
+						data-state="{{ termin.pubGroup ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif%}
+				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+				<td><a href="{{ path('termine_copy', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} kopieren"><i class="fa-solid fa-copy"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="dfx-batch-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <button type="button" class="btn btn-outline-secondary dfx-toggle-all">Alle markieren / demarkieren</button>
+        {% if is_granted('ROLE_DFX_PUB') %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pub">Alle markierten: Pub</button>
+        {% endif %}
+        {% if is_granted('ROLE_DFX_META') %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubmeta">Alle markierten: PubMeta</button>
+        {% endif %}
+        {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubgroup">Alle markierten: PubGroup</button>
+        {% endif %}
+        <button type="button" class="btn btn-danger dfx-batch-trigger" data-action="delete">Alle markierten löschen</button>
+    </div>
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(termine2) }}
+	</div>
+	{% endif %}
+    </div>
+	{% if is_granted('ROLE_DFX_META') %}
+	<hr>
+    <div id="termine-meta-section" class="dfx-termine-section" data-section-id="termine-meta-section">
+    <h4>Termine ohne Entscheidung über Meta-Status</h4>
+    {%  if termineMeta.getTotalItemCount == 0 %}
+            Keine Termine mit offenem Meta-Status gefunden	
+    {% else %}   
+    <form action="{{ path('termine_batch_action') }}" method="POST" class="dfx-batch-form">
+    <input type="hidden" name="batchAction" value="">
+    <input type="hidden" name="batchSection" value="meta">
+    <table class="table table-striped">
+       <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Uhrzeit</th>
+            	<th>Titel</th>
+            	<th>Lokal</th>
+                {% if is_granted('ROLE_DFX_META') %}
+            		<th>PubMeta</th>
+            	{% endif %}
+            	<th colspan="4">Actions/Aufrufe</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th>PDF</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        
+		{% for termin in termineMeta %}
+			{% set daynr =  termin.datumVon|date('w') %}
+			{% set daynrto =  termin.datum|date('w') %}
+			{% set monthnr =  termin.datumVon|date('n') %}
+			{% set monthnrto =  termin.datum|date('n') %}
+			{% if termin.datum == termin.datumVon %}
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+			{% else %}	
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+			{% endif %}	
+		    {% set strTime = termin.zeit != null ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+			{% set strTime = termin.zeitBis != null ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+		    	
+            <tr>
+                <td><input type="checkbox" name="selectedIds[]" class="checkall" value="{{ termin.id }}" id="checkbox_meta_{{ termin.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ strTime }}</td>
+                <td>{{ termin.titel|raw }} </td>
+                <td>{{ termin.lokal|raw }} </td>
+                {% if is_granted('ROLE_DFX_META') %}
+                	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}"
+						data-state="{{ termin.pubMeta ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubMeta == 1 %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif %}
+               
+				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+                <td>{{ termin.counter }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <td><a href="{{ path('termin_pdf', { 'id': termin.id }) }}" title="PDF erzeugen"><i class="fa-solid fa-file-pdf"> </i></a></td>
+
+                {% endif %}
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="dfx-batch-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <button type="button" class="btn btn-outline-secondary dfx-toggle-all">Alle markieren / demarkieren</button>
+        <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubmeta">Alle markierten: PubMeta</button>
+        <button type="button" class="btn btn-danger dfx-batch-trigger" data-action="delete">Alle markierten löschen</button>
+    </div>
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(termineMeta) }}
+	</div>
+	{%  endif %}
+	</div>
+	<hr>
+	{%  endif %}
+	
+	
+    {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+	<hr>
+    <div id="termine-group-section" class="dfx-termine-section" data-section-id="termine-group-section">
+    <h4>Termine ohne Entscheidung über Group-Status</h4>
+    {%  if termineGroup.getTotalItemCount == 0 %}
+            Keine Termine mit offenem Group-Status gefunden	
+    {% else %}   
+    <form action="{{ path('termine_batch_action') }}" method="POST" class="dfx-batch-form">
+    <input type="hidden" name="batchAction" value="">
+    <input type="hidden" name="batchSection" value="group">
+    <table class="table table-striped">
+       <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Uhrzeit</th>
+            	<th>Titel</th>
+            	<th>Lokal</th>
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            		<th>PubGroup</th>
+            	{% endif %}
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+		{% for termin in termineGroup %}
+			{% set daynr =  termin.datumVon|date('w') %}
+			{% set daynrto =  termin.datum|date('w') %}
+			{% set monthnr =  termin.datumVon|date('n') %}
+			{% set monthnrto =  termin.datum|date('n') %}
+			{% if termin.datum == termin.datumVon %}
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+			{% else %}	
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+			{% endif %}	
+		    {% set strTime = termin.zeit != null ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+			{% set strTime = termin.zeitBis != null ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+		    	
+            <tr>
+                <td><input type="checkbox" name="selectedIds[]" class="checkall" value="{{ termin.id }}" id="checkbox_group_{{ termin.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ strTime }}</td>
+                <td>{{ termin.titel|raw }} </td>
+                <td>{{ termin.lokal|raw }} </td>
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}"
+						data-state="{{ termin.pubGroup ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif%}
+				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="dfx-batch-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <button type="button" class="btn btn-outline-secondary dfx-toggle-all">Alle markieren / demarkieren</button>
+        <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubgroup">Alle markierten: PubGroup</button>
+        <button type="button" class="btn btn-danger dfx-batch-trigger" data-action="delete">Alle markierten löschen</button>
+    </div>
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(termineGroup) }}
+	</div>
+	{%  endif %}
+	</div>
+	<hr>
+	{%  endif %}
+	
+    <div id="termine-archived-section" class="dfx-termine-section" data-section-id="termine-archived-section">
+	<h4>Abgelaufene Termine</h4>
+	 {%  if termine3.getTotalItemCount == 0 %}
+            Keine abgelaufenen Termine gefunden	
+    {% else %}
+    <form action="{{ path('termine_batch_action') }}" method="POST" class="dfx-batch-form">
+        <input type="hidden" name="batchAction" value="">
+        <input type="hidden" name="batchSection" value="archived">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Uhrzeit</th>
+            	<th>Titel</th>
+                <th colspan="3">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for termin in termine3 %}
+			{% set daynr =  termin.datumVon|date('w') %}
+			{% set daynrto =  termin.datum|date('w') %}
+			{% set monthnr =  termin.datumVon|date('n') %}
+			{% set monthnrto =  termin.datum|date('n') %}
+			{% if termin.datum == termin.datumVon %}
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+			{% else %}	
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+			{% endif %}	
+		    {% set strTime = termin.zeit != null ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+			{% set strTime = termin.zeitBis != null ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+		    	
+            <tr>
+                <td><input type="checkbox" name="selectedIds[]" class="checkall" value="{{ termin.id }}" id="checkbox_arch_{{ termin.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ strTime }}</td>
+                <td>{{ termin.titel|raw }} </td>
+                
+                {%  if termin.pub == false %}
+                	<td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz veröffentlichen" href="{{ path('termine_pub', { 'id': termin.id }) }}"><i class="fa-solid fa-eye-slash"> </i></a>{% endif %}</td>
+                {%  else %}
+                     <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz deaktivieren" href="{{ path('termine_unpub', { 'id': termin.id }) }}"><i class="fa-solid fa-eye"> </i></a>{%  endif %}</td>
+                {% endif %}          
+				<td><a href="{{ path('termine_edit', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} bearbeiten"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+				<td><a href="{{ path('termine_copy', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} kopieren"><i class="fa-solid fa-copy"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id }) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="dfx-batch-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <button type="button" class="btn btn-outline-secondary dfx-toggle-all">Alle markieren / demarkieren</button>
+        {% if is_granted('ROLE_DFX_PUB') %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pub">Alle markierten: Pub</button>
+        {% endif %}
+        <button type="button" class="btn btn-danger dfx-batch-trigger" data-action="delete">Alle markierten löschen</button>
+    </div>
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(termine3) }}
+	</div>
+	{% endif %}
+    </div>
+	<hr>
+	<a href="{{ path('termine_new') }}">Termin hinzufügen</a>
+	<hr>
+    <div id="termine-series-section" class="dfx-termine-section" data-section-id="termine-series-section">
+	<h4>Serientermine</h4>
+	 {%  if termineSerie.getTotalItemCount == 0 %}
+            Keine Serientermine gefunden	
+    {% else %}   
+    <form action="{{ path('termine_batch_action') }}" method="POST" class="dfx-batch-form">
+    <input type="hidden" name="batchAction" value="">
+    <input type="hidden" name="batchSection" value="series">
+    <table class="table table-striped">
+       <thead>
+            <tr>
+                <th>&nbsp;</th>
+            	<th>Datum</th>
+            	<th>Uhrzeit</th>
+            	<th>Titel</th>
+            	<th>Pub</th>
+            	{% if is_granted('ROLE_DFX_META') %}
+            		<th>PubMeta</th>
+            	{% endif %}
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            		<th>PubGroup</th>
+            	{% endif %}
+                <th colspan="4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for termin in termineSerie %}
+			{% set daynr =  termin.datumVon|date('w') %}
+			{% set daynrto =  termin.datum|date('w') %}
+			{% set monthnr =  termin.datumVon|date('n') %}
+			{% set monthnrto =  termin.datum|date('n') %}
+			{% if termin.datum == termin.datumVon %}
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') } " %}
+			{% else %}	
+				{% set strDate =  "#{ days[daynr] }, #{ termin.datumVon|date('d') }. #{ months[monthnr] } #{ termin.datumVon|date('Y') }  bis #{ days[daynrto] }, #{ termin.datum|date('d') }. #{ months[monthnrto] } #{ termin.datum|date('Y') } " %}
+			{% endif %}	
+		    {% set strTime = termin.zeit != null ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+			{% set strTime = termin.zeitBis != null ?  strTime ~ " bis #{ termin.zeitBis|date('H:i') } Uhr" : "#{strTime}" %}
+		    	
+            <tr>
+                <td><input type="checkbox" name="selectedIds[]" class="checkall" value="{{ termin.id }}" id="checkbox_series_{{ termin.id }}"></td>
+                <td>{{ strDate }}</td>
+                <td>{{ strTime }}</td>
+                <td>{{ termin.titel|raw }} </td>
+                {%  if termin.pub == false %}
+                	<td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz veröffentlichen" href="{{ path('termine_pub', { 'id': termin.id, 'code' : termin.code }) }}"><i class="fa-solid fa-eye-slash"> </i></a>{% endif %}</td>
+                {%  else %}
+                     <td>{% if is_granted('ROLE_DFX_PUB')  %}<a title="Datensatz deaktivieren" href="{{ path('termine_unpub', { 'id': termin.id, 'code' : termin.code }) }}"><i class="fa-solid fa-eye"> </i></a>{%  endif %}</td>
+                {% endif %}
+                
+                {% if is_granted('ROLE_DFX_META') %}
+                	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}_{{ termin.code }}"
+						data-state="{{ termin.pubMeta ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubMeta == true %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id, 'code' : termin.code   }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif %} 
+                {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+                	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}_{{ termin.code }}"
+						data-state="{{ termin.pubGroup ? 1 : 0 }}"
+						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if termin.pubGroup == true %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
+                {% endif%}
+                
+               
+				<td><a href="{{ path('termine_edit', { 'id': termin.id, 'code' : termin.code }) }}" title="Datensatz {{ termin.titel }} bearbeiten"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+				<td><a href="{{ path('termine_copy', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} kopieren"><i class="fa-solid fa-copy"> </i></a></td>
+                <td><a title="Datensatz ansehen" href="{{ termin.datefix.frontendUrl }}?dfxid={{ termin.id }}" target="_blank"><i class="fa-solid fa-globe"> </i></a></td>
+                <td><a class="delete" title="Datensatz {{ termin.titel }} löschen" href="{{ path('termine_delete', { 'id': termin.id, 'code' : termin.code}) }}"><i class="fa-solid fa-trash-can"> </i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="dfx-batch-actions" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <button type="button" class="btn btn-outline-secondary dfx-toggle-all">Alle markieren / demarkieren</button>
+        {% if is_granted('ROLE_DFX_PUB') %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pub">Alle markierten: Pub</button>
+        {% endif %}
+        {% if is_granted('ROLE_DFX_META') %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubmeta">Alle markierten: PubMeta</button>
+        {% endif %}
+        {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
+            <button type="button" class="btn btn-secondary dfx-batch-trigger" data-action="pubgroup">Alle markierten: PubGroup</button>
+        {% endif %}
+        <button type="button" class="btn btn-danger dfx-batch-trigger" data-action="delete">Alle markierten löschen</button>
+    </div>
+    </form>
+    <div class="navigation">
+    	{{ knp_pagination_render(termineSerie) }}
+	</div>
+	{% endif %}
+    </div>
+	<hr>
+		<a href="{{ path('termine_new') }}">Termin hinzufügen</a>
+	
+{% endblock %}  
+{% block footer %}
+
+{% endblock footer %}
+{% block javascript_onload %}
+    var filterReset = document.getElementById('filterreset');
+    if (filterReset) {
+        filterReset.addEventListener('click', function() {
+            location.href = '/admin/termine/reset';
+        });
+    }
+
+    document.addEventListener('click', function(event) {
+        var link = event.target.closest('.pub a');
+        if (!link) {
+            return;
+        }
+
+        event.preventDefault();
+
+        var cell = link.closest('.pub');
+        if (!cell) {
+            return;
+        }
+
+        var state = Number(cell.dataset.state) || 0;
+        var targetUrl = link.getAttribute('href');
+        var prevHtml = cell.innerHTML;
+
+        cell.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        fetch(targetUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(data) {
+                if (data === 'ok') {
+                    var nextState = state === 1 ? 0 : 1;
+                    cell.dataset.state = String(nextState);
+                    cell.innerHTML = nextState === 1 ? (cell.dataset.htmlOn || '') : (cell.dataset.htmlOff || '');
+                    return;
+                }
+
+                cell.innerHTML = 'err';
+            })
+            .catch(function() {
+                cell.innerHTML = prevHtml;
+            });
+    });
+
+    document.addEventListener('click', function(event) {
+        var toggleButton = event.target.closest('.dfx-toggle-all');
+        if (toggleButton) {
+            var toggleForm = toggleButton.closest('form');
+            if (!toggleForm) {
+                return;
+            }
+
+            var checkboxes = Array.prototype.slice.call(toggleForm.querySelectorAll('input[name="selectedIds[]"]'));
+            if (!checkboxes.length) {
+                return;
+            }
+
+            var allChecked = checkboxes.every(function(checkbox) {
+                return checkbox.checked;
+            });
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = !allChecked;
+            });
+
+            return;
+        }
+
+        var batchButton = event.target.closest('.dfx-batch-trigger');
+        if (!batchButton) {
+            return;
+        }
+
+        var form = batchButton.closest('form');
+        if (!form) {
+            return;
+        }
+
+        var checkedItems = form.querySelectorAll('input[name="selectedIds[]"]:checked');
+        if (!checkedItems.length) {
+            alert('Bitte zuerst mindestens einen Eintrag markieren.');
+            return;
+        }
+
+        var actionField = form.querySelector('input[name="batchAction"]');
+        if (!actionField) {
+            return;
+        }
+
+        actionField.value = batchButton.dataset.action || '';
+        form.submit();
+    });
+
+    document.addEventListener('click', function(event) {
+        var pageLink = event.target.closest('.dfx-termine-section .pagination a');
+        if (!pageLink) {
+            return;
+        }
+
+        var section = pageLink.closest('.dfx-termine-section');
+        if (!section) {
+            return;
+        }
+
+        event.preventDefault();
+
+        fetch(pageLink.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(html) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var replacement = doc.getElementById(section.id);
+
+                if (!replacement) {
+                    window.location.href = pageLink.href;
+                    return;
+                }
+
+                section.replaceWith(replacement);
+                if (window.history && window.history.replaceState) {
+                    window.history.replaceState({}, '', pageLink.href);
+                }
+            })
+            .catch(function() {
+                window.location.href = pageLink.href;
+            });
+    });
+{% endblock %}
+
+
+
+

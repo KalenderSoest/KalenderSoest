@@ -1,0 +1,10 @@
+<h2>{{ 'karten'|trans }}</h2>
+<h3>{{ 'fuer'|trans }}: {{ termin.titel }}, {{ termin.datumVon|date('d.m.Y') }} {{ termin.zeit|date('H:i')  }}</h3>
+<p>{{ 'ak-text7'|trans }}</p>
+<p>{{ 'ak-text8'|trans }} {{ termin.plaetzeAktuell }} {{ 'karten verfuegbar'|trans }}</p>
+{% if  termin.plaetzeAktuell > 0 %}
+	<a href="{{ path('karten_new', { 'id': termin.id } )}}">{{ 'karten'|trans }}</a>
+{% endif %}
+ <hr>
+    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    <div id="dfx_konf" data-tpl="form" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="0" style="display: none"></div>

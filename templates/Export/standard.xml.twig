@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<EVENTS>
+    <HEADER>
+        <TITLE></TITLE>
+        <PUBLISHER></PUBLISHER>
+        <KID></KID>
+        <EMAIL></EMAIL>
+        <CREATED>{{ "now"|date('Y-m-d H:i:s') }}</CREATED>
+    </HEADER>
+<EVENTLIST>
+{% for termin in termine %}
+    <EVENT id="" cid="{{ termin.id }}" pub_meta="yes" pup_group="yes" group_id="" user_id="{{ termin.user.id }}"  created="{{ termin.datumInput|date('H-m-d H:i:s') }}" modified="{{ termin.datumModified|date('H-m-d H:i:s') }}">
+        <KATEGORIELIST></KATEGORIELIST>
+    <TITEL>{{ termin.titel }}</TITEL>
+    <SUBTITEL>{{ termin.titel }}</SUBTITEL>
+    <DESCRIPTION><![CDATA[{{ termin.beschreibung|raw }}]]></DESCRIPTION>
+    <ADDRESSLIST>
+        {% if termin.idLocation is not null %}
+            <ADDRESS id="" fid="{{ termin.idLocation.id }}" type="location"/>
+            {% set modifiedLoc = termin.idLocation.datumModified|date('Y-m-d') %}
+        {%  else %}
+           {% set modifiedLoc = termin.datumModified|date('Y-m-d') %}
+        {% endif %}
+        <ADDRESS type="location" modified="{{ modifiedLoc }}">
+            <NAME> {{ termin.lokal }} </NAME>
+            <STREET>{{ termin.lokalStrasse }}</STREET>
+            <ZIP>{{ termin.plz }}</ZIP>
+            <CITY>{{ termin.ort }}</CITY>
+            {% if termin.region is not null %}
+                <COUNTY>{{ termin.region.region }}</COUNTY>
+            {% endif %}
+            <COUNTRY>Deutschland</COUNTRY>
+            <EMAIL>{{ termin.mail }}</EMAIL>
+            <LATITUDE>{{ termin.bg }}</LATITUDE>
+            <LONGITUDE>{{ termin.lg }}</LONGITUDE>
+            <DESCRIPTION>Musterbeschreibung</DESCRIPTION>
+            {% if termin.idLocation is not null %}
+                <PHONE>{{ termin.idLocation.telefon }}</PHONE>
+                <FAX>{{ termin.idLocation.fax }}</FAX>
+                <MOBILE>{{ termin.idLocation.mobil }}</MOBILE>
+                <URL>{{ termin.idLocation.www }}</URL>
+            {% endif %}
+        </ADDRESS>
+        {% if termin.idVeranstalter is not null %}
+            <ADDRESS id="" fid="{{ termin.idVeranstalter.id }}" type="presenter"/>
+            <ADDRESS active="yes" www_publish="yes" type="presenter"  postal_address="yes" modified="{{ termin.idVeranstalter.datumModified|date('Y-m-d')  }}">
+                <NAME> {{ termin.idVeranstalter.name }} </NAME>
+                <STREET>{{ termin.idVeranstalter.strasse }}</STREET>
+                <ZIP>{{ termin.idVeranstalter.plz }}</ZIP>
+                <CITY>{{ termin.idVeranstalter.ort }}</CITY>
+                <COUNTY>{{ termin.region.region }}</COUNTY>
+                <COUNTRY>Deutschland</COUNTRY>
+                <PHONE>{{ termin.idVeranstalter.telefon }}</PHONE>
+                <FAX>{{ termin.idVeranstalter.fax  }}</FAX>
+                <MOBILE>{{ termin.idVeranstalter.mobil }}</MOBILE>
+                <EMAIL>{{ termin.idVeranstalter.email }}</EMAIL>
+                <LATITUDE>{{ termin.idVeranstalter.bg }}</LATITUDE>
+                <LONGITUDE>{{ termin.idVeranstalter.lg }}</LONGITUDE>
+                <DESCRIPTION>{{ termin.idVeranstalter.zusatz }}</DESCRIPTION>
+                <URL>{{ termin.idVeranstalter.www }}</URL>
+            </ADDRESS>
+        {% endif %}
+    </ADDRESSLIST>
+    <DATELIST>
+        <DATE>
+            <STARTDATE>{{ termin.datumVon|date('Y-m-d') }}</STARTDATE>
+            {% if termin.datumVon != termin.datum %}
+                <ENDDATE>{{ termin.datum|date('Y-m-d') }}</ENDDATE>
+            {% endif %}
+            <STARTTIME>{{ termin.zeit|date('H:i:s') }}</STARTTIME>
+            <ENDTIME>{{ termin.zeitBis|date('H:i:s') }}</ENDTIME>
+        </DATE>
+    </DATELIST>
+    {% if termin.eintritt is not null %}
+        <ADMISSION free="no">
+            <ADMISSION_TEXT>{{ termin.eintritt }}</ADMISSION_TEXT>
+        </ADMISSION>
+    {% else %}
+        <ADMISSION free="yes" />
+    {% endif %}
+    <AUDIENCE />
+    {% if termin.plaetzeGesamt > 0 and termin.mail is not null %}
+        <RESERVATION>{{ termin.mail }}</RESERVATION>
+    {% endif %}
+</EVENT>
+{% endfor %}        
+</EVENTLIST>
+</EVENTS>

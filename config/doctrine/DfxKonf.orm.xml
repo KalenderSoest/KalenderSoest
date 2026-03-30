@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxKonf" table="pool_dfx_konf">
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+    <field name="titel"  column="titel" length="256" nullable="true"/><field name="imgLogo"  column="img_logo" length="200" nullable="true"/>
+    <field name="imgBanner"  column="img_banner" length="200" nullable="true"/>
+    <field name="adresse" type="text" column="adresse" nullable="true"/>
+    <field name="rubriken" type="json" column="rubriken" nullable="true"/>
+    <field name="zielgruppen" type="json" column="zielgruppen" nullable="true"/>
+    <field name="htmlHead" type="text" column="html_head" nullable="true"/>
+    <field name="htmlFooter" type="text" column="html_footer" nullable="true"/>
+    <field name="dfxCss" type="text" column="dfxCss" nullable="true"/>
+    <field name="lengthTeaser" type="integer" column="lengthTeaser" nullable="true"/>
+    <field name="maxLengthLead" type="integer" column="maxLengthLead" nullable="true"/>
+    <field name="maxLengthBeschreibung" type="integer" column="maxLengthBeschreibung" nullable="true"/>
+    <field name="itemsListe" type="integer" column="itemsListe" nullable="true"/>
+    <field name="dfxWidth"  column="dfxWidth" length="20" nullable="true"/>
+    <field name="dfxAlign"  column="dfxAlign" length="20" nullable="true"/>
+    <field name="imgWidth" type="integer" column="imgWidth" nullable="true"/>
+    <field name="imgHeight" type="integer" column="imgHeight" nullable="true"/>
+    <field name="imgPrevWidth" type="integer" column="imgPrevWidth" nullable="true"/>
+    <field name="imgPrevHeight" type="integer" column="imgPrevHeight" nullable="true"/>
+    <field name="navListe" type="boolean" column="navListe"  nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="navDetail" type="boolean" column="navDetail" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="navWidth" type="integer" column="navWidth" nullable="true"/>
+    <field name="archivTage" type="integer" column="archivTage" nullable="true"/>
+    <field name="navPos"  column="navPos" length="10" nullable="true"/>
+    <field name="filterKalender" type="boolean" column="filterKalender"  nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterRubrik" type="boolean" column="filterRubrik"  nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterZielgruppe" type="boolean" column="filterZielgruppe"  nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="filterDatum" type="boolean" column="filterDatum"  nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterSuche" type="boolean" column="filterSuche"  nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterNat" type="boolean" column="filterNat"  nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="filterplzarea" type="boolean" column="filterPlzarea" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterUmkreis" type="boolean" column="filterUmkreis" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterOrt" type="boolean" column="filterOrt" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterRegion" type="boolean" column="filterRegion" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="filterLocation" type="boolean" column="filterLocation" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterVeranstalter" type="boolean" column="filterVeranstalter" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="filterDozenten" type="boolean" column="filterDozenten" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="feldSubtitel" type="boolean" column="feldSubtitel" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="feldLead" type="boolean" column="feldLead" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+     <field name="feldBeschreibung" type="boolean" column="feldBeschreibung" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+     <field name="feldEintritt" type="boolean" column="feldEintritt" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldImg" type="boolean" column="feldImg" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldGalerie" type="boolean" column="feldGalerie" nullable="true">
+      <options>
+          <option name="default">0</option>
+      </options>
+    </field>
+    <field name="feldVideo" type="boolean" column="feldVideo" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="imgListe" type="boolean" column="imgListe" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldPdf" type="boolean" column="feldPdf" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldMedia" type="boolean" column="feldMedia" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="feldNat" type="boolean" column="feldNat" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="feldRegion" type="boolean" column="feldRegion" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="feldPlz" type="boolean" column="feldPlz" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldOrt" type="boolean" column="feldOrt" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldOrtdb" type="boolean" column="feldOrtdb" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="feldKarten" type="boolean" column="feldKarten" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+
+    <field name="feldAnmeldung" type="boolean" column="feldAnmeldung" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="feldPlatzlimit" type="boolean" column="feldPlatzlimit" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="showPlatzlimit" type="boolean" column="showPlatzlimit" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldLocation" type="boolean" column="feldLocation" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldVeranstalter" type="boolean" column="feldVeranstalter" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldDozenten" type="boolean" column="feldDozenten" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldLink" type="boolean" column="feldLink" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="feldTicketlink" type="boolean" column="feldTicketlink" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+      <field name="feldOnlinetermin" type="boolean" column="feldOnlinetermin" nullable="true">
+          <options>
+              <option name="default">0</option>
+          </options>
+      </field>
+    <field name="showPlz" type="boolean" column="showPlz" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="showOrt" type="boolean" column="showOrt" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="showLokal" type="boolean" column="showLokal" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="showStrasse" type="boolean" column="showStrasse" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="allowInputAll" type="boolean" column="allowInputAll" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="allowPubAll" type="boolean" column="allowPubAll" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="allowPubMetaAll" type="boolean" column="allowPubMetaAll" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="allowPubGroupAll" type="boolean" column="allowPubGroupAll" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="PubMetaAll" type="boolean" column="PubMetaAll" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="PubGroupAll" type="boolean" column="PubGroupAll" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="InheritMeta" type="boolean" column="InheritMeta" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="InheritGroup" type="boolean" column="InheritGroup" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+	<field name="InheritZielgruppenMeta" type="boolean" column="InheritZielgruppenMeta" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="InheritZielgruppenGroup" type="boolean" column="InheritZielgruppenGroup" nullable="true">
+    	<options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="infoToAdmin" type="boolean" column="infoToAdmin" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="sprache"  column="sprache" length="10" nullable="true">
+    <options>
+           <option name="default">de</option>
+        </options>
+    </field>
+    <field name="allowSocial" type="boolean" column="allowSocial" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="allowRemind" type="boolean" column="allowRemind" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="allowMail" type="boolean" column="allowMail" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="allowExport" type="boolean" column="allowExport" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="allowPrint" type="boolean" column="allowPrint" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="useIcons" type="boolean" column="useIcons" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="useMap" type="boolean" column="useMap" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="allowApi" type="boolean" column="allowApi" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="maxApiItems" type="integer" column="maxApiItems" nullable="true">
+    	<options>
+           <option name="default">1000</option>
+        </options>
+    </field>
+    <field name="pageApiItems" type="integer" column="pageApiItems" nullable="true">
+    	<options>
+           <option name="default">20</option>
+        </options>
+    </field>
+    <field name="initZoom" type="integer" column="initZoom" nullable="true">
+    	<options>
+           <option name="default">13</option>
+        </options>
+    </field>
+    <field name="dfxTpl"  column="dfxTpl" length="20" nullable="true"/>
+    <field name="dfxTplVersion"  column="dfxTplVersion" length="20" nullable="true"/>
+    <field name="dfxTplDetail" type="integer" column="dfxTplDetail" nullable="true"/>
+    <field name="zwueDatum" type="boolean" column="zwueDatum" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="dfxFarbe"  column="dfxFarbe" length="10" nullable="true"/>
+    <field name="dfxFarbeEigen"  column="dfxFarbeEigen" length="7" nullable="true"/>
+    <field name="dfxFarbeRaster"  column="dfxFarbeRaster" length="10" nullable="true"/>
+    <field name="dfxFarbeRasterEigen"  column="dfxFarbeRasterEigen" length="7" nullable="true"/>
+    <field name="bgDatefix"  column="bgDatefix" length="7" nullable="true"/>
+    <field name="bgNav"  column="bgNav" length="7" nullable="true"/>
+    <field name="trennzeichen"  column="trennzeichen" length="1" nullable="true"/>
+    <field name="dfxFontType"  column="dfxFontType" length="255" nullable="true"/>
+    <field name="dfxFontSize"  column="dfxFontSize" length="10" nullable="true"/>
+    <field name="dfxFontColor"  column="dfxFontColor" length="7" nullable="true"/>
+    <field name="ownFont" type="boolean" column="ownFont" nullable="true">
+    <options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="paginationTop" type="boolean" column="paginationTop" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="paginationBottom" type="boolean" column="paginationBottom" nullable="true">
+    	<options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="dfxRadius" type="boolean" column="dfxRadius" nullable="true">
+    <options>
+           <option name="default">1</option>
+        </options>
+    </field>
+    <field name="isMeta" type="boolean" column="isMeta" nullable="true">
+    <options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="isGroup" type="boolean" column="isGroup" nullable="true">
+    <options>
+           <option name="default">0</option>
+        </options>
+    </field>
+    <field name="toGroup" type="json" column="toGroup" nullable="true"/>
+    <field name="frontendUrl"  column="frontendUrl" length="255" nullable="true"/>
+    <field name="datenschutzUrl"  column="datenschutzUrl" length="255" nullable="true"/>
+    <field name="impressumUrl"  column="impressumUrl" length="255" nullable="true"/><many-to-one field="user" target-entity="DfxNfxUser">
+      <join-columns>
+        <join-column name="user_id"  on-delete="CASCADE"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

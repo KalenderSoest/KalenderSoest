@@ -1,0 +1,39 @@
+﻿{% extends 'Admin/base_pdf.html.twig' %}
+{% if termin.datum == termin.datumVon %}
+	{% set strDate =  termin.datumVon|date('d.m.Y') %}
+{% else %}	
+	{% set strDate = termin.datumVon|date('m.d.Y') ~ ' bis '|trans ~ termin.datum|date('m.d.Y') %}
+{% endif %}	
+{% set strTime = termin.zeit != NULL ? "#{ termin.zeit|date('H:i') } Uhr" : "" %}
+
+{% block title 'Anmeldungen' %}
+{% block pageheader 'Anmeldungen' %}
+{% block subheader "#{ termin.titel|raw ~', ' ~  strDate ~ ' ' ~ strTime }" %}
+
+{% block body -%}
+     <table cellspacing="0">
+        <thead>
+            <tr>
+            	<th style="width:40mm">Name, Vorname, Firma/Organisation</th>
+            	<th style="width:35mm">Adresse</th>
+                <th style="width:35mm">Tel/E-Mail</th>
+                <th style="width:8mm;text-align:right">Plätze</th>
+                <th style="width:50mm">Notiz</th>
+            </tr>
+        </thead>
+        <tbody>
+		{% for anmeldung in anmeldungen %}
+			 <tr>
+                <td>{{ anmeldung.nachname }}, {{ anmeldung.vorname }}
+                    {{ anmeldung.org is not null ? ('<br>' ~ anmeldung.org)|raw : '' }}
+                    <br>{{ anmeldung.datum|date("d.m.Y") }}
+                </td>
+                <td>{{ anmeldung.strasse  }}<br>{{ anmeldung.plz  }} {{ anmeldung.ort  }}</td>
+                <td>{{ anmeldung.tel  }}<br>{{ anmeldung.mobil  }}<br>{{ anmeldung.email  }}</td>
+                <td style="text-align:right">{{ anmeldung.anzahl  }}</td>
+                <td>{{ anmeldung.notiz|nl2br }}</td>
+             </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}  

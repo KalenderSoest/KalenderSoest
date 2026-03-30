@@ -1,0 +1,250 @@
+eintritt:    entrée
+nachname: nom *
+vorname: prénom *
+strasse: rue *
+plz: code postal *
+ort: ville *
+telefon: telephone *
+mobil: portable
+email: courriel *
+www: www
+nachricht: message
+zurueck zur liste: retour à la liste
+details: détails
+mehr: plus
+Next: Suivant
+Previous: Précédent
+termin ansehen: voir rendez-vous / date
+subtitel-fe: ""
+subtitel-be: sous-titres
+
+
+
+#Termine
+sonntag: dimanche
+montag: lundi
+dienstag: mardi
+mittwoch: mercredi
+donnerstag: jeudi
+freitag: vendredi
+samstag: samedi
+
+so: di
+mo: lu
+di: ma
+mi: me
+do: je
+fr: ve
+sa: sa
+
+januar: janvier
+februar: février
+maerz: mars
+april: avril
+mai: mai
+juni: juin
+juli: juillet
+august: août
+september: septembre
+oktober: octobre
+november: novembre
+dezember: décembre
+
+Alle Veranstaltungen: Toutes les manifestations
+keine Termine: aucune manifestation n’a été trouvé sur la période donnée
+veranstaltungsort auf lageplan:    Lieu de la manifestation sur le plan
+verabreden:    Prendre rendez-vous
+erinnern:    Rappeler
+eintragen: Enregistrer dans le calendrier
+als mail senden:    Envoyer en tant que courriel
+mail senden:    Courriel à l‘organisateur
+karte schliessen: Fermer carte
+standort: Position
+route anzeigen: Afficher route
+pdf download: Téléchargement PDF
+
+#Anmeldung/Karten
+karten: Réservation de billets
+anmelden: Inscription / Connexion ( ?)
+
+anmeldung: Inscription / Choix de la place
+
+uebermittelte anmeldedaten: Inscription transmise/Choix de la place
+uebermittelte kartenreservierung: Réservation de billets transmis
+anzahl: Quantité *
+personenzahl: Nombre de personne *
+fuer: pour
+von: de
+plaetze verfuegbar: Places disponibles
+karten verfuegbar: Billets disponibles
+ausgebucht: complet
+ausverkauft: complet
+ak-text1: Veuillez au moins saisir votre nom, prénom et courriel.
+a-text2-1: <b>Information importante!</b> Votre demande de place sera envoyé par courriel à …
+a-text2-2: Faites-vous expressément confirmer votre demande de place et transmettre les conditions contractuelles. La possibilité de transmettre une inscription ne signifie pas que des places sont encore disponibles. L’exploitant de ce calendrier des manifestations ne peut être tenu pour responsable des dommages résultants de courriels erronés, pannes de serveurs ou d’autres erreurs reconnues lors de l’utilisation de ce système.
+a-text3: Inscription envoyé
+a-text4: L’inscription a été envoyé à 
+k-text2-1: <b> Information importante!</b> Votre demande de réservation va être envoyé par courriel à
+k-text2-2: Faites-vous expressément confirmer votre réservation et transmettre les conditions contractuelles. La possibilité de transmettre une inscription ne signifie pas que des places sont encore disponibles. L’exploitant de ce calendrier des manifestations ne peut être tenu pour responsable des dommages résultants de courriels erronés, pannes de serveurs ou d’autres erreurs reconnues lors de l’utilisation de ce système.
+k-text3: Inscription envoyé
+k-text4: L’ inscription a été envoyé à
+ak-text5: Merci de prendre contact avec l’expéditeur.
+ak-text6: Les données suivantes ont été transmises
+ak-text7: Pour cette manifestation, un nombre insuffisant de places est disponible.
+ak-text8: Encore
+pflichtfelder: "* Champs obligatoires"
+
+#Überschriften
+kartenheader: Billets
+anmeldenheader: Connexion
+kontaktheader: Contact
+infoheader: Informations supplémentaires
+teilen: Diviser / Partager (?)
+merken: Mémoriser
+datum uhrzeit: Date/Heure
+veranstaltungsort: Lieu de la  manifestation
+veranstalter: Organisateur
+anfahrt: Trajet
+
+#Mailfooter
+f-text1: Ce courriel a été généré automatiquement pour le calendrier des manifestations avec le lien
+f-text2: Si vous souhaitez signaler des problèmes avec le logiciel Datefix, merci de vous adresser à info@datefix.de.
+f-text3: "Merci d’indiquer le numéro de référence suivant: nº Calendrier des manifestations "
+
+#Terminhinweis als Mail
+Terminhinweis als E-Mail verschicken: Envoyer la date du rendez-vous par courriel
+rechtshinweis mail: „En cliquant sur le bouton ‚Envoyer la date par courriel‘ vous confirmez que vous connaissez le destinataire et que vous partez du principe qu’il accepte de recevoir votre notification de rendez-vous"
+datenschutz mail: "Concernant la protection des données: pour éviter une utilisation abusive, votre courriel et vos informations de connexion sont enregistrés temporairement" 
+hinweis auf termin: Information concernant une date de manifestation 
+moechte sie auf folgenden Termin hinweisen: souhaite vous informer de la date suivante
+Kommentar von: Commentaire de
+E-Mail erfolgreich verschickt: Courriel envoyé avec succès
+Ihr Veranstaltungshinweis auf: Votre manifestation sur 
+wurde erfolgreich an: a été … avec succès
+verschickt: envoyé
+antworten: réponses
+
+#Reminder
+An Termin erinnern lassen: Rappeler rendez-vous
+Erinnerung erfolgreich gespeichert: Rappel enregistré avec succès 
+Ihr Erinnerungswunsch an: Votre souhait de rappel pour 
+wurde erfolgreich gespeichert: a été enregistré avec succès
+Eine E-Mail wird am: Un courriel sera … le 
+an: à
+
+#Termineingabe Web
+Termineintrag erfolgreich: Enregistrement du rendez-vous réalisé avec succès
+Veranstaltung eingetragen: Votre manifestation a été enregistrée avec succès dans le calendrier des manifestations 
+FreigabeA dministrator: Votre entrée ne sera visible que lorsqu’elle aura été validée par l‘administrateur du calendrier des manifestations
+Email Administrator: "Un courriel adressé à l’administrateur (a été envoyé :) a été envoyé"
+Termin bearbeiten: Pour modifier le rendez-vous, cliquez ici
+Termin loeschen: Pour supprimer le rendez-vous, cliquez ici
+Termin veroeffentlichen: publier le rendez-vous
+Termin sperren: Bloquer rendez-vous
+Kurzfassung Termineintrag: Résumé de votre rendez-vous
+Hinweis Serientermin: Ce rendez-vous fait partie d’une série de rendez-vous. La suppression ou la modification a des répercussions sur tous les rendez-vous de cette série !
+Hinweis Serie Datumseingabe: Ce rendez-vous fait partie d’une série de rendez-vous. Il n’est pas possible de modifier les dates, d’ajouter de nouveaux rendez-vous ou de retirer des dates individuelles. Vous pouvez traiter ou supprimer des rendez-vous individuels dans la liste des rendez-vous. 
+Ihr Veranstaltungseintrag: Ihr Veranstaltungseintrag
+Neuer Veranstaltungseintrag: Neuer Veranstaltungseintrag
+
+#Versionen
+
+Testversion: Testez Datefix pendant 30 jours gratuitement et sans engagement. <strong>Le compte est cloturé automatiquement et n’a pas besoin d’être résilié. </strong> Pendant la période de test vous avez la possibilité de transformer votre compte test en un compte actif à tout moment. Tous les rendez-vous ainsi que la configuration et l’intégration sont sauvegardés.    
+Testversion2: <small>- et tester Datefix pendant 30 jours gratuitement et sans engagement</small>
+
+#Anmeldungen/Karten
+zurueck zur terminuebersucht: Retour à la vue d'ensemble des rendez-vous
+
+#PDF
+Weitere Informationen: Informations supplémentaires
+
+#Mailtexte diverse
+Freigabe meta: Libération dans le calendrier Meta
+Freigabe meta ja: Accepter libération dans le calendrier Meta
+Freigabe meta nein: Refuser libération dans le calendrier Meta
+
+Freigabe group: Libération dans le calendrier de groupe 
+Freigabe group ja: Accepter libération dans le calendrier de groupe
+Freigabe group nein: Refuser libération dans le calendrier de groupe
+
+# Headline über den Terminen / Zeitspannen
+im Umkreis von: dans un rayon de
+Km um: Km autour de
+im Postleitzahlgebiet: dans le secteur du code postal
+Region: Région
+mit Suchwort(en): avec le(s) mot(s) clé(s)
+ab heute: à partir d’aujourd’hui
+am: le
+ab:  à partir de
+bis: jusqu’à / jusqu‘au
+vom: du
+
+# Terminauswahl
+Datum von: Date depuis
+Datum bis: Date jusqu‘à
+Land wählen: Choisir pays
+PLZ-Gebiet: Secteur code postal
+Ort wählen: Choisir ville
+Umkreis Km: Rayon en Km
+Veranstaltungsstätte wählen: Choisir le lieu de la manifestation
+Veranstalter wählen: Choisir organisateur
+Region wählen: Choisir région
+Veranstalter aus Datenbank wählen: Choisir organisateur dans la base de données
+Rubrik wählen: Choisir rubrique
+Suche in Titel, Text: Recherche dans titre, texte
+suchen: rechercher
+verwerfen: rejeter
+
+# Formulare allgemein
+sicherheitscode: Code de sécurité
+4-stellige Codezahl: Code à 4 chiffres
+zurücksetzen: réinitialiser
+
+# Formular Termin als Mail versenden
+Absender E-Mail: Courriel expéditeur
+Ihre E-Mail-Adresse: Votre courriel
+Absender Vorname: Prénom expéditeur
+Ihr Vorname: Votre prénom
+Absender Nachname: Nom expéditeur
+Ihr Nachname: Votre nom
+Empfänger E-Mail: Courriel destinataire
+E-Mail-Adresse des Empfängers: Courriel du destinataire
+Nachricht an Empfänger: Message pour le destinataire
+Termin als Mail versenden: Envoyer rendez-vous par courriel
+
+# Formular an Termin erinnern
+Erinnern am: Rappeler le
+Datum wählen: Choisir date
+
+#Termineingabe Web
+Daten des Eingebers: Donnée de l‘utilisateur
+einzeltermin: Rendez-vous unique
+serientermin: Rendez-vous multiples
+tf-text1: <h4>Saisie date unique </h4><p> Les dates uniques sont des manifestations qui ont lieu une fois à une date donnée ou sur plusieurs jours lorsqu’ils sont considérés comme une seule manifestation, comme par exemple des séminaires ou des voyages de plusieurs jours. Les dates uniques se déroulant sur plusieurs jours apparaisse à la date de début dans le calendrier.
+tf-text2: <h3>Saisie dates multiples</h3><p>Les dates multiples sont des dates uniques qui ont lieu régulièrement pendant une période donnée ou qui se répètent à intervalles irréguliers. Il peut s’agir d’expositions ou de marchés de noël qui ont lieu quotidiennement pendant un laps de temps donné. Les dates multiples apparaissent tous les jours dans le calendrier et peuvent être traité à l’unité ou en groupe après la saisie.
+tf-text3: <h4>Date régulière</h4><p>Saisissez une date de début et de fin et marquez les jours où ont lieu la manifestation. Le jours déterminés sont repris automatiquement dans le champ liste de la ligne suivante et peuvent être modifié à la main si nécessaire. </p>
+tf-text4: <h4>Dates irrégulières</h4><p>Les dates ayant lieu de façon irrégulières peuvent être saisie grâce au champ liste lié au calendrier. Cliquez sur les jours concernés par la manifestation. Vous pouvez aussi poursuivre la saisie au-delà des limites du mois en changeant de mois avec les touches << >></p> 
+tf-text5: Récupérer les information de géolocalisation dans les adresses
+tf-text6: Récupérer les information de géolocalisation dans la carte
+tf-text7: Incorporez ici le code d’intégration HTML complet  mis à disposition par les portails vidéo
+rubriken: Rubriques
+legende1: Quoi & où
+legende2: Texte & Médias
+legende3: Organisateur, contact, cartes, inscriptions
+
+#Nachträge
+Termin als PDF: Date en PDF
+Termin drucken: Imprimer date
+Uhr: Heure
+Datensatz speichern: Enregistrer les données
+
+datenschutz_1: oui, j’ai pris connaissance de la déclaration de protection des données
+datenschutz_linktext: lire ici 
+datenschutz_2: et j’accepte que les données me concernant soient collectés et enregistrés numériquement
+
+
+
+kontoinhaber: Titulaire du compte
+bankname: Nom de la banque
+iban: IBAN
+bic: BIC

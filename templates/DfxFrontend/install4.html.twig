@@ -1,0 +1,13 @@
+﻿{% extends 'Admin/base_admin.html.twig' %}
+{% block title %}Datefix Installation{% endblock %}
+{% block pageheader %}INSTALLATION{% endblock %}
+{% block subheader %}Anonymen User für Webeingaben angelegt{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-8">
+            {{ msg|raw }}
+            <hr>
+            <a class="btn btn-primary" href="{{ path('dfx_install5') }}">Account für Superadmin anlegen</a>
+        </div>
+    </div>
+{% endblock %}

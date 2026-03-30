@@ -1,0 +1,70 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Einbau' %}
+{% block pageheader 'Einbau' %}
+{% block subheader 'ganz einfach'  %}
+
+{% block footer %}
+    
+	
+	
+	
+{% endblock footer %}
+
+{% block body -%}
+	<p>Fügen Sie folgenden Code an der Stelle in Ihrer Internetseite ein, an der der Kalender stehen soll:</p>
+	<p><form><textarea rows="2" class="form-control" readonly="">&lt;script id=&quot;dfx&quot; data-kid=&quot;{{ datefix.id }}&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_ajax.js&quot;&gt;&lt;/script&gt;
+&lt;div id=&quot;datefix&quot;&gt;&lt;/div&gt;</textarea></form></p>
+	<p>Wenn statt des Kalenders direkt die News-Seite eingebunden werden soll, kann folgender Code verwendet werden:</p>
+	<p><form><textarea rows="2" class="form-control" readonly="">&lt;script id=&quot;dfx&quot; data-kid=&quot;{{ datefix.id }}&quot; data-nfx=&quot;true&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_ajax.js&quot;&gt;&lt;/script&gt;
+&lt;div id=&quot;datefix&quot;&gt;&lt;/div&gt;</textarea></form></p>
+	<p><strong>Für den Einbau in eine Webseite mit verschlüsselter Datenübertragung reicht die Verwendung von https:// statt http:// im Einbaucode.</strong></p>
+	<p>Sofern Sie Zugriff auf den Header- oder den Footer-Bereich Ihrer Seite haben, sollten Sie den Javascript-Einbindung (erste Zeile) dort vornehmen. Die zweite Zeile muss an der Stelle stehen, an der der Kalender erscheinen soll. Er füllt immer die gesamte Breite des umschließenden Elements aus.  </p>
+<h3>Alternativer Aufruf</h3>
+	<p>Ihr Kalender ist alternativ auch unter der Adresse <a href="{{ url('kalender_fe', { 'kid': datefix.id }) }}" target="_blank">{{ url('home', { 'kid': datefix.id }) }}</a> erreichbar und kann so auch in einem Iframe eingebunden werden.</p>
+	<p>Dies wäre ein möglicher Code, der individuell anzupassen wäre:
+	<form><textarea rows="1" class="form-control" readonly="">&lt;iframe width=&quot;100%&quot; height=&quot;800&quot; frameBorder=&quot;0&quot; src=&quot;{{ datefix_url }}/kalender/{{ datefix.id }}/&quot;&gt;&lt;/iframe&gt;</textarea></form>
+<h3>Die Terminbox</h3>
+	<p>Mit der Terminbox haben Sie die Möglichkeit, auf jeder beliebigen Seite - z.B. auf Ihrer Startseite - die kommenden Veranstaltungen ungefiltert oder gefiltert (siehe Filter unten) in einer Kurzübersicht anzukündigen. Fügen Sie folgenden Code an der Stelle in Ihrer Internetseite ein, an der die Terminbox stehen soll:</p>
+	<p><form><textarea rows="2" class="form-control" readonly="">&lt;script id=&quot;dfxbox&quot; data-kid=&quot;{{ datefix.id }}&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_terminbox.js&quot;&gt;&lt;/script&gt;
+</textarea></form></p>
+<h3>Tageskalender/Suchfilter und/oder Terminbox auf anderer Seite</h3>
+<p>Sie können den Tageskalender mit den dazugehörigen Suchfiltern und/oder die Terminbox auch auf einer separaten Seite einbauen, zum Beispiel auf der Startseite Ihres Internetauftritts. Die Container für Kalender und Terminbox können an beliebiger Stelle im HTML-Code stehen. Es ist auch möglich nur einen der beiden Container einzubinden. Sie können die Javascript-Einbindung um beliebige Filter (siehe unten) ergänzen.  Die Container füllen immer die gesamte Breite des umschließenden Elements aus. :</p>
+<form><textarea rows="2" class="form-control" readonly="">&lt;script id=&quot;dfx-widgets&quot; data-kid=&quot;{{ datefix.id }}&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_ajax_widgets.js&quot;&gt;&lt;/script&gt;
+<div id="dfx-kalender"></div>
+<div id="dfx-terminbox"></div></textarea></form>
+<p>Sofern Sie Zugriff auf den Header- oder den Footer-Bereich Ihrer Seite haben, sollten Sie den Javascript-Einbindung (erste Zeile) dort vornehmen.</p>
+<p>Zwei Dinge sind dabei zu beachten: Die Breite des Elements wird durch den zur Verfügung stehenden Platz bestimmt. Sie müssen also ggf dem umschließenden HTML-Element eine Breite zuweisen. Außerdem muss unter <em>Konfiguration -> Einstellungen</em> die korrekte "URL des Frontends" zu ihrem Veranstaltungskalender eingetragen sein.</p>
+<h3>Tageskalender/Suchfilter als eigenes Element auf der Veranstaltungsseite</h3>
+<p>In der Konfiguration kann der Tageskalender mit den dazugehörigen Suchfiltern wahlweise nur direkt oberhalb oder seitlich der Veranstaltungsliste platziert werden. Es gibt aber auch die Möglichkeit, das Element an einer selbst gewählten Position innerhalb der Kalenderseite zu positionieren - zum Beispiel in einer Sidebar gemeinsam mit anderen Inhalten. Sie müssen an dieser Stelle lediglich folgenden HTML-Code einfügen:</p>
+<form><textarea rows="2" class="form-control" readonly="">&lt;div id=&quot;dfx-kalender&quot;&gt;&lt;/div&gt;</textarea></form>
+<p>Zwei Dinge sind dabei zu beachten: Die Breite des Elements wird durch den zur Verfügung stehenden Platz bestimmt. Sie müssen also ggf dem umschließenden HTML-Element eine Breite zuweisen. Außerdem muss in unter <em>Konfiguration -> Einstellungen</em> die Anzeige des Kalendelements deaktiviert werden, da es sonst zweimal erscheinen würde.</p>
+	<h3>URL in den Einstellungen ändern</h3>
+	<p>Damit Backlinks (zum Beispiel aus den sozialen Netzwerken) sowie die Link aus der Terminbox den Veranstaltungskalender zusammen mit seinem Umfeld aufrufen, ist es notwendig die URL zu der Seite, in der Ihr Kalender eingebaut ist, in die Konfiguration ins Feld "URL des Frontends" einzutragen. Dies erledigen Sie unter Konfiguration -> Einstellungen im Abschnitt "Sprache/System"</p>
+<h3>Datenfilter für Veranstaltungskalender und Terminbox</h3>
+<p>Sowohl die Daten im Veranstaltungskalender als auch in der Terminbox können mit vorkonfigurierten Filtern ausgeliefert werden. Alle Filter werden als &quot;data&quot;-Attribute in die Einbaucodes des Javascripte eingefügt und können auch miteinander kombiniert werden. </p>
+<p>Folgendes Code-Beispiel ruft die Veranstaltungen der Rubrik &quot;Theater&quot; in &quot;Nördlingen&quot; auf:</p>
+<p>&lt;script data-rubrik=&quot;Theater&quot; data-ort=&quot;Nördlingen&quot; id=&quot;dfx&quot; data-kid=&quot;1&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_ajax.js&quot;&gt;&lt;/script&gt;<br />
+&lt;div id=&quot;datefix&quot;&gt;&lt;/div&gt;</p>
+<p>Folgendes Code-Beispiel zeigt alle Veranstaltungen im Lokal &quot;Zum Goldenen Ochsen&quot; des Veranstalters mit der ID &quot;1234&quot; aus der Veranstalter-Datenbank in einer Terminbox an:</p>
+<p>&lt;script id=&quot;dfxbox&quot; data-lokal=&quot;Zum Goldenen Ochsen&quot; data-vid=&quot;1234&quot; data-kid=&quot;1&quot; data-dfx-url=&quot;{{ datefix_url }}&quot; src=&quot;{{ datefix_url }}/js/dfx_terminbox.js&quot;&gt;&lt;/script&gt;</p>
+<p>Folgende Filter stehen zur Verfügung:</p>
+<ul>
+  <li>data-rubrik</li>
+  {% if zielgruppe == true %}
+    <li>data-zielgruppe</li>
+  {% endif %}
+  <li>data-ort</li>
+  <li>data-nat (Land)</li>
+  <li>data-plz (PLZ-Area);</li>
+  <li>data-lokal (Suche über Location-Name)</li>
+  <li>data-lid (Suche über die ID der Location-Datenbank) </li>
+  <li>data-veranstalter (Suche über veranstalter-Name)</li>
+  <li>data-vid (Suche über die ID der Veranstalter Datenbank)</li>
+  <li>data-rid (Suche über die Orts-/Regionen-Datenbank)</li>
+</ul>
+{% endblock %}
+
+
+
+
+

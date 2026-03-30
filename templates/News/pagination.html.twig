@@ -1,0 +1,159 @@
+{#
+/**
+ * @file
+ * Twitter Bootstrap v3 Sliding pagination control implementation.
+ *
+ * View that can be used with the pagination module
+ * from the Twitter Bootstrap CSS Toolkit
+ * http://getbootstrap.com/components/#pagination
+ *
+ * @author Pablo Díez <pablodip@gmail.com>
+ * @author Jan Sorgalla <jsorgalla@gmail.com>
+ * @author Artem Ponomarenko <imenem@inbox.ru>
+ * @author Artem Zabelin <artjomzabelin@gmail.com>
+ */
+#}
+{% if query.filter is defined %}
+    {% set frontendUrlQ = '?' in route ? route ~ '&' : route ~ '?' %}
+    {% if pageCount > 1 %}
+        <ul class="pagination">
+
+        {% if previous is defined %}
+            <li>
+                <a href="{{ frontendUrlQ ~  pageParameterName ~ '=' ~ previous  ~ query.filter  }}">&laquo;&nbsp;{{ 'Previous'|trans }}</a>
+            </li>
+        {% else %}
+            <li class="disabled">
+                <span>&laquo;&nbsp;{{ 'Previous'|trans }}</span>
+            </li>
+        {% endif %}
+
+        {% if startPage > 1 %}
+            <li>
+                <a href="{{ frontendUrlQ ~  pageParameterName ~ '=1'  ~ query.filter }}">1</a>
+            </li>
+            {% if startPage == 3 %}
+                <li>
+                    <a href="{{ frontendUrlQ ~  pageParameterName ~ '=2'  ~ query.filter }}">2</a>
+                </li>
+            {% elseif startPage != 2 %}
+            <li class="disabled">
+                <span>&hellip;</span>
+            </li>
+            {% endif %}
+        {% endif %}
+
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <li>
+                    <a href="{{ frontendUrlQ ~  pageParameterName ~ '=' ~ page ~ query.filter }}">{{ page }}</a>
+                </li>
+            {% else %}
+                <li class="active">
+                    <span>{{ page }}</span>
+                </li>
+            {% endif %}
+
+        {% endfor %}
+
+        {% if pageCount > endPage %}
+            {% if pageCount > (endPage + 1) %}
+                {% if pageCount > (endPage + 2) %}
+                    <li class="disabled">
+                        <span>&hellip;</span>
+                    </li>
+                {% else %}
+                    {% set pn = pageCount -1 %}
+                    <li>
+                        <a href="{{ frontendUrlQ ~  pageParameterName ~ '=' ~ pn  ~ query.filter  }}">{{ pn }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+            <li>
+                <a href="{{ frontendUrlQ ~  pageParameterName ~ '=' ~ pageCount  ~ query.filter  }}">{{ pageCount }}</a>
+            </li>
+        {% endif %}
+
+        {% if next is defined %}
+            <li>
+                <a href="{{ frontendUrlQ ~  pageParameterName ~ '=' ~ next  ~ query.filter }}">{{ 'Next'|trans }}&nbsp;&raquo;</a>
+            </li>
+        {% else %}
+            <li class="disabled">
+                <span>{{ 'Next'|trans }}&nbsp;&raquo;</span>
+            </li>
+        {% endif %}
+        </ul>
+      {% endif %}
+{% else %}
+{% if pageCount > 1 %}
+    <ul class="pagination">
+
+    {% if previous is defined %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&laquo;&nbsp;{{ 'Previous'|trans }}</a>
+        </li>
+    {% else %}
+        <li class="disabled">
+            <span>&laquo;&nbsp;{{ 'Previous'|trans }}</span>
+        </li>
+    {% endif %}
+
+    {% if startPage > 1 %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+        </li>
+        {% if startPage == 3 %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
+            </li>
+        {% elseif startPage != 2 %}
+        <li class="disabled">
+            <span>&hellip;</span>
+        </li>
+        {% endif %}
+    {% endif %}
+
+    {% for page in pagesInRange %}
+        {% if page != current %}
+            <li>
+                <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+            </li>
+        {% else %}
+            <li class="active">
+                <span>{{ page }}</span>
+            </li>
+        {% endif %}
+
+    {% endfor %}
+
+    {% if pageCount > endPage %}
+        {% if pageCount > (endPage + 1) %}
+            {% if pageCount > (endPage + 2) %}
+                <li class="disabled">
+                    <span>&hellip;</span>
+                </li>
+            {% else %}
+                {% set pn = pageCount -1 %}
+                <li>
+                    <a href="{{ path(route, query|merge({(pageParameterName): (pn)})) }}">{{ pn }}</a>
+                </li>
+            {% endif %}
+        {% endif %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+        </li>
+    {% endif %}
+
+    {% if next is defined %}
+        <li>
+            <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">{{ 'Next'|trans }}&nbsp;&raquo;</a>
+        </li>
+    {% else %}
+        <li class="disabled">
+            <span>{{ 'Next'|trans }}&nbsp;&raquo;</span>
+        </li>
+    {% endif %}
+    </ul>
+{% endif %}
+{% endif %}

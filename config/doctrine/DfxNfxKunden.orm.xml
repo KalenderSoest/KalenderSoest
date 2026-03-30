@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxNfxKunden" table="pool_dfx_nfx_kunden">
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+    <field name="kunde"  column="kunde" length="256" nullable="true"/>
+    <field name="name"  column="name" length="100"/>
+    <field name="vorname"  column="vorname" length="100"/>
+    <field name="strasse"  column="strasse" length="100"/>
+    <field name="plz"  column="plz" length="8"/>
+    <field name="ort"  column="ort" length="100"/>
+    <field name="nat"  column="nat" length="4"/>
+    <field name="ustid"  column="ustid" length="100" nullable="true"/>
+    <field name="email"  column="email" length="100"/>
+    <field name="telefon"  column="telefon" length="100" nullable="true"/>
+    <field name="init"  column="init" length="250"/>
+    <field name="datum" type="datetime" column="datum"/>
+    <field name="lastupdate" type="datetime" column="lastupdate" nullable="true"/>
+    <field name="datenschutz" type="boolean" column="datenschutz" nullable="true"/>
+  </entity>
+</doctrine-mapping>

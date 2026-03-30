@@ -1,0 +1,7 @@
+{% extends 'news/' ~ custom ~ 'news.html.twig' %}
+{% block dfx_artikel %}
+<div itemscope itemtype="http://schema.org/Event" class="fx-blank">
+	<span itemprop="name" class="dfx-titel-liste-kurz"><a href="{{ mehrUrl }}">{{ titel|raw }}</a></span>
+	{% if strDate !='' %}<span class="dfx-datum-liste-kurz">{{ tz }} {{ strDate }}</span>{% endif %}
+</div>
+{%  endblock %}

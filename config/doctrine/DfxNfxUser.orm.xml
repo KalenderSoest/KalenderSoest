@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="App\Entity\DfxNfxUser" table="pool_dfx_nfx_user">
+    <indexes>
+      <index name="kalender_id" columns="kalender_id"/>
+      <index name="kunden_id" columns="kunden_id"/>
+   </indexes>
+   <id name="id" type="integer" column="id">
+     <generator/>
+   </id>
+      <field name="username" column="username" length="180" nullable="true"/>
+      <field name="roles" type="json" column="roles" nullable="true"/>
+      <field name="password" column="password" length="250"/>
+      <field name="email" column="email" length="100"/>
+      <field name="nameLang" column="name_lang" length="100"/>
+      <field name="init"  column="init" length="100" nullable="true"/>
+    <many-to-one field="datefix" target-entity="DfxKonf">
+      <join-columns>
+        <join-column name="kalender_id"  on-delete="SET NULL"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="kunde" target-entity="DfxNfxKunden">
+      <join-columns>
+        <join-column name="kunden_id"  on-delete="CASCADE" />
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

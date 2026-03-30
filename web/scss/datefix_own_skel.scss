@@ -1,0 +1,15 @@
+$dfx-color:	#dfx-color#;
+$dfx-grau: #dfx-grau#;
+$dfx-body-bg: #FFF; // fCfCff
+$dfx-font-color: #dfx-font-color#;
+$dfx-font-size: #dfx-font-size#;
+$dfx-font-type: #dfx-font-type#;				
+
+$dfx-border-radius:			#dfx-border-radius#;
+$dfx-border-radius-large: 	#dfx-border-radius-large#;
+$dfx-border-radius-small:	#dfx-border-radius-small#;
+@import 'bootstrap';
+#datefix{
+	font-family: #dfx-font-type# !important;
+	#dfx-css#;
+}

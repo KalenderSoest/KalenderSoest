@@ -1,0 +1,12 @@
+{% extends 'Admin/base_admin.html.twig' %}
+
+{% block title %}Neues Passwort setzen{% endblock %}
+
+{% block body %}
+    <h1>Neues Passwort setzen</h1>
+
+    {{ form_start(resetForm) }}
+        {{ form_row(resetForm.plainPassword) }}
+        <button class="btn btn-primary">Passwort speichern</button>
+    {{ form_end(resetForm) }}
+{% endblock %}

@@ -1,0 +1,692 @@
+#dfx_wrapper, #dfx_detail_wrapper{
+	padding-right: 0 !important;
+  	padding-left: 0 !important;
+}
+
+.dfx-solo{
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $body-color;
+}
+.dfx-image{
+	max-width: 100% !important;
+	height: auto;
+}
+hr.terminlinie{
+   margin-top: 0 !important;
+   margin-bottom: 0.6rem !important;
+}
+hr.terminlinie.nfx-gap{
+   margin-top: 0.6rem !important;
+}
+hr.terminlinie-bottom{
+   margin-top: 0.6rem !important;
+   margin-bottom: 0.6rem !important;
+}
+.dfx-detail-image{
+	margin-bottom: 0.6rem;
+}
+.dfx-gallery {
+	display: inline-block;
+	max-width: 100%;
+	margin-bottom: 1rem;
+}
+
+.dfx-gallery-stage {
+	position: relative;
+	display: inline-block;
+	max-width: 100%;
+}
+
+.dfx-gallery-slides {
+	position: relative;
+	min-height: 0;
+}
+
+.dfx-gallery-slide {
+	display: none;
+	width: auto;
+	max-width: 100%;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: zoom-in;
+}
+
+.dfx-gallery-slide.is-active {
+	display: block;
+}
+
+.dfx-gallery-slide img,
+.dfx-gallery-lightbox-content img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	margin: 0 auto;
+}
+
+.dfx-gallery-nav,
+.dfx-gallery-lightbox-close,
+.dfx-gallery-lightbox-nav {
+	border: 0;
+	color: #fff;
+	cursor: pointer;
+}
+
+.dfx-gallery-nav {
+	position: absolute;
+	top: 50%;
+	z-index: 2;
+	width: 2.75rem;
+	height: 2.75rem;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, 0.7);
+	transform: translateY(-50%);
+}
+
+.dfx-gallery-nav-prev {
+	left: 0.75rem;
+}
+
+.dfx-gallery-nav-next {
+	right: 0.75rem;
+}
+
+.dfx-gallery-thumbs {
+	display: flex;
+	flex-wrap: nowrap;
+	width: 100%;
+	gap: 0.5rem;
+	align-items: stretch;
+	margin-top: 0.75rem;
+	overflow: hidden;
+}
+
+.dfx-gallery-thumb {
+	flex: 1 1 0;
+	min-width: 0;
+	padding: 0;
+	border: 2px solid transparent;
+	background: transparent;
+	opacity: 0.7;
+	cursor: pointer;
+}
+
+.dfx-gallery-thumb.is-active {
+	border-color: $primary;
+	opacity: 1;
+}
+
+.dfx-gallery-thumb img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.dfx-gallery-lightbox[hidden] {
+	display: none;
+}
+
+.dfx-gallery-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 1050;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	padding: 1.5rem;
+	background: rgba(0, 0, 0, 0.88);
+}
+
+.dfx-gallery-lightbox-content {
+	max-width: min(92vw, 1100px);
+	max-height: 86vh;
+}
+
+.dfx-gallery-lightbox-content img {
+	max-width: 100%;
+	max-height: 86vh;
+	width: auto;
+}
+
+.dfx-gallery-lightbox-close {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	width: 2.75rem;
+	height: 2.75rem;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.12);
+	font-size: 1.5rem;
+}
+
+.dfx-gallery-lightbox-nav {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.14);
+	font-size: 1.25rem;
+}
+
+body.dfx-lightbox-open {
+	overflow: hidden;
+}
+
+@media (max-width: 767.98px) {
+	.dfx-gallery-stage {
+		gap: 0.5rem;
+	}
+
+	.dfx-gallery-nav {
+		width: 2.25rem;
+		height: 2.25rem;
+	}
+
+	.dfx-gallery-nav-prev {
+		left: 0.5rem;
+	}
+
+	.dfx-gallery-nav-next {
+		right: 0.5rem;
+	}
+
+	.dfx-gallery-lightbox {
+		padding: 1rem 0.5rem;
+	}
+}
+.dfx-image-zweizeilig{
+	
+}
+.dfx-image-zweizeilig {
+	max-width: 80px;
+	margin-right: 1.2rem;
+}
+.dfx-titel-liste-kurz {
+  font-weight: bold !important;
+  margin-top: 0 !important;
+}
+.dfx-titel-liste-zweizeilig {
+  font-weight: bold !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+.dfx-titel-liste-dreizeilig {
+  font-weight: bold !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.dfx-titel-liste-kompakt {
+  font-weight: bold !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.dfx-titel-liste-blank{
+	margin: 0.6rem 0;
+    font-weight: bold !important;
+}
+
+.dfx-subtitel-liste-kompakt{
+    font-weight: bold !important;
+}
+
+.dfx-detail-subtitel{
+    font-weight: bold !important;
+    margin-bottom: 1rem;
+}
+
+i.fa{
+  font-size: ceil(($font-size-base * 1.25));
+  margin-left: 0.6rem;
+}
+.dfx-social i.fa{
+  font-size: 1.2rem;
+  margin-right: 0.6rem;
+  margin-left: 0;
+  
+}
+.dfx-detail-info i.fa{
+  font-size: 1.2rem;
+  margin-right: 0.6rem;
+  margin-left: 0;
+}
+.dfx-lokal{
+	margin: 0.6rem 0;
+}
+.dfx-lokal-liste{
+	margin: 0.6rem 0;
+	font-weight: bold;
+}
+.dfx-ort{
+	margin: 0.6rem 0;
+}
+.dfx-lead{
+	margin: 0.6rem 0;
+}
+.dfx-text{
+	margin: 0.6rem 0;
+}
+.dfx-text-detail{
+	margin: 0 0 0.6rem;
+}
+.dfx-eintritt{
+	margin: 0.6rem 0;
+}
+.dfx-eintritt-detail{
+	margin: 0.6rem 0;
+}
+
+.dfx-veranstalter	{
+	margin: 0.6rem 0;
+}
+
+.dfx-zwue{
+	font-size: $h4-font-size;
+	font-weight: bold;
+	margin: 1.2rem 0;
+}
+
+.dfx-titel-liste-kompakt{
+	font-weight: bold;
+}
+
+.dfx-titel{
+   margin-top: 0.6rem
+}
+
+.dfx-detail-datum-zeit{
+	margin-bottom: 0.6rem;
+	font-weight: bold;
+}
+.dfx-detail-social{
+	text-align: right;
+}
+
+.dfx-detail-zwue-linie{
+	font-weight: bold;
+	margin-bottom: 0.6rem;
+	border-bottom: 1px solid $gray-200;
+	padding-bottom: $padding-base-vertical;
+}
+
+.dfx-detail-zwue-block{
+	background-color: $dfx-color;
+	color: #fff;
+	padding: $padding-base-vertical $padding-base-horizontal;
+	border-radius: $dfx-border-radius;
+	margin-bottom: 0.6rem;
+}
+
+.dfx-detail-zwue-raster{
+	background-color: $gray-100;
+    border: 1px solid $gray-200;
+    border-radius: $dfx-border-radius;
+    margin-bottom: 0.6rem;
+}
+
+
+.dfx-map-window{
+	display: none;
+	height: 300px;
+}
+
+.dfx-map-form{
+	display: none;
+	text-align:right;
+	margin-top:0.6rem;
+	padding: $padding-base-vertical $padding-base-horizontal;
+}
+.dfx-map-form-detail{
+	margin:0.6rem 0;
+	padding: $padding-base-vertical $padding-base-horizontal;
+}
+
+
+.dfx-header{
+	font-size: $h4-font-size;
+	font-weight: bold;
+	margin: 0.6rem 0;
+}
+.nav-tabs .nav-link{
+	background-color: $gray-100;
+	border: 1px solid $gray-300;
+	color: $gray-800;
+	margin-right: 0.25rem;
+}
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link{
+	background-color: $primary;
+	border-color: $primary;
+	color: #fff;
+}
+.dfx-kalender{
+	background-color:  rgba(255, 255, 255, 0.8);
+	padding: 0 0.6rem;
+	border: 1px solid $gray-600;
+	border-radius: $dfx-border-radius;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+.dfx-filter-side{
+	margin-top: 0.6rem
+}
+
+.fx-raster{
+	background-color: $gray-200;
+    border: 1px solid $gray-300;
+    border-radius: $dfx-border-radius;
+    margin: 0 0 0.6rem 0 !important;
+    /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset; */
+    padding: $padding-base-vertical;
+}
+
+.fx-blank{
+	margin-bottom: 1.2rem;
+}
+
+.fx-block{
+	background-color: $gray-100;
+    margin-bottom: 0.6rem;
+    margin-top: 0.6rem;
+    padding: $padding-base-vertical $padding-base-horizontal;
+    border: 1px solid $gray-200;
+	border-radius: $dfx-border-radius;
+}
+
+
+.fx-linie{
+	border-bottom: 1px solid $gray-200;
+	border-top: 1px solid $gray-200;
+    margin-bottom: 0.6rem;
+    padding-top: $padding-large-vertical;
+}
+
+legend{
+	margin-top: 23px
+}
+
+#dfx-kalender .form-control {
+  display: block;
+  width: 100%;
+  height: $input-height; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
+  padding: $padding-base-vertical $padding-base-horizontal;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $dfx-font-color;
+  background-color: $input-bg;
+  background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+  border: 1px solid $input-border-color;
+  border-radius: $input-border-radius;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+#dfx-kalender .form-control:focus {
+    border-color: rgba(198, 61, 78, 0.5);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(198, 61, 78, 0.6);
+    outline: 0 none;
+}
+#dfx-kalender .form-control::-moz-placeholder {
+    color: #999999;
+    opacity: 1;
+}
+#dfx-kalender .form-group {
+    margin-bottom: 1.2rem;
+}
+#dfx-kalender * {
+    box-sizing: border-box;
+}
+#dfx-kalender *::before, #datefix *::after {
+    box-sizing: border-box;
+}
+
+#dfx-kalender .btn {
+  display: inline-block;
+  margin-bottom: 0; // For input.btn
+  font-weight: $btn-font-weight;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+  border: 1px solid transparent;
+  white-space: nowrap;
+  // button-size: $padding-base-vertical; $padding-base-horizontal; $font-size-base; $line-height-base; $dfx-border-radius;
+  box-shadow: 0 1px 0 rgba(255,255,255,.5) inset;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+  transition: all 0.3s ease-out;
+}
+#dfx-kalender .btn-primary {
+  // button-variant: $btn-primary-color; $btn-primary-bg; $btn-primary-border; $btn-primary-bg-hilight;
+}
+#dfx-kalender .btn:focus, #dfx-kalender .btn:active:focus, #dfx-kalender .btn.active:focus, #dfx-kalender .btn.focus, #dfx-kalender .btn.focus:active, #dfx-kalender .btn.active.focus {
+    outline: medium none;
+}
+#dfx-kalender .btn:hover, #dfx-kalender .btn:focus, #dfx-kalender .btn.focus {
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 2px rgba(0, 0, 0, 0.3);
+    color: #bababa;
+    text-decoration: none;
+    transition: all 0.2s linear 0s;
+}
+#dfx-kalender .btn:active, #dfx-kalender .btn.active {
+    background-image: none;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2) inset;
+    outline: 0 none;
+    transition: all 0.1s linear 0s;
+}
+
+textarea.form-control {
+    height: auto !important;
+    line-height: normal !important;
+}
+
+#termine_zeit .form-control, #termine_zeit .form-group {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  width: auto !important;
+}
+
+.sm-box .sm-buttons {
+    background: #fff none repeat scroll 0 0;
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    display: none;
+    font-size: 0;
+    margin-top: 5px;
+    padding: 5px 0 5px 5px;
+    position: absolute;
+    z-index: 2;
+}
+.sm-link .fa{
+    margin-right: 2px !important;
+}
+.sm-link{
+    margin-right: 0.6rem;
+}
+
+.page-item.active .page-link {
+    color: #fff;
+    background-color: $dfx-color;
+    border-color: $dfx-color;
+}
+
+
+.sm-box a .fa::before {
+    position: relative;
+    top: 2px;
+}
+.sm-box {
+    float: left;
+}
+.sm-box .sm-buttons {
+    background: #fff none repeat scroll 0 0;
+    box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
+    display: none;
+    font-size: 0;
+    margin-top: 0.4rem;
+    padding: 0.4rem 0 0.4rem 0.4rem;
+    position: absolute;
+    z-index: 2;
+}
+
+.sm-box .sm-buttons a {
+    display: inline-block;
+    margin-left: 0.4rem;
+}
+.sm-box .sm-buttons a.last {
+    margin-right: 0;
+}
+
+.required::after {
+    content: " *";
+}
+:root, :host {
+  --fa-family-classic: "Font Awesome 7 Free";
+  --fa-font-regular: normal 400 1em/1 var(--fa-family-classic);
+  --fa-family-brands: "Font Awesome 7 Brands";
+  --fa-font-brands: normal 400 1em/1 var(--fa-family-brands);
+  /* deprecated: this older custom property will be removed next major release */
+  --fa-style-family-classic: var(--fa-family-classic);
+}
+
+@font-face {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../../fontawesome/webfonts/fa-regular-400.woff2");
+}
+.far {
+  --fa-family: var(--fa-family-classic);
+  --fa-style: 400;
+}
+
+.fa-classic {
+  --fa-family: var(--fa-family-classic);
+}
+
+.fa-regular {
+  --fa-style: 400;
+}
+
+
+@font-face {
+  font-family: "Font Awesome 7 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../../fontawesome/webfonts/fa-brands-400.woff2");
+}
+.fab,
+.fa-brands,
+.fa-classic.fa-brands {
+  --fa-family: var(--fa-family-brands);
+  --fa-style: 400;
+}
+
+
+.fa-calendar{
+  --fa: "\f133";
+}
+
+.fa-chevron-left {
+  --fa: "\f053";
+}
+
+.fa-chevron-right {
+  --fa: "\f054";
+}
+
+.fa-chevron-circle-left {
+  --fa: "\f137";
+}
+
+.fa-comment {
+  --fa: "\f075";
+}
+
+.fa-check-square {
+  --fa: "\f14a";
+}
+.fa-clock {
+  --fa: "\f017";
+}
+.fa-download {
+  --fa: "\f019";
+}
+.fa-exchange {
+  --fa: "\f0ec";
+}
+.fa-eye {
+  --fa: "\f06e";
+}
+
+.fa-eye-slash {
+  --fa: "\f070";
+}
+
+.fa-envelope {
+  --fa: "\f0e0";
+}
+.fa-edit {
+  --fa: "\f044";
+}
+.fa-file-pdf {
+  --fa: "\f1c1";
+}
+
+.fa-file {
+  --fa: "\f15b";
+}
+/* statt files-o für kopieren */
+.fa-copy {
+  --fa: "\f0c5";
+}
+.fa-globe {
+  --fa: "\f0ac";
+}
+.fa-info-circle {
+  --fa: "\f05a";
+}
+.fa-list {
+  --fa: "\f03a";
+}
+.fa-map-marker {
+  --fa: "\f041";
+}
+.fa-pencil-square {
+  --fa: "\f14b";
+}
+.fa-print {
+  --fa: "\f02f";
+}
+.fa-square-facebook {
+  --fa: "\f082";
+}
+.fa-square-whatsapp {
+  --fa: "\f40c";
+}
+.fa-square-x-twitter {
+  --fa: "\e61a";
+}
+.fa-square-linkedin {
+  --fa: "\e7d0";
+}
+.fa-square-reddit {
+  --fa: "\f1a2";
+}
+.fa-share {
+  --fa: "\f064";
+}
+.fa-sign-in {
+  --fa: "\f090";
+}
+.fa-ticket {
+  --fa: "\f145";
+}
+.fa-trash {
+  --fa: "\f1f8";
+}
+.fa-times {
+  --fa: "\f00d";
+}

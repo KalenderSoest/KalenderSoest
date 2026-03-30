@@ -1,0 +1,342 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Artikel hinzufügen' %}
+{% block pageheader 'Artikel hinzufügen' %}
+{% block subheader ''  %}
+
+{% block footer %}
+
+{% endblock footer %}
+{% block javascript_onload %}
+    var newsForm = document.querySelector("form[name='news']");
+    var beschreibungInput = document.getElementById('news_beschreibung');
+    var leadInput = document.getElementById('news_lead');
+    var imageInfoBlock = document.getElementById('imageInfoBlock');
+    var imageFileInput = document.getElementById('news_imageFile');
+    var imageCopyCheck = document.getElementById('news_imgcopycheck');
+
+    function toggleImageInfo() {
+        if (!imageInfoBlock || !imageFileInput || !imageCopyCheck) {
+            return;
+        }
+
+        var hasImage = imageFileInput.value !== '';
+        imageInfoBlock.style.display = hasImage ? '' : 'none';
+        imageCopyCheck.required = hasImage;
+    }
+
+    if (imageInfoBlock) {
+        imageInfoBlock.style.display = 'none';
+    }
+
+    if (imageFileInput) {
+        imageFileInput.addEventListener('change', toggleImageInfo);
+    }
+
+    if (newsForm) {
+        newsForm.addEventListener('submit', function(event) {
+            {% if konf.maxLengthBeschreibung > 0 %}
+            var beschreibungLength = beschreibungInput ? beschreibungInput.value.length : 0;
+            if (beschreibungLength > {{ konf.maxLengthBeschreibung }} + 10) {
+                alert("Der Text für die Beschreibung ist mit " + beschreibungLength + " Zeichen länger als die erlaubten {{ konf.maxLengthBeschreibung }} Zeichen.\n\nVor dem erneuten Absenden ist ein Klick ein anderes Formularfeld nötig !.");
+                event.preventDefault();
+                return;
+            }
+            {% endif %}
+            {% if konf.maxLengthLead > 0 %}
+            var leadLength = leadInput ? leadInput.value.length : 0;
+            if (leadLength > {{ konf.maxLengthlead }}) {
+                alert("Der Text für die Kurzfassung ist mit " + leadLength + " Zeichen länger als die erlaubten {{ konf.maxLengthLead }} Zeichen.\n\nVor dem erneuten Absenden ist ein Klick ein anderes Formularfeld nötig !.");
+                event.preventDefault();
+            }
+            {% endif %}
+        });
+
+        newsForm.addEventListener('reset', function() {
+            window.setTimeout(toggleImageInfo, 0);
+        });
+    }
+
+    {% if konf.maxLengthLead > 0 %}
+    if (leadInput) {
+        leadInput.addEventListener('blur', function() {
+            if (leadInput.value.length > {{ konf.maxLengthlead }}) {
+                alert("Der Text für die Kurzfassung ist mit " + leadInput.value.length + " Zeichen länger als die erlaubten {{ konf.maxLengthLead }} Zeichen");
+            }
+        });
+    }
+    {% endif %}
+{% endblock %}
+{% block javascript_functions %}
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-toggle="tooltip"]').forEach(function(element) {
+        new bootstrap.Tooltip(element);
+    });
+
+    document.querySelectorAll('[data-toggle="popover"]').forEach(function(element) {
+        new bootstrap.Popover(element);
+    });
+});
+{% endblock %}
+
+{% block body -%}
+<div id="dfx" data-kid="{{ konf.id }}" data-dfx-url="{{ datefix_url }}" style="display:none"></div>
+	{{ form_start(form) }}
+
+
+
+        {% if error is defined %}
+            <h3><strong style="color: red">Fehler ! {{ error }}</strong></h3>
+        {% endif %}
+
+
+<fieldset>
+<legend>Artikeldaten</legend>
+    <div class="row">
+
+        <div class="col-sm-6 col-md-6">
+            {{ form_row(form.datum_von) }}
+        </div>
+        <div class="col-sm-6 col-md-6">
+            {{ form_row(form.datum_bis) }}
+        </div>
+    </div>
+    <div class="row">
+    	<div class="col-sm-12 col-md-9">
+    		 {{ form_row(form.titel) }}
+    	</div>
+    </div>
+    {%  if konf.feldSubtitel == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-9">
+    		{{ form_row(form.subtitel) }}
+    	</div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.newsTyp) }}
+        </div>
+    </div>
+    <div class="row hideBeitrag">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.kurztitel) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.menueeintrag) }}
+        </div>
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.reihenfolge) }}
+        </div>
+    </div>
+</fieldset>
+{%  if konf.rubriken|length > 0 %}
+ <fieldset class="step-3">
+    <legend>Rubriken</legend>
+     <div class="row">
+    	<div class="col-sm-12">
+            {% for checkbox in form.rubrik.children  %}
+                <div class="form-check form-check-inline">
+                    {{ form_label(checkbox) }}
+                    {{ form_widget(checkbox) }}
+                    {{ form_errors(checkbox) }}
+                </div>
+            {% endfor %}
+    	</div>
+    </div>
+</fieldset>
+{%  endif %}
+{%  if konf.zielgruppen|length > 0 %}
+ <fieldset class="step-3">
+    <legend>Zielgruppen</legend>
+     <div class="row">
+    	<div class="col-sm-12">
+            {% for checkbox in form.zielgruppe.children  %}
+                <div class="form-check form-check-inline">
+                    {{ form_label(checkbox) }}
+                    {{ form_widget(checkbox) }}
+                    {{ form_errors(checkbox) }}
+                </div>
+            {% endfor %}
+    	</div>
+    </div>
+</fieldset>
+{%  endif %}
+<fieldset class="step-4">
+    <legend>Texte & Medien</legend>
+    {%  if konf.feldLead == 1 %}
+    <div class="row">
+    	<div class="col-sm-12">
+    		{{ form_row(form.kurztext) }}
+    		{%  if konf.maxLengthLead > 0 %}
+    		<p>Die Eingabe ist vom Administrator auf max. {{ konf.maxLengthLead }} Zeichen incl. Leerzeichen und HTML-Quellcode begrenzt.<br><br></p>
+     		{% endif %}
+    	</div>
+    </div>
+    {% endif %}
+    {%  if konf.feldBeschreibung == 1 %}
+    <div class="row">
+    	<div class="col-sm-12">
+    		{{ form_row(form.beschreibung) }}
+    		{%  if konf.maxLengthBeschreibung > 0 %}
+    		<p>Die Eingabe ist vom Administrator auf max. {{ konf.maxLengthBeschreibung }} Zeichen incl. Leerzeichen und HTML-Quellcode begrenzt.<br><br></p>
+     		{% endif %}
+    	</div>
+    </div>
+    {% endif %}
+
+    {%  if konf.feldImg == 1 %}
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(form.imageFile) }}
+            </div>
+            <div class="col-sm-12 col-md-2">
+
+            </div>
+        </div>
+        {%  if konf.feldGalerie == 1 %}
+        <div class="row">
+                <div class="col-12 col-sm-6 col-md-12">
+                    <h4>Weitere Bilder (aktuell nur sichtbar in individuellen Templates)</h4>
+                </div>
+                <div class="col-8 col-sm-4 col-md-3">
+                    {{ form_row(form.imageFile2) }}
+                </div>
+                <div class="col-4 col-sm-2 col-md-1">
+
+                </div>
+                <div class="col-8 col-sm-4 col-md-3">
+                    {{ form_row(form.imageFile3) }}
+                </div>
+                <div class="col-4 col-sm-2 col-md-1">
+
+                </div>
+                <div class="col-8 col-sm-4 col-md-3">
+                    {{ form_row(form.imageFile4) }}
+                </div>
+                <div class="col-4 col-sm-2 col-md-1">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8 col-sm-4 col-md-3">
+                    {{ form_row(form.imageFile5) }}
+                </div>
+                <div class="col-4 col-sm-2 col-md-1">
+
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12">
+                <br>{{ form_row(form.imgtext) }}
+            </div>
+        </div>
+        <div class="row" id="imageInfoBlock">
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(form.imgcopycheck) }}
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <br>{{ form_row(form.imgcopyright) }}
+            </div>
+        </div>
+    {% endif %}
+    {%  if konf.feldPdf == 1 %}
+     <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.pdfFile) }}
+    	</div>
+    	<div class="col-sm-12 col-md-2">
+    		
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		<br>{{ form_row(form.pdflinktext) }}
+    	</div>
+    	
+    </div>
+    {% endif %}
+    {%  if konf.feldMedia == 1 %}
+     <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.media) }}
+    	</div>
+    	<div class="col-sm-12 col-md-2">
+    		
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		<br>{{ form_row(form.medialinktext) }}
+    	</div>
+    	
+    </div>
+    {% endif %}
+    {%  if konf.feldVideo == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.video) }}
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		<br>Geben Sie hier den vollständigen HTML-Einbettungscode ein, den die Videoprtale zur Verfügung stelllen. 
+    	</div>
+    </div>
+    {% endif %}
+</fieldset>
+<fieldset class="step-5">
+    <legend>Kontakt, Link</legend>
+    {%  if konf.feldVeranstalter == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.mail) }}
+    	</div>
+     </div>
+    {% endif %}
+{%  if konf.feldLink == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.link) }}
+    	</div>
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.linktext) }}
+    	</div>
+    </div>
+{% endif %}
+
+    </fieldset>
+<fieldset class="step-6">
+    <legend>Veröffentlichen & archivieren</legend>
+    <div class="row">
+    	{% if is_granted('ROLE_DFX_PUB')  %}
+    	<div class="col-sm-12 col-md-3">
+    		{{ form_row(form.pub, {'checked' : true }) }}
+    	</div>
+    	{% endif %}
+    	<div class="col-sm-12 col-md-3">
+    		{{ form_row(form.archiv) }}
+    	</div>
+    	{% if is_granted('ROLE_DFX_META') or konf.pubMetaAll == 1 %}
+    	<div class="col-sm-12 col-md-3">
+    		{% set metaAll = konf.pubMetaAll == 1 ? true : false %}
+    		{{ form_row(form.pubMeta, {'checked' : metaAll }) }}
+    	</div>
+    	{%  endif %}
+    	{% if is_granted('ROLE_DFX_GROUP') or konf.pubGroupAll == 1 %}
+    	<div class="col-sm-12 col-md-3">
+			{% set groupAll = konf.pubGroupAll == 1 ? true : false %}
+    		{{ form_row(form.pubGroup, {'checked' : groupAll }) }}
+    	</div>
+    	{% endif %}
+    </div>
+    </fieldset>
+    <hr>
+    <div class="row">
+		  <div class="col-6">
+		  {{ form_row(form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(form.reset) }}
+		  </div>
+	</div>
+    {{ form_row(form._token) }}
+    {{ form_end(form, {'render_rest': false}) }}	
+    <div><br /><a href="{{ path('admin_news') }}">Zurück zur Liste ohne zu speichern</a></div>
+
+{% endblock body %}
+

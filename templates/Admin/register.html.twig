@@ -1,0 +1,60 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title %}Veranstaltungskalender anlegen{% endblock %}
+{% block body -%} 
+<!-- Page Content -->
+    <div class="container">
+
+        <!-- Page Heading/Breadcrumbs -->
+        <div class="row">
+            <div class="col-lg-12">
+                {% if error is defined %}
+                    <div style="color: red">{{ error  }}</div>
+                {% endif %}
+                <h1 class="mb-3 pb-2 border-bottom">Veranstaltungskalender anlegen </h1>
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('home') }}">Startseite</a>
+                    </li>
+                    <li class="active">Account anlegen</li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+		<h2>Schritt 1 - Ihre Adresse</h2>
+        <!-- Content Row -->
+        <div class="row">
+            <div class="col-sm-12 col-md-7">
+              {{ form_start(form)   }} 
+                {{ form_row(form.kunde) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.vorname) }}
+                {{ form_row(form.strasse) }}
+                <div class="row">
+    				<div class="col-sm-6 col-md-2">
+    					{{ form_row(form.nat) }}
+    				</div>
+    				<div class="col-sm-6 col-md-3">
+    					{{ form_row(form.plz) }}
+    				</div>
+    				<div class="col-sm-12 col-md-7">
+    					{{ form_row(form.ort) }}
+    				</div>
+    			</div>
+			{{ form_row(form.email) }}
+
+			<h2>Schritt 2 - Passwort festlegen</h2>
+			{{ form_row(form.password.first) }}
+			{{ form_row(form.password.second) }}
+
+    			<div class="row">
+    				<div class="col-sm-12 col-md-6">
+               		{{ form_row(form.submit) }}
+               		</div>
+               		<div class="col-sm-12 col-md-6">
+               		 {{ form_row(form.reset) }}
+               		 </div>
+               	</div>
+                {{ form_row(form._token) }}
+                {{ form_end(form, {'render_rest': false}) }} 
+            </div>
+          </div>
+{%  endblock %}

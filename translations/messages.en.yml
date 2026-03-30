@@ -1,0 +1,235 @@
+﻿eintritt:    Entry
+nachname: Surname
+vorname: First name
+strasse: Address
+plz: Postcode
+ort: City
+telefon: Phone
+mobil: Mobile
+email: email 
+www: www 
+nachricht: Message
+zurueck zur liste: Back
+details: Details
+mehr: More
+Next: Continue
+Previous: Back
+termin ansehen: View appointment
+subtitel-fe: ""
+subtitel-be: Subtitle
+
+
+
+#Termine
+sonntag: Sunday
+montag: Monday
+dienstag: Tuesday
+mittwoch: Wednesday
+donnerstag: Thursday
+freitag: Friday
+samstag: Saturday
+
+so: Sun
+mo: Mon
+di: Tue
+mi: Wed
+do: Thu
+fr: Fri
+sa: Sat
+
+januar: January
+februar: February
+maerz: March
+april: April
+mai: May
+juni: June
+juli: July
+august: August
+september: September
+oktober: October
+november: November
+dezember: December
+
+Alle Veranstaltungen: All events
+keine Termine: No events were found in the requested period
+veranstaltungsort auf lageplan:    Venue on map
+verabreden:    Agree
+erinnern:    Remember
+eintragen: Add to calendar
+als mail senden:    Send as mail
+mail senden:    Mail to the organizer
+karte schliessen: Close map 
+standort: My location 
+route anzeigen: Show route
+pdf download: pdf download
+
+#Anmeldung/Karten
+karten: Tickets
+anmelden: Registration
+anmeldung: Registration / Place request
+uebermittelte anmeldedaten: Submitted request 
+uebermittelte kartenreservierung: Transmitted ticket reservation
+anzahl: Number
+personenzahl: Number of persons
+fuer: for
+von: from
+plaetze verfuegbar: Places available
+karten verfuegbar: Tickets available
+ausgebucht: booked up
+ausverkauft: sold out
+ak-text1: Please enter at least your last name, first name and email address.
+a-text2-1: <b>Important note!</b> Your ticket request will be emailed to you.
+a-text2-2: Transmitted. Please expressly confirm your request for places and inform yourself about the modalities of the contract. The possibility to submit an application does not mean that there are currently still places available. The operator of this event calendar is not liable for damages caused by faulty e-mail addresses, server failures or other errors during the use of this system. 
+a-text3: Registration sent
+a-text4: Registration has been sent to
+k-text2-1: <b>Important note!</b> Your reservation request will be transmitted to you
+k-text2-2: by email. Please confirm your reservation from there and inform yourself about the modalities of the contract. The possibility to submit a reservation does not mean that there are currently still places available. The operator of this event calendar is not liable for damages caused by faulty e-mail addresses, server failures or other errors during the use of this system. 
+k-text3: Registration sent
+k-text4: Registration has been sent to
+ak-text5: Please contact the sender.
+ak-text6: The following data were transmitted
+ak-text7: There are not enough places available for this event. 
+ak-text8: Still
+pflichtfelder: "* Required fields"
+
+#Überschriften
+kartenheader: Tickets
+anmeldenheader: Registration
+kontaktheader: Contact
+infoheader: More information
+teilen: Share 
+merken: Notice
+datum uhrzeit: Date / time
+veranstaltungsort: Location
+veranstalter: Organizer
+anfahrt: How to get there
+
+#Mailfooter
+f-text1: This email was automatically generated for the event calendar with the Url
+f-text2: If you want to report any problems, please contact the administrator of the website.
+f-text3: "Please indicate the following reference number: Event calendar number"
+
+#Terminhinweis als Mail
+Terminhinweis als E-Mail verschicken: Send appointment as an e-mail
+rechtshinweis mail: "By clicking on the button 'Send date as mail', you confirm that the recipient is personally known to you or if you assume that he / she agrees to the sending of the date notice."
+datenschutz mail: "Privacy Notice: Your email address and your Internet connection data will be temporarily stored to prevent misuse."
+hinweis auf termin: Note on event date
+moechte sie auf folgenden Termin hinweisen: Would like to point you to the following date
+Kommentar von: Comment by
+E-Mail erfolgreich verschickt: Email sent successfully
+Ihr Veranstaltungshinweis auf: Your event note on
+wurde erfolgreich an: Was successful
+verschickt: is sent
+antworten: Answer
+
+#Reminder
+An Termin erinnern lassen: Date reminder
+Erinnerung erfolgreich gespeichert: Reminder saved successfully
+Ihr Erinnerungswunsch an: Your wish to remember to
+wurde erfolgreich gespeichert: Was saved successfully
+Eine E-Mail wird am: An email will be sent on
+an: to
+
+#Termineingabe Web
+Termineintrag erfolgreich: Event entry successful
+Veranstaltung eingetragen: Your event has been successfully added to the event calendar
+Freigabe Administrator: Your entry is only visible after approval by the administrator of the event calendar
+Email Administrator: "An email to the administrator ("
+is on the way: ") is on the way"
+Termin bearbeiten: To edit the date, click here
+Termin loeschen: To delete the date, click here
+Termin veroeffentlichen: Publish date
+Termin sperren: Block date
+Kurzfassung Termineintrag: Summary of date
+Hinweis Serientermin: This date is part of an event series. The deletion and editing affects all dates of this series!
+Hinweis Serie Datumseingabe: This date is part of an event series. It is not possible to make date changes, add additional dates, or remove individual dates from the series. You can edit or delete individual dates from the appointment list.
+Ihr Veranstaltungseintrag: Ihr Veranstaltungseintrag
+Neuer Veranstaltungseintrag: Neuer Veranstaltungseintrag
+
+#Anmeldungen/Karten
+zurueck zur terminuebersucht: Back to date overview
+
+#PDF
+Weitere Informationen: Further information
+
+
+# Headline über den Terminen / Zeitspannen
+im Umkreis von: within a radius of
+Km um: Km around
+im Postleitzahlgebiet: in the postcode area
+Region: Region
+mit Suchwort(en): with searchterm(s)
+ab heute: from today
+am: on
+ab: from
+bis: to
+vom: from
+
+# Terminauswahl
+Datum von: Date from
+Datum bis: Date to
+Land wählen: Choose country
+PLZ-Gebiet: Postcode area
+Ort wählen: Choose city
+Umkreis Km: Radius Km
+Veranstaltungsstätte wählen: Choose location
+Veranstalter wählen: Choose organizer
+Region wählen: Choose region
+Veranstalter aus Datenbank wählen: Choose Organizer from database
+Rubrik wählen: Choose category
+Suche in Titel, Text: Search in title, text
+suchen: search
+verwerfen: discard
+
+# Formulare allgemein
+sicherheitscode: Security code 
+4-stellige Codezahl: 4 digit code number
+zurücksetzen: reset
+
+# Formular Termin als Mail versenden
+Absender E-Mail: Sender email
+Ihre E-Mail-Adresse: Your email
+Absender Vorname: Sender name
+Ihr Vorname: Your name
+Absender Nachname: Sender surname
+Ihr Nachname: Your surname
+Empfänger E-Mail: Recipient email
+E-Mail-Adresse des Empfängers: Recipient email
+Nachricht an Empfänger: Message to recipient
+Termin als Mail versenden: Send an appointment as an email
+
+# Formular an Termin erinnern
+Erinnern am: Remember me on
+Datum wählen: Choose date
+
+#Termineingabe Web
+Daten des Eingebers: Your data
+einzeltermin: single date
+serientermin: recurring dates
+
+tf-text1: <h4>Enter single date</h4><p>Single dates are events that take place once in a day or extend over several days, but are to be regarded as one event - such as a seminar or a trip of several days. <strong>Multi-day single dates appear in the calendar only with the start date </strong> </p>
+tf-text2: <h3>Enter recurring dates</h3><p>Recurring dates are single dates, that take place in a certain period of time regularly or repeat themselves at irregular intervals. This can be exhibitions or a Christmas market that takes place every day for a certain period. Recurring dates appear on all days in the calendar and can be edited individually or in bundles after being entered.
+tf-text3: <h4>Regular dates</h4><p>Enter a start and end date and then mark the days on which the appointment takes place. The determined days are automatically entered in the list field for the regular recurring dates that appear in the next line and can be edited by hand if necessary. </p>
+tf-text4: <h4>Irregular date</h4><p>Irregular dates can be recorded using the calendar linked to the list field. Click on the days on which the date should appear. You can also continue the entry beyond monthly limits by changing the months with the << >> keys.</p>
+tf-text5: Get geodata from address data
+tf-text6: Get geodata from map
+tf-text7: Enter the full HTML embed code that the video portal provides.
+rubriken: Category
+legende1: What & where
+legende2: Text & Media
+legende3: Organizer, contact, tickets, registration
+
+#Nachträge
+Termin als PDF: PDF download
+Termin drucken: Printable version
+Uhr: " "
+Datensatz speichern: Submit 
+
+#Anmeldungen/Karten
+
+#PDF
+
+
+datenschutz_1: Yes, I have acknowledged the privacy policy
+datenschutz_linktext: here
+datenschutz_2: and I agree that the data I provide will be collected and stored electronically.

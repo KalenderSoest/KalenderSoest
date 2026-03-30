@@ -1,0 +1,70 @@
+{% extends 'Kalender/base_detail.html.twig' %}
+{% block dfx_termin_detail %}		
+{% if konf.dfxTpl == 'block' %}
+   <div itemscope itemtype="http://schema.org/Event">
+{% else %}
+	<div itemscope itemtype="http://schema.org/Event" class="fx-{{ konf.dfxTpl }}">
+{% endif %}
+    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    
+    {% if konf.dfxTpl == 'block' %}
+   		<h3 itemprop="name" class="dfx-titel fx-block">{{ termin.titel|raw }}</h3>
+	{% else %}
+		<h3 itemprop="name" class="dfx-titel">{{ termin.titel|raw }}</h3>
+	{% endif %}
+	{% if termin.subtitel != NULL %}
+		<div class="dfx-detail-subtitel">{{'subtitel-fe'|trans}}{{ termin.subtitel }} </div>
+	{% endif %}
+	<div class="row">
+            <div itemprop="image" class="col-12 col-md-6">
+                {% if strSlider != NULL %}
+                        {{ strSlider|raw }}	
+                {% else %}
+                        {{ strImg|raw }}
+                {% endif %}			
+                {% if strText != NULL %}<div itemprop="description" class="dfx-text-detail">{{ strText|raw }}</div> {% endif %}
+                {% if strEintritt != NULL %}<div class="dfx-eintritt-detail">{{ strEintritt|raw }}</div> {% endif %}
+                {% if termin.video != NULL %}<div class="dfx-detail-video">{{ termin.video|raw }} </div> {% endif %}
+                {{ strSerie|raw }}
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="dfx-detail-zwue-linie">{{ 'datum uhrzeit'|trans }}</div>
+                    <div class="dfx-detail-datum">{{ strDate }}</div>
+                    {% if strTime !='' %}<div class="dfx-detail-zeit">{{ strTime }}</div>{% endif %}
+                    {{strMetadate|raw }}
+                    <div class="dfx-text-detail">Online-Veranstaltung
+                        {% set konferenzlinktext = termin.konferenzlinktext is not null ? termin.konferenzlinktext : termin.konferenzlink %}
+                        {%  set konferenzlink = termin.konferenzlink is not null ? '<br>Link zur Online-Veranstaltung: <a href = "' ~ termin.konferenzlink  ~ '" title="' ~ konferenzlinktext ~ '" target="_blank">' ~ konferenzlinktext ~ '</a>' : null %}
+                        {{ konferenzlink|raw }}
+                    </div>
+                <br>
+                {% if strVeranstalter != NULL %}
+                    <div itemprop="organizer" itemscope itemtype="http://schema.org/Organizer">
+                        <div class="dfx-detail-zwue-linie">{{ 'veranstalter'|trans }}</div>
+                        <div itemprop="name" class="dfx-detail-veranstalter"> {{ strVeranstalter|raw }} </div>
+                        <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                            {% if strVeranstalterAdr != NULL %}<div class="dfx-detail-veranstalter-adr"> {{ strVeranstalterAdr|raw }}</div>{% endif %}
+                            {% if strVeranstalterKom != NULL %}<div class="dfx-detail-veranstalter-kom"> {{ strVeranstalterKom|raw }}</div>{% endif %}
+                        </span>
+                    </div>
+                    <br>
+                {% endif %}
+                {% if infoHeader != NULL %}
+                    <div class="dfx-detail-zwue-linie">{{ infoHeader|raw }}</div>
+                    <div class="dfx-detail-info"> {{ rowInfo|raw }} </div>
+                    <br>
+                {% endif %}
+                {% if socialHeader != NULL %}
+                    <div class="dfx-detail-zwue-linie">{{socialHeader|raw }}</div>
+                    {% if rowSocial != NULL %}<div class="dfx-social">{{ rowSocial|raw }}</div>{%  endif %}
+                    <br>
+                {% endif %}
+
+            </div>
+	</div>
+    <div class="row dfx-detail-footer">
+        <div class="col-6 back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+        <div class="col-6 text-right">{{ printLinks|raw }}</div>
+    </div>
+</div>
+{% endblock %}

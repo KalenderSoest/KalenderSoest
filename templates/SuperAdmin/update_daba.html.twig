@@ -1,0 +1,17 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+
+{% block title 'Datefix Update' %}
+
+{% block body %}
+ 
+    <h1>Datefix Update</h1>
+    <h3>Schreibe Entities neu</h3>
+    {{  msg_entities|raw }}
+    <h3>Aktualisiere Datenbank</h3>
+    {{ msg_update|raw }}
+    <div class="mt-4">
+        <a class="btn btn-primary" href="{{ path('dfx_install_status') }}">Zurück zum Status</a>
+    </div>
+   
+{% endblock %}
+

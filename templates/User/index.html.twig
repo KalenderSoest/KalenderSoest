@@ -1,0 +1,148 @@
+﻿{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Userverwaltung' %}
+{% block pageheader 'Userverwaltung' %}
+{% block subheader 'Userliste' %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block body -%}
+    <a href="{{ path('user_new') }}">User hinzufügen</a>
+    <hr>
+    <h4>User suchen</h4>
+    {%  if pagination.getTotalItemCount == 0 %}
+        Keinen User gefunden
+    {% endif %}
+    {{ form_start(form_suche) }}
+    <div class="row">
+        <div class="col-sm-3">{{ form_row(form_suche.uid) }}</div>
+        <div class="col-sm-3">{{ form_row(form_suche.name) }}</div>
+        <div class="col-sm-3">{{ form_row(form_suche.email) }}</div>
+        <div class="col-sm-3">&nbsp;<br>{{ form_row(form_suche.submit) }}</div>
+    </div>
+    {{ form_end(form_suche) }}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Usernummer</th>
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                	<th>Kalender-Nr</th>
+                {% endif %}
+                <th>Name</th>
+                <th>Email</th>
+                {% if is_granted('ROLE_SUPER_ADMIN') %}	
+                	<th>Meta+Group</th>
+                	<th>Group</th>
+                {% endif %}
+               
+                <th colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in pagination %}
+            <tr>
+                <td><a href="{{ path('user_edit', { 'id': entity.id }) }}">{{ entity.username }}</a></td>
+                 {% if is_granted('ROLE_SUPER_ADMIN') and entity.datefix is not null %}
+                 	<td>{{ entity.datefix.id }}</td>
+                 {% endif %}
+                <td>{{ entity.nameLang }}</td>
+                <td>{{ entity.email }}</td>
+                {% if is_granted('ROLE_SUPER_ADMIN') and 'ROLE_ADMIN' in entity.roles %}
+                	{% set isRoleM = 'ROLE_DFX_META' in entity.roles ? 1 : 0 %}
+                	<td class="setrole" id="meta_{{ entity.id }}_{{ isRoleM }}"
+						data-state="{{ isRoleM }}"
+						data-html-on="{{ ('<a href=\"' ~ path('user_unsetmeta', { 'id': entity.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('user_setmeta', { 'id': entity.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if isRoleM == 1 %}<a href="{{ path('user_unsetmeta', { 'id': entity.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  else %}<a href="{{ path('user_setmeta', { 'id': entity.id }) }}"><i class="text-danger fa-solid fa-square-check"></i>  <i class="fa-solid fa-right-left"></i></a>{% endif %}</td>
+                    {% set isRoleG = 'ROLE_DFX_GROUP' in entity.roles ? 1 : 0 %}	
+                   	<td class="setrole" id="group_{{ entity.id }}_{{ isRoleG }}"
+						data-state="{{ isRoleG }}"
+						data-disabled="{{ isRoleM == 1 ? 1 : 0 }}"
+						data-html-disabled="&nbsp;"
+						data-html-on="{{ ('<a href=\"' ~ path('user_unsetgroup', { 'id': entity.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href=\"' ~ path('user_setgroup', { 'id': entity.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+					>{% if isRoleM == 1 %}&nbsp;{% elseif isRoleG == 1 %}<a href="{{ path('user_unsetgroup', { 'id': entity.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{% else %}<a href="{{ path('user_setgroup', { 'id': entity.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{% endif %}</td>
+               {% else %} 
+               		<td colspan="2"></td>
+               {% endif%}
+                
+                <td><a href="{{ path('user_edit', { 'id': entity.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
+                <td>
+                    {% if entity.id != 100 and entity.id != entity.datefix.user.id  %}
+                        <a class="delete" title="Datensatz {{ entity.nameLang }} löschen" href="{{ path('user_delete', { 'id': entity.id }) }}"><i class="fa-solid fa-trash-can"> </i></a>
+                    {% else %}
+                        &nbsp;&nbsp;
+                    {% endif %}
+                </td>
+
+                
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+    	{{ knp_pagination_render(pagination) }}
+	</div>
+    <hr><a href="{{ path('user_new') }}">User hinzufügen</a>
+	
+
+    
+{% endblock %}
+
+{% block javascript_onload %}
+    document.addEventListener('click', function(event) {
+        var link = event.target.closest('.setrole a');
+        if (!link) {
+            return;
+        }
+
+        event.preventDefault();
+
+        var cell = link.closest('.setrole');
+        if (!cell || Number(cell.dataset.disabled) === 1) {
+            return;
+        }
+
+        var state = Number(cell.dataset.state) || 0;
+        var targetUrl = link.getAttribute('href');
+        var prevHtml = cell.innerHTML;
+
+        cell.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        fetch(targetUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(data) {
+                if (data === 'ok') {
+                    var nextState = state === 1 ? 0 : 1;
+                    cell.dataset.state = String(nextState);
+                    cell.innerHTML = nextState === 1 ? (cell.dataset.htmlOn || '') : (cell.dataset.htmlOff || '');
+
+                    var idParts = (cell.id || '').split('_');
+                    if (idParts[0] === 'meta') {
+                        var row = cell.closest('tr');
+                        var groupCell = row ? row.querySelector('.setrole[id^="group_"]') : null;
+                        if (groupCell) {
+                            if (nextState === 1) {
+                                groupCell.dataset.disabled = '1';
+                                groupCell.innerHTML = groupCell.dataset.htmlDisabled || '';
+                            } else {
+                                groupCell.dataset.disabled = '0';
+                                var groupState = Number(groupCell.dataset.state) || 0;
+                                groupCell.innerHTML = groupState === 1 ? (groupCell.dataset.htmlOn || '') : (groupCell.dataset.htmlOff || '');
+                            }
+                        }
+                    }
+                    return;
+                }
+
+                cell.innerHTML = '<span class="text-danger">Änderung der Userrechte fehlgeschlagen</span>';
+            })
+            .catch(function() {
+                cell.innerHTML = prevHtml;
+            });
+    });
+{% endblock %}
+
+

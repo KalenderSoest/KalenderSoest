@@ -1,0 +1,57 @@
+﻿{% extends 'DfxFrontend/base.html.twig' %}
+{% block title %}Kundendaten ändern :: Datefix - Veranstaltungskalender{% endblock %}
+{% block body -%} 
+<!-- Page Content -->
+    <div class="container">
+
+        <!-- Page Heading/Breadcrumbs -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="mb-3 pb-2 border-bottom">Kundendaten
+                <small>Adresse ändern</small>
+            	
+                    
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="{{ path('home') }}">Startseite</a>
+                    </li>
+                    <li class="active">Kundendaten ändern</li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+		<!-- Content Row -->
+        <div class="row">
+            <div class="col-sm-12 col-md-7">
+              {{ form_start(form)   }} 
+                {{ form_row(form.kunde) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.vorname) }}
+                {{ form_row(form.strasse) }}
+                <div class="row">
+    				<div class="col-sm-6 col-md-2">
+    					{{ form_row(form.nat) }}
+    				</div>
+    				<div class="col-sm-6 col-md-3">
+    					{{ form_row(form.plz) }}
+    				</div>
+    				<div class="col-sm-12 col-md-7">
+    					{{ form_row(form.ort) }}
+    				</div>
+    			</div>
+    			{{ form_row(form.email) }}
+    			    			
+    			<div class="row">
+    				<div class="col-sm-12 col-md-6">
+               		{{ form_row(form.submit) }}
+               		</div>
+               		<div class="col-sm-12 col-md-6">
+               		 {{ form_row(form.reset) }}
+               		 </div>
+               	</div>
+               	{{ form_widget(form._token) }}
+                {{ form_end(form, {'render_rest': false}) }} 
+            </div>
+           
+        </div>
+{%  endblock %}

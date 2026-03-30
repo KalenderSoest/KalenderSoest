@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF-Fehler</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; color: #333; margin: 0; }
+        .wrap { max-width: 720px; margin: 40px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        h1 { margin: 0 0 8px; font-size: 22px; }
+        p { margin: 8px 0; }
+        .hint { color: #666; font-size: 14px; }
+        .error { margin-top: 12px; padding: 12px; background: #fff5f5; border: 1px solid #f2c9c9; border-radius: 6px; }
+        .error code { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>PDF konnte nicht erstellt werden</h1>
+        <p>Beim Erzeugen der PDF ist ein Fehler aufgetreten.</p>
+        <p class="hint">Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.</p>
+        {% if error is defined and error %}
+            <div class="error">
+                <strong>Fehlerdetails:</strong>
+                <div><code>{{ error }}</code></div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

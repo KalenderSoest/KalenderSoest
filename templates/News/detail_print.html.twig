@@ -1,0 +1,53 @@
+{% extends 'News/base_pdf.html.twig' %}
+{% block dfx_news_detail %}
+<style>
+  page{
+  	font-size: 11pt;
+  	color: #333;
+  }
+  a, .print-datumszeile{
+  	color: #999;
+  }
+
+  .print-subtitel, .print-datumszeile, .print-lead {
+  	font-weight: bold;
+  	line-height: 1.75;
+  }
+
+  .blockende{
+  	margin-bottom: 12pt;
+  }
+  .print-beschreibung, .print-lead, .print-bu{
+    text-align: justify;
+    line-height: 1.75;
+  }
+
+  .print-logo{
+      vertical-valign: top;
+      max-width: 50%;
+  }
+
+  .grau{
+      color: #85909A;
+  }
+  .dfx-detail-image{
+      max-width: 100%;
+  }
+</style>
+    <table style="width: 100%">
+        <tr>
+            <td class="print-logo">{{ strLogoUrl|raw }}</td>
+            <td class="print-adresse"></td>
+        </tr>
+    </table>
+    <h1 class="print-titel">{{ artikel.titel|raw }}</h1>
+	{% if artikel.subtitel != NULL %}
+		<h3 class="print-subtitel blockende">{{'subtitel-fe'|trans}}{{ artikel.subtitel }}</h3>
+	{% endif %}
+	<div class="print-datumszeile">{% if strDate !='' %}<span class="print-datum">{{ strDate }}</span>{% endif %}</div>
+	{% if strKurztext != NULL %}<div class="print-lead blockende">{{ strKurztext|raw }}</div> {% endif %}
+    {% if strText != NULL %}<div class="print-beschreibung blockende">{{ strText|raw }}<br></div> {% endif %}
+    {% if pdfInfo != NULL %}<div class="print-printinfo blockende"> {{ pdfInfo|raw }}</div>{% endif %}
+	{% if infolink != NULL %}<div class="print-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
+    {{ strImgUrl|raw }}
+{% endblock %}

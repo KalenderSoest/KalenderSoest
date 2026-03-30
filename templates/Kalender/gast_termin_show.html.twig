@@ -1,0 +1,89 @@
+﻿{% extends 'Kalender/base_detail.html.twig' %}
+{% block dfx_termin_detail %}		
+	{% set skins = {'#818181':'gra', '#FF9900':'org','#F05513':'hro','#c63d4e':'dro','#996600':'brn','#5e95cc':'hbl','#4182C2':'dbl', '#84b231':'hgr', '#839636':'olv'} %}
+	{% set radius = {'0':'k','1':'r' } %}
+	{% if konf.dfxFarbeEigen is not null or konf.dfxFarbeRasterEigen is not null or konf.dfxFontSize is not null or konf.dfxFontColor is not null or konf.dfxFontType is not null  %}
+		{% set cssFile = 'own/' ~ konf.id ~'.css' %}
+	{% else %}
+		{% set cssFile = 'datefix.' ~ skins[konf.dfxFarbe] ~ '-' ~ radius[konf.dfxRadius] ~ '.css' %}
+	{% endif %}
+{% if konf.dfxTpl == 'block' %}
+   <div>
+{% else %}
+	<div class="fx-{{ konf.dfxTpl }}">
+{% endif %}
+    <h3>{{ 'Termineintrag erfolgreich'|trans }}</h3>
+    <div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+    <p>{{ 'Veranstaltung eingetragen'|trans }}.</p>
+    {% if konf.allowPubAll != 1 %}
+     	{{ 'Freigabe Administrator'|trans }}.
+     {% endif %}
+     {{ 'EMail Administrator'|trans }} {{ konf.user.email }} {{ ' ist unterwegs'|trans }}.</p>
+    <p><a href="{{ frontendUrlQ ~ 'dfxpath=' ~  path('gast_termin_edit' , { 'id': termin.id, 'init': termin.init  })}}"><i class="fa-solid fa-pen-to-square"> </i> {{ 'Termin bearbeiten'|trans }}</a>.</p>
+    <p><a class="delete" href="{{ frontendUrlQ ~ 'dfxpath=' ~  path('gast_termin_delete' , { 'id': termin.id, 'init': termin.init  })}}" title='Datensatz "{{ termin.titel }}" löschen'><i class="fa-solid fa-trash-can"> </i> {{ 'Termin loeschen'|trans }}</a>.</p>
+     {% if termin.code is not null %}
+        <p>{{ 'Hinweis Serientermin'|trans }}</p>
+     {% endif %}
+    {% if konf.dfxTpl == 'block' %}
+   		<h4 class="dfx-titel fx-block">{{ termin.titel|raw }}</h4>
+	{% else %}
+		<h3 class="dfx-titel">{{ termin.titel|raw }}</h3>
+	{% endif %}
+	<div class="row">
+		<div class="col-12 col-sm-6 col-md-8">
+			{{ strImg|raw }}			
+		   	{% if strText != NULL %}<div class="dfx-text-detail">{{ strText|raw }}</div>{% endif %}
+		    {% if strEintritt != NULL %}<div class="dfx-eintritt-detail">{{ strEintritt|raw }}</div>{% endif %}
+		    {% if termin.video != NULL %}<div class="dfx-detail-video">{{ termin.video|raw }} </div> {% endif %}
+		   
+		</div>
+		<div class="col-12 col-sm-6 col-md-4">
+				<div class="dfx-detail-zwue-linie">{{ 'datum uhrzeit'|trans }}</div>
+					<div class="dfx-detail-datum">{{ strDate }}</div>
+					{% if strTime !='' %}<div class="dfx-detail-zeit">{{ strTime }}</div>{% endif %}
+				<br>
+		        <div class="dfx-detail-zwue-linie">{{ 'veranstaltungsort'|trans }}</div>
+		       	{% if strLokal != NULL %}<div class="dfx-detail-lokal"> {{ strLokal|raw }} </div>{% endif %}
+				{% if strStrasse != NULL %}<div class="dfx-detail-strasse"> {{ strStrasse|raw }}</div>{% endif %}
+				{% if strOrt !=NULL %}<div class="dfx-detail-ort"> {{ strOrt|raw }}</div>{% endif %}
+				{% if strLocationKom !=NULL %}<div class="dfx-detail-location-kom"> {{ strLocationKom|raw }}</div>{% endif %}
+				<br>
+				{% if strVeranstalter != NULL %}
+					<div class="dfx-detail-zwue-linie">{{ 'veranstalter'|trans }}</div>
+					<div class="dfx-detail-veranstalter"> {{ strVeranstalter|raw }} </div>
+					{% if strVeranstalterAdr != NULL %}<div class="dfx-detail-veranstalter-adr"> {{ strVeranstalterAdr|raw }}</div>{% endif %}
+					{% if strVeranstalterKom != NULL %}<div class="dfx-detail-veranstalter-kom"> {{ strVeranstalterKom|raw }}</div>{% endif %}
+					<br>
+				{% endif %}
+				{% if infoHeader != NULL %}
+					<div class="dfx-detail-zwue-linie">{{ infoHeader|raw }}</div>
+					<div class="dfx-detail-info"> {{ rowInfo|raw }} </div>
+					<br>
+				{% endif %}
+				{% if socialHeader != NULL %}
+					<div class="dfx-detail-zwue-linie">{{socialHeader|raw }}</div>
+					{% if rowSocial != NULL %}<div class="dfx-social">{{ rowSocial|raw }}</div>{%  endif %}
+					<br>
+				{% endif %}
+		</div>
+	</div>
+	{% if konf.useMap == 1 and termin.bg > 0 %}
+			    <div class="dfx-detail-zwue-linie">{{ 'anfahrt'|trans }}</div>
+				<div id="dfxMap" class="dfx-map-window dfx-map-open-self" data-initzoom="{{ konf.initZoom }}"></div>
+				{% set strGeo = termin.bg ~ ',' ~ termin.lg %}
+				<form action="http://maps.google.de/maps" method="get" target="_blank">
+				<div class="row dfx-map-form-detail" id="dfxMapClose" style="display:none">
+					<div class="col-12 col-md-8"><input placeholder="{{  'standort'|trans }}" type="text" class="form-control" name="saddr"  /> <input type="hidden" name="daddr" value="{{ strGeo }}" /></div>
+					<div class="col-12 col-md-4"><input type="submit" value="{{ 'route anzeigen'|trans }}" class="btn btn-primary" /></div>
+				</div>
+				</form>
+			{% endif %}
+	
+	<div class="back-to-list"><a href="{{ konf.frontendUrl }}"><i class="fa-solid fa-chevron-left"></i> {{'zurueck zur liste'|trans}}</a></div>
+</div>
+{% endblock dfx_termin_detail %}
+{% block dfx_konf %}
+	<div id="dfx_konf" data-cssfile="{{ cssFile }}" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-tpl="report" data-nav-pos="{{ konf.navPos }}" data-nav-width="{{ konf.navWidth }}"  data-nav-liste="{{ konf.navListe }}" data-nav-detail="{{ konf.navDetail }}" style="display: none"></div>
+{% endblock dfx_konf %}
+
+

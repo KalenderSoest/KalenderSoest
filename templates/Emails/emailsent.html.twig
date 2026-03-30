@@ -1,0 +1,20 @@
+{% extends 'Emails/base_termin.html.twig' %}
+{% block body %}
+<h3>{{ 'hinweis auf termin'|trans }}</h3>
+<p>Hallo,<br><br>
+{{ get.form.sendVorname }} {{ get.form.sendNachname }} {{ 'moechte sie auf folgenden Termin hinweisen'|trans }}</p>
+<p><strong>{{ termin.titel|raw }}</strong><br>
+{{ strDate }} {% if strTime !='' %}{{ strTime }}{% endif %}</p>
+<p>
+{% if strLokal != NULL %}{{ strLokal|raw }}<br>{% endif %}
+{% if strStrasse != NULL %}{{ strStrasse|raw }}<br>{% endif %}
+{% if strOrt !=NULL %}{{ strOrt|raw }}<br>{% endif %}
+</p>
+<p><a href="{{ frontendUrlQ }}dfxpath={{ path('detail', { 'id': termin.id, 'kid': termin.datefix.id }) }}">{{ 'termin ansehen'|trans }}</a></p>
+{% set kommentar = get.form.kommentar|default('') %}
+{% if kommentar != '' %}
+   <p>{{ 'Kommentar von'|trans }} {{ get.form.sendVorname }} {{ get.form.sendNachname }}:<br>{{ kommentar }} </p>
+{%  endif %}
+<p>{{ get.form.sendVorname }} {{ get.form.sendNachname }} {{ 'antworten'|trans }}: <a href="mailto: {{ get.form.sendEmail }}">{{ get.form.sendEmail }}</a></p>
+{% endblock body %}
+

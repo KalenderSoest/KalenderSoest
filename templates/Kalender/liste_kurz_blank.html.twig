@@ -1,0 +1,16 @@
+{% extends 'Kalender/' ~ custom ~ 'termine.html.twig' %}
+{% block dfx_termin %}	
+<div itemscope itemtype="http://schema.org/Event" class="fx-blank">
+	<span itemprop="name" class="dfx-titel-liste-kurz"><a href="{{ mehrUrl }}">{{ titel|raw }}</a></span>
+	{% if strDate !='' %}<span class="dfx-datum-liste-kurz">{{ tz }} {{ strDate }}</span>{% endif %}
+	{% if strTime !='' %}<span class="dfx-zeit-liste-kurz">{{ tz }}{{ strTime }}</span>{% endif %}{{ strMetadate|raw }}
+	<span itemprop="location" itemscope itemtype="http://schema.org/Place">
+	    {% if strLokal !='' %} {{ tz }} <span itemprop="name" class="dfx-lokal-liste-kurz">{{ strLokal|raw }}</span>{% endif %}
+		{% if strOrt !='' or strStrasse !='' %}
+		<span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">	 
+	        {% if strOrt !='' %}<span class="dfx-ort-liste-kurz"> {{ tz }} {{ strOrt|raw }}</span>{% endif %}{% if strStrasse !='' %}<span class="dfx-strasse-liste-kurz">, {{ strStrasse|raw }}</span>{% endif %}
+	    </span>
+	    {% endif %}
+	</span>
+</div>		
+{%  endblock %}

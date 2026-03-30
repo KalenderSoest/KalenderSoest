@@ -1,0 +1,52 @@
+###> symfony/framework-bundle ###
+/.env
+/.env.local
+/.env.local.php
+/.env.*.local
+/.idea
+**/.idea/
+/config/secrets/prod/prod.decrypt.private.php
+/config/datefix.yaml
+/web/cache/
+/web/images/dfx/
+/web/pdf/dfx/
+/web/exports/
+/web/css/own/
+/web/scss/own
+/var/
+/vendor/
+/migrations/
+/templates/custom/**
+!/templates/custom/
+!/templates/custom/.gitkeep
+/templates/**/custom/**
+!/templates/**/custom/
+!/templates/**/custom/.gitkeep
+/tests/
+/phpstan.neon
+/rector.php
+/codex_server.txt
+/codex_server_datenschutz.txt
+/scripts/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+/phpunit.xml.dist
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
+
+###> liip/imagine-bundle ###
+/web/media/cache/
+###< liip/imagine-bundle ###
