@@ -3,7 +3,7 @@
 {% set file =  filter_form is defined ? tplform : 'termine_solo'%}
 {% extends 'Kalender/'~ file ~'.html.twig' %}
 {% block dfx_termine %}
-	{% set titel = termin.titel %}
+	{% set titel = termin.optionsMenue is not null ? termin.titel ~ ' (' ~ optionsMenue[termin.optionsMenue] ~ ')' : termin.titel %}
 	{% set days = {'0':'sonntag'|trans,'1':'montag'|trans, '2':'dienstag'|trans, '3':'mittwoch'|trans, '4':'donnerstag'|trans, '5':'freitag'|trans, '6':'samstag'|trans} %}
 	{% set months = {'1':'januar'|trans,'2':'februar'|trans, '3':'maerz'|trans, '4':'april'|trans, '5':'mai'|trans, '6':'juni'|trans, '7':'juli'|trans, '8':'august'|trans, '9':'september'|trans, '10':'oktober'|trans, '11':'november'|trans, '12':'dezember'|trans} %}
 	{% set tz = konf.trennzeichen %}
@@ -77,7 +77,7 @@
 	{% else %}
             {% set strVeranstalter = NULL %}
 	{% endif %}
-	{% set altText = termin.imgtext %}
+	{% set altText = termin.imgtext is not null ? termin.imgtext : 'Bild zu ' ~ termin.titel %}
 	{% set altText = termin.imgcopyright is not null ? altText ~ ' &copy; ' ~ termin.imgcopyright : altText %}
 	{% set detailbild = {"thumbnail": {"size": [konf.imgWidth,konf.imgHeight] }} %}
 	{% set vorschau = {"thumbnail": {"size": [konf.imgPrevWidth,konf.imgPrevHeight] }} %}
@@ -140,31 +140,37 @@
 	{% endif %}
 	{% set strAdresse = konf.adresse is not null ? konf.adresse|nl2br : NULL %}
 
+	{% set rowInfo = NULL %}
+	{% set rowKartenInfo = NULL %}
 	{% if termin.mailTyp == 'anmeldung' or termin.mailTyp == 'karten' %}
             {% if termin.plaetzeGesamt > 0 %}
                 {% if termin.plaetzeAktuell > 0 and konf.showPlatzlimit == 1 %}
-                        {% set rowInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i>' ~ 'karten'|trans ~ '<br>(' ~ termin.plaetzeAktuell ~  ' ' ~ 'karten verfuegbar'|trans ~ ')</a><br>' : '' %}
+                        {% set rowKartenInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i>' ~ 'karten'|trans ~ '<br>(' ~ termin.plaetzeAktuell ~  ' ' ~ 'karten verfuegbar'|trans ~ ')</a><br>' : '' %}
                         {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '" title="' ~ 'anmelden'|trans ~ '"><i class="fa-solid fa-pen-to-square"></i>' ~ 'anmelden'|trans ~ '<br>(' ~ termin.plaetzeAktuell ~  ' ' ~ 'plaetze verfuegbar'|trans ~ ')</a><br>' : rowInfo %}
-                {% elseif termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1 %}
-                        {% set rowInfo = termin.mailTyp == 'karten' ? "#{ 'karten'|trans } ("~ 'ausgebucht'|trans ~ ")<br>" : "" %}
-                        {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ "#{ 'anmelden'|trans } (" ~ 'ausverkauft'|trans ~ ")<br>" : rowInfo %}
+                {% elseif (termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1) or termin.optionsMenue == 'ausverkauft' %}
+                        {% set rowKartenInfo = termin.mailTyp == 'karten' ? "#{ 'karten'|trans } ("~ 'ausverkauft'|trans ~ ")<br>" : "" %}
+                        {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ "#{ 'anmelden'|trans } (" ~ 'ausgebucht'|trans ~ ")<br>" : rowInfo %}
                 {% else %}
-                        {% set rowInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '">' ~ 'karten'|trans ~ '</a><br>' : null %}
+                        {% set rowKartenInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '">' ~ 'karten'|trans ~ '</a><br>' : null %}
                         {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-pen-to-square"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '">' ~ 'anmelden'|trans ~ '</a><br>' : rowInfo %}
                 {% endif %}
             {% else %}
-                {% set rowInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '">' ~ 'karten'|trans ~ '</a><br>' : null %}
+                {% set rowKartenInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '">' ~ 'karten'|trans ~ '</a><br>' : null %}
                 {% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-pen-to-square"></i> <a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '">' ~ 'anmelden'|trans ~ '</a><br>' : rowInfo %}
             {% endif %}
-	{% else %}
-            {% set rowInfo = NULL %}
 	{% endif %}
 
 
 	{% set ticketformtext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
 	{% set ticketlinktext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
-	{% set infoHeader = termin.mailTyp == 'karten' or termin.ticketlink is not null ? 'kartenheader'|trans : null  %}
-	{% set rowInfo = termin.ticketlink is not null ? rowInfo  ~ ' ' ~ '<i class="fa-solid fa-ticket"></i> <a href="' ~ termin.ticketlink  ~ '" target="_blank">' ~ ticketlinktext ~ '</a><br>' : rowInfo %}
+	{% set rowKartenInfo = termin.ticketlink is not null ? '<i class="fa-solid fa-ticket"></i> <a href="' ~ termin.ticketlink  ~ '" target="_blank">' ~ ticketlinktext ~ '</a><br>' : NULL %}
+	{% if termin.optionsMenue is not null and optionsMenue[termin.optionsMenue] == 'ausverkauft' %}
+		{% set rowKartenInfo = optionsMenue[termin.optionsMenue] ~ '<br>' %}
+	{% elseif termin.optionsMenue is not null and optionsMenue[termin.optionsMenue] == 'Restkarten' %}
+		{% set rowKartenInfo = rowKartenInfo ~ optionsMenue[termin.optionsMenue] ~ '<br>' %}
+	{% endif %}
+	{% set infoHeader = rowKartenInfo is not null ? 'kartenheader'|trans : null  %}
+	{% set rowInfo = rowKartenInfo is not null ? rowInfo ~ rowKartenInfo : rowInfo  %}
 
 	{% if termin.mailTyp == 'anmeldung' %}
             {% set infoHeader = infoHeader is not null ? infoHeader ~ ' / ' ~ 'anmeldenheader'|trans : 'anmeldenheader'|trans  %}
@@ -251,7 +257,6 @@
 	    {% block javascript_functions %}{% endblock %}
    </script>
 {% endblock %}
-
 
 
 

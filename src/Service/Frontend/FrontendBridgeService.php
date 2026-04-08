@@ -5,19 +5,25 @@ namespace App\Service\Frontend;
 use App\Entity\DfxKonf;
 use App\Entity\DfxNews;
 use App\Entity\DfxTermine;
-use CURLFile;
 use Doctrine\ORM\EntityManagerInterface;
 use finfo;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 final class FrontendBridgeService
 {
+    private const ALLOWED_SUBREQUEST_PREFIXES = [
+        '/js/kalender/',
+        '/js/news/',
+        '/karten/',
+        '/anmeldungen/',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
-        #[Autowire('%datefix_url%')]
-        private readonly string $datefixUrl,
+        private readonly HttpKernelInterface $httpKernel,
+        private readonly FrontendContentRenderer $frontendContentRenderer,
     ) {
     }
 
@@ -42,9 +48,32 @@ final class FrontendBridgeService
             $payload['termine'] = array_merge($payload['termine'] ?? [], $uploadResult['payload']);
         }
 
+        if (!isset($payload['dfxpath'])) {
+            if (isset($payload['dfxid'])) {
+                return $this->frontendContentRenderer->renderCalendarDetail($konf, $request, (int) $payload['dfxid']);
+            }
+
+            if (isset($payload['nfxid'])) {
+                return $this->frontendContentRenderer->renderNewsDetail($konf, $request, (int) $payload['nfxid']);
+            }
+
+            if (isset($payload['nfx'])) {
+                return $this->frontendContentRenderer->renderNewsList($konf, $request);
+            }
+
+            return $this->frontendContentRenderer->renderCalendarList($konf, $request);
+        }
+
         $target = $this->resolveTarget($konf, $payload);
-        $bridgeUrl = $this->buildBridgeUrl($target['path'], $method, $request);
-        $content = $this->fetchContent($bridgeUrl, $method, $payload);
+        if ($target['error'] !== null) {
+            return [
+                'content' => $target['error'],
+                'termin' => null,
+                'artikel' => null,
+            ];
+        }
+
+        $content = $this->fetchContent($target['path'], $method, $request, $payload, $uploadResult['files']);
 
         return [
             'content' => $content,
@@ -57,10 +86,11 @@ final class FrontendBridgeService
     {
         $files = $request->files->get('termine');
         if (!is_array($files) || $files === []) {
-            return ['payload' => [], 'error' => null];
+            return ['payload' => [], 'files' => [], 'error' => null];
         }
 
         $payload = [];
+        $preparedFiles = [];
         $error = '';
         $finfo = new finfo(FILEINFO_MIME_TYPE);
 
@@ -87,12 +117,12 @@ final class FrontendBridgeService
             }
 
             if ($error === '') {
-                $prefixedName = substr(md5((string) time()), 0, 10) . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-                $payload[$field] = new CURLFile($file->getPathname(), $mimeType ?: 'application/octet-stream', $prefixedName);
+                $payload[$field] = $file->getClientOriginalName();
+                $preparedFiles[$field] = $file;
             }
         }
 
-        return ['payload' => $payload, 'error' => $error !== '' ? $error : null];
+        return ['payload' => $payload, 'files' => $preparedFiles, 'error' => $error !== '' ? $error : null];
     }
 
     private function resolveTarget(DfxKonf $konf, array $payload): array
@@ -100,7 +130,13 @@ final class FrontendBridgeService
         $kid = $konf->getId();
 
         if (isset($payload['dfxpath'])) {
-            return ['path' => (string) $payload['dfxpath'], 'termin' => null, 'artikel' => null];
+            $path = $this->normalizeSubRequestPath((string) $payload['dfxpath']);
+
+            if ($path === null) {
+                return ['path' => null, 'termin' => null, 'artikel' => null, 'error' => 'Ungültiger Frontend-Pfad.'];
+            }
+
+            return ['path' => $path, 'termin' => null, 'artikel' => null, 'error' => null];
         }
 
         if (isset($payload['dfxid'])) {
@@ -108,11 +144,12 @@ final class FrontendBridgeService
                 'path' => '/js/kalender/' . $kid . '/detail/' . $payload['dfxid'],
                 'termin' => $this->em->getRepository(DfxTermine::class)->find($payload['dfxid']),
                 'artikel' => null,
+                'error' => null,
             ];
         }
 
         if (isset($payload['nfx'])) {
-            return ['path' => '/js/news/' . $kid, 'termin' => null, 'artikel' => null];
+            return ['path' => '/js/news/' . $kid, 'termin' => null, 'artikel' => null, 'error' => null];
         }
 
         if (isset($payload['nfxid'])) {
@@ -120,81 +157,86 @@ final class FrontendBridgeService
                 'path' => '/js/news/' . $kid . '/detail/' . $payload['nfxid'],
                 'termin' => null,
                 'artikel' => $this->em->getRepository(DfxNews::class)->find($payload['nfxid']),
+                'error' => null,
             ];
         }
 
-        return ['path' => '/js/kalender/' . $kid, 'termin' => null, 'artikel' => null];
+        return ['path' => '/js/kalender/' . $kid, 'termin' => null, 'artikel' => null, 'error' => null];
     }
 
-    private function buildBridgeUrl(string $path, string $method, Request $request): string
+    private function fetchContent(string $path, string $method, Request $request, array $payload, array $files): string
     {
         $query = $method === 'GET'
-            ? 'cb=all' . (($request->getQueryString() ?? '') !== '' ? '&' . $request->getQueryString() : '')
-            : 'cb=all';
+            ? array_merge(['cb' => 'all'], $request->query->all())
+            : ['cb' => 'all'];
 
-        return $this->datefixUrl . $path . '?' . $query;
-    }
-
-    private function fetchContent(string $bridgeUrl, string $method, array $payload): string
-    {
-        $handle = curl_init($bridgeUrl);
-        if ($handle === false) {
-            return 'Fehler';
+        $post = $method === 'POST' ? $payload : [];
+        if ($method === 'POST') {
+            unset($post['dfxpath']);
         }
+
+        $server = $request->server->all();
+        $server['HTTP_X_FRONTEND_BRIDGE'] = '1';
+
+        $subRequest = Request::create(
+            $path,
+            $method,
+            $method === 'GET' ? $query : $post,
+            $request->cookies->all(),
+            $this->nestFilesUnderTermine($files),
+            $server
+        );
 
         if ($method === 'POST') {
-            unset($payload['dfxpath']);
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt(
-                $handle,
-                CURLOPT_POSTFIELDS,
-                $this->containsCurlFile($payload) ? $this->flattenMultipartPayload($payload) : http_build_query($payload)
-            );
+            $subRequest->query->set('cb', 'all');
         }
 
-        curl_setopt($handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($handle, CURLOPT_FORBID_REUSE, 1);
-        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($handle, CURLOPT_HTTPHEADER, ['User-Agent: Datefix', 'Connection: Close']);
-        curl_setopt($handle, CURLOPT_FOLLOWLOCATION, 1);
-
-        $content = curl_exec($handle);
-        curl_close($handle);
+        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+        $content = $response->getContent();
 
         return is_string($content) ? $content : 'Fehler';
     }
 
-    private function containsCurlFile(array $payload): bool
+    private function nestFilesUnderTermine(array $files): array
     {
-        $hasFile = false;
-        array_walk_recursive($payload, static function (mixed $value) use (&$hasFile): void {
-            if ($value instanceof CURLFile) {
-                $hasFile = true;
-            }
-        });
-
-        return $hasFile;
+        return $files === [] ? [] : ['termine' => $files];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function flattenMultipartPayload(array $payload, string $prefix = ''): array
+    private function normalizeSubRequestPath(string $rawPath): ?string
     {
-        $flat = [];
-
-        foreach ($payload as $key => $value) {
-            $field = $prefix === '' ? (string) $key : $prefix . '[' . $key . ']';
-
-            if (is_array($value)) {
-                $flat += $this->flattenMultipartPayload($value, $field);
-                continue;
-            }
-
-            $flat[$field] = $value;
+        $rawPath = trim($rawPath);
+        if ($rawPath === '') {
+            return null;
         }
 
-        return $flat;
+        $parts = parse_url($rawPath);
+        if ($parts === false) {
+            return null;
+        }
+
+        foreach (['scheme', 'host', 'user', 'pass', 'port', 'fragment'] as $forbiddenPart) {
+            if (array_key_exists($forbiddenPart, $parts)) {
+                return null;
+            }
+        }
+
+        $path = (string) ($parts['path'] ?? '');
+        if ($path === '') {
+            return null;
+        }
+
+        if (!str_starts_with($path, '/')) {
+            $path = '/' . $path;
+        }
+
+        foreach (self::ALLOWED_SUBREQUEST_PREFIXES as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                $query = isset($parts['query']) && $parts['query'] !== '' ? '?' . $parts['query'] : '';
+
+                return $path . $query;
+            }
+        }
+
+        return null;
     }
 }

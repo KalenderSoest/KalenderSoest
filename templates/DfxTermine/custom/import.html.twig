@@ -1,0 +1,18 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Bericht Terminimport' %}
+{% block pageheader 'Bericht Terminimport' %}
+{% block subheader ''  %}
+
+{% block footer %}
+{% endblock footer %}
+
+{% block javascript_onload %}
+{% endblock %}
+
+{% block javascript_functions %}
+{% endblock %}
+
+{% block body -%}
+    <div>{{ log|raw }}</div>
+    <a class="btn btn-primary" href="/admin/termine">Zurück zur Terminübersicht</a>
+{% endblock body %}

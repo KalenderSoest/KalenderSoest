@@ -303,7 +303,7 @@ function dfxCurlInit() {
 
     if ($datefix) {
         $datefix.addEventListener("click", function (event) {
-            var link = event.target.closest('#dfx-termine a');
+            var link = event.target.closest('#dfx-termine a, #dfx-termine button');
             if (!link) return;
             var href = link.getAttribute('href') || '';
             if (link.classList.contains('dfx-map-open')) {
@@ -311,9 +311,11 @@ function dfxCurlInit() {
                 showKarte(link.getAttribute('data-tid'), link.getAttribute('data-bg'), link.getAttribute('data-lg'), link.getAttribute('data-lokal'));
                 return false;
             } else if (link.classList.contains('dfx-map-close')) {
+                event.preventDefault();
                 window.addEventListener('gMapsLoaded', function () {
                     closeKarte(link.getAttribute('data-tid'));
                 });
+                return false;
             } else if (link.getAttribute('id') === 'getgeodata') {
                 event.preventDefault();
                 showAddress(link.getAttribute('data-feldstrasse'), link.getAttribute('data-formname'));

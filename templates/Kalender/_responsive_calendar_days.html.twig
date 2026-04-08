@@ -1,22 +1,22 @@
-  <div class="day-headers">
-    <div class="rc-header">Mo</div>
-    <div class="rc-header">Di</div>
-    <div class="rc-header">Mi</div>
-    <div class="rc-header">Do</div>
-    <div class="rc-header">Fr</div>
-    <div class="rc-header">Sa</div>
-    <div class="rc-header">So</div>
+  <div class="day-headers" role="row">
+    <div class="rc-header" role="columnheader" aria-label="Montag">Mo</div>
+    <div class="rc-header" role="columnheader" aria-label="Dienstag">Di</div>
+    <div class="rc-header" role="columnheader" aria-label="Mittwoch">Mi</div>
+    <div class="rc-header" role="columnheader" aria-label="Donnerstag">Do</div>
+    <div class="rc-header" role="columnheader" aria-label="Freitag">Fr</div>
+    <div class="rc-header" role="columnheader" aria-label="Samstag">Sa</div>
+    <div class="rc-header" role="columnheader" aria-label="Sonntag">So</div>
   </div>
-  <div class="days" data-group="days">
+  <div class="days" data-group="days" role="grid" aria-label="Kalender">
     {% for day in calendar.days %}
-      <div class="{{ day.class }}" style="{{ day.style }}">
+      <div class="{{ day.class }}" style="{{ day.style }}" role="presentation">
         {% if day.href %}
-          <a data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}" href="{{ day.href }}" aria-label="{{ day.aria }}">{{ day.day }}</a>
+          <a data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}" href="{{ day.href }}" role="gridcell" aria-label="{{ day.aria }}">{{ day.day }}</a>
         {% else %}
           {% if day.isCurrent %}
-            <a data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}">{{ day.day }}</a>
+            <span data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}" role="gridcell" aria-current="date">{{ day.day }}</span>
           {% else %}
-            <a data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}" aria-disabled="true" tabindex="-1" data-disabled="true">{{ day.day }}</a>
+            <span data-day="{{ day.day }}" data-month="{{ day.month }}" data-year="{{ day.year }}" role="gridcell" aria-disabled="true" data-disabled="true">{{ day.day }}</span>
           {% endif %}
         {% endif %}
       </div>

@@ -63,6 +63,49 @@ legend{
 	display: none;
 }
 
+#datefix button.dfx-map-open {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    min-height: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    color: #c63d4e;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#datefix button.dfx-map-open:hover,
+#datefix button.dfx-map-open:focus {
+    color: #a92d3d;
+    background: transparent;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+#datefix button.dfx-map-open:focus-visible {
+    outline: 2px solid #c63d4e;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+#datefix button.dfx-map-open .fa,
+#datefix button.dfx-map-open .fa-map-marker {
+    color: inherit;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
 .img-portfolio {
     margin-bottom: 30px;
 }

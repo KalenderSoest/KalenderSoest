@@ -1,0 +1,132 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Datenimport / - export' %}
+{% block pageheader 'Termine importieren oder exportieren' %}
+
+{% block footer %}
+    <script src="{{ asset('js/dfx_functions.js') }}" type="text/javascript"></script>
+{% endblock footer %}
+
+{% block body -%}
+<h3>Termine importieren</h3>
+    {% if konf.id == 4 %}
+        <a class="btn btn-primary" href="/admin/custom/eventbrain/">Termine von Eventbrain importieren</a>
+    {% elseif konf.id == 81 %}
+        <a class="btn btn-primary" href="/admin/custom/kino/">Termine von Cinetixx importieren</a>
+    {% elseif konf.id == 134 %}
+        <a class="btn btn-primary" href="/admin/custom/kirche/">Termine von Ev Termine importieren</a>
+    {% endif %}
+    <hr>
+    <strong>Beim Import aus Excel- oder OpenOfficeCalc-Dateien beachten Sie bitte unbedingt folgende Hinweise:</strong>
+    <ul>
+        <li>Verwenden Sie ausschließlich .xlsx-Dateien auf Basis eines zuvor erzeugten Exports als Vorlage.</li>
+        <li>Löschen oder verschieben Sie auf keinen Fall Spalten, auch wenn Sie bestimmte Spalten nicht benötigen</li>
+        <li>Testen Sie den Import zunächst mit kleinen Datenmengen; Fehlimporte müssen von Hand Datensatz für Datensatz aus dem Kalender wieder gelöscht werden!</li>
+        <li>Bilder werden beim Import aus eingebetteten Bildern in der .xlsx-Datei übernommen. Fügen Sie Bilder direkt in die dafür vorgesehene Bildspalte der Excel-Datei ein.</li>
+        <li>Verkleinern Sie Bilder vor dem Einfügen und Herunterskalieren in der Import-Tabelle auf das später benötigte größte Format in der Detailansicht (meist ca 500px Breite)</li>
+        <li>Je größer die Bilder, desto eher ist die technische Grenze (8MB) beim Upload erreicht. Dateien mit mehr wie etwa  25 Bildern können deshalb nicht hochgeladen werden.</li>
+        <li>Verwenden Sie insbesondere für bebilderte Serientermine die Termineingabe über das Formular.</li>
+        <li>Bei Nutzung der Location- und/oder Veranstalterdatenbank sollten Termine mit diesen Datensätzen verknüpft werden. Im Tabellenblatt Termine werden dafür die Spalten AF (idLocation) und AG (idVeranstalter) ausgewertet. In den Tabellenblättern Locations und Veranstalter steht die jeweilige Datensatz-ID in Spalte A; Verknüpfungen zwischen beiden Tabellen erfolgen dort jeweils über Spalte P. Sind die IDs gesetzt, können Adressdaten (Name, Straße, Plz, Ort, Geoposition etc.) und Veranstalterdaten (Name, Email etc.) im Blatt Termine leer bleiben.</li>
+    </ul>
+    {{ form_start(formImport,  {'attr': {'class': ''} }) }}
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            {{ form_row(formImport.xlsfile) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            {{ form_row(formImport.submit) }}
+        </div>
+        <div class="col-4">
+            {{ form_row(formImport.reset) }}
+        </div>
+    </div>
+    {{ form_end(formImport) }}
+
+ <hr>
+ <br>
+ <h3>Termine exportieren</h3>
+ <p>Der Export erfolgt im Excel-Format (.xlsx), optional einschließlich Bilder. Die Dateien können mit allen gängigen Tabellenkalkulationsprogrammen wie Microsoft Excel oder OpenOfficeCalc verarbeitet werden.</p>
+ <br>
+ {{ form_start(formExport,  {'attr': {'class': ''} }) }}
+        <div class="row">
+            <div class="col-sm-6 col-md-2">
+                {{ form_row(formExport.datum_von) }}
+            </div>
+            <div class="col-sm-6 col-md-2">
+                {{ form_row(formExport.datum_bis) }}
+            </div>
+            <div class="col-sm-6 col-md-2">
+                {{ form_row(formExport.datum_created) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(formExport.rubrik) }}
+            </div>
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(formExport.region) }}
+            </div>
+            {% if zielgruppe == true %}
+                <div class="col-sm-12 col-md-4">
+                    {{ form_row(formExport.zielgruppe) }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(formExport.suche) }}
+            </div>
+            <div class="col-12 col-sm-3 col-md-2">
+                {{ form_row(formExport.nat) }}
+            </div>
+            <div class="col-12 col-sm-3 col-md-2">
+                {{ form_row(formExport.plz) }}
+            </div>
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(formExport.ort) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(formExport.lokal) }}
+            </div>
+
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(formExport.veranstalter) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(formExport.exportTyp) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p><strong>Der Export von Bildern kann bei größeren Datenbständen (> 50) zu längeren Reaktions- und Downloadzeiten ( > 1 Minute) führen.</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{ form_row(formExport.stripTags) }}
+            </div>
+        </div>
+        {% if is_granted('ROLE_DFX_META') or is_granted('ROLE_DFX_GROUP') %}
+            <div class="row">
+                <div class="col-12">
+                    {{ form_row(formExport.exportSub) }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-6 col-sm-4 col-md-4">
+                {{ form_row(formExport.submit) }}
+            </div>
+            <div class="col-6 col-sm-4 col-md-4">
+                {{ form_row(formExport.reset) }}
+            </div>
+        </div>
+        {{ form_row(formExport._token) }}
+        {{ form_end(formExport, {'render_rest': false}) }}
+{% endblock body %}

@@ -1,0 +1,303 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Locations' %}
+{% block pageheader 'Location bearbeiten' %}
+{% block subheader entity.name  %}
+
+{% block footer %}
+{% if konf.useMap == 1 %}
+    <link href="{{ asset('js/leaflet/leaflet.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/leaflet/leaflet.js') }}" type="text/javascript"></script>
+{% endif %}
+
+{% endblock footer %}
+{% block javascript_onload %}
+    {%  if konf.feldRegion == 1 %}
+    document.addEventListener('change', function(event) {
+        var regionSelect = event.target.closest('#dfx_location_region');
+        if (!regionSelect) {
+            return;
+        }
+
+        var rid = regionSelect.value || 0;
+        var ortSelect = document.getElementById('dfx_location_idOrt');
+        var ortInput = document.getElementById('dfx_location_ort');
+
+        fetch(url + '/js/kalender/json/region/' + rid)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(jdata) {
+                if (!ortSelect) {
+                    return;
+                }
+
+                ortSelect.innerHTML = '';
+                var arrlen = jdata.length;
+                if (arrlen === 1) {
+                    ortSelect.appendChild(new Option(jdata[0].ort, jdata[0].id));
+                    if (ortInput) {
+                        ortInput.value = jdata[0].ort;
+                    }
+                    return;
+                }
+
+                ortSelect.appendChild(new Option('Ort wählen', ''));
+                for (var i = 0; i < arrlen; i++) {
+                    ortSelect.appendChild(new Option(jdata[i].ort, jdata[i].id));
+                }
+            });
+    });
+    {% endif %}
+    {%  if konf.feldOrtdb == 1 %}
+    document.addEventListener('change', function(event) {
+        var ortSelect = event.target.closest('#dfx_location_idOrt');
+        if (!ortSelect || !(Number(ortSelect.value) > 0)) {
+            return;
+        }
+
+        fetch(url + '/js/kalender/json/ort/' + ortSelect.value)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(jdata) {
+                var regionInput = document.getElementById('dfx_location_region');
+                var plzInput = document.getElementById('dfx_location_plz');
+                var ortInput = document.getElementById('dfx_location_ort');
+
+                if (regionInput) {
+                    regionInput.value = jdata.rid;
+                }
+                if (plzInput) {
+                    plzInput.value = jdata.plz;
+                }
+                if (ortInput) {
+                    ortInput.value = jdata.ort;
+                }
+            });
+    });
+    {% endif %}
+{% endblock %}
+{% block body -%}
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            {{ form_row(form.name) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            {{ form_row(form.text1, { 'attr': {'placeholder': 'Raum/Örlichkeit'} }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            {{ form_row(form.strasse) }}
+        </div>
+    </div>
+    <div class="row">
+        {%  if konf.feldOrtdb == 1 %}
+            {%  if konf.feldNat == 1 %}
+                <div class="col-sm-2 col-md-1">
+                    {{ form_row(form.nat) }}
+                </div>
+            {% endif %}
+            {%  if konf.feldRegion == 1 %}
+                <div class="col-sm-5 col-md-3">
+                    {{ form_row(form.region) }}
+                </div>
+            {% endif %}
+            <div class="col-sm-5 col-md-3">
+                {{ form_row(form.idOrt) }}
+            </div>
+            <div class="col-sm-4 col-md-2">
+                {{ form_row(form.plz) }}
+            </div>
+            <div class="col-sm-8 col-md-3">
+                {{ form_row(form.ort, {'attr': {'readonly': true}}) }}
+            </div>
+        {% else %}
+            {%  if konf.feldNat == 1 %}
+                <div class="col-sm-4 col-md-1">
+                    {{ form_row(form.nat) }}
+                </div>
+            {% endif %}
+            {%  if konf.feldRegion == 1 %}
+                <div class="col-sm-5 col-md-3">
+                    {{ form_row(form.region) }}
+                </div>
+            {% endif %}
+            <div class="col-sm-8 col-md-2">
+                {{ form_row(form.plz) }}
+            </div>
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(form.ort) }}
+            </div>
+        {% endif %}
+    </div>
+     {% if konf.useMap == 1 %}
+        <div class="row">
+            <div class="col-sm-6 col-md-2">
+                {{ form_row(form.bg) }}
+            </div>
+            <div class="col-sm-6 col-md-2">
+                {{ form_row(form.lg) }}
+            </div>
+            <div class="col-sm-12 col-md-5">
+                <button type="button" id="getgeodata" data-formname="dfx_location" data-feldstrasse="strasse" aria-label="Geodaten aus den Adressdaten holen">Hole Geodaten aus Adressdaten</button> | <button type="button" id="setgeodata" data-formname="dfx_location" data-feldstrasse="strasse" aria-label="Geodaten aus der Karte übernehmen">Hole Geodaten aus Karte</button>
+            </div>
+       </div>
+       <div class="row">
+            <div class="col-sm-12 col-md-9">
+                <div class="dfx-map-window" id="dfxMap" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-initbg="{{ initbg }}" data-initlg="{{ initlg }}" data-initzoom="{{ initzoom }}" style="margin-bottom:15px"></div>
+            </div>
+       </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.telefon) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.text6, { 'attr': {'placeholder': 'Telefon 2'} }) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.fax) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.email) }}
+        </div>
+    </div>
+   <div class="row">
+        <div class="col-sm-12 col-md-6">
+             {{ form_row(form.www) }}
+        </div>
+   </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.text2, {'attr': {'placeholder': 'Link zu Facebook https://...'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.text3, {'attr': {'placeholder': 'Link zu Instagram https://...'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.text4, {'attr': {'placeholder': 'Link zu Twitter https://...'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.text5, {'attr': {'placeholder': 'Link zu YouTube https://...'}}) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-9">
+            {{ form_row(form.zusatz) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.imageFile, {'label' : 'Foto/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
+            {%  if entity.imgLoc is not null %}
+                {{ form_row(form.imageFileDelete) }}
+            {% endif %}
+        </div>
+        <div class="col-sm-12 col-md-2">
+            {%  if entity.imgLoc is not null %}
+                  {% set strImgPrev = '<img class="dfx-image" alt="" src="'~ asset('/images/dfx/' ~ konf.id ~ '/' ~ entity.imgLoc) | imagine_filter('thumb') ~ '" />' %}
+            {% else %}
+                {% set strImgPrev = NULL %}
+            {%  endif %}
+            {{ strImgPrev|raw }}
+        </div>
+
+    </div>
+    {% if konf.feldGalerie == 1 %}
+        <div class="row">
+            <div class="col-sm-12">
+                <legend>Zusatzbilder für Galerie-Funktion</legend>
+                Bitte beachten Sie, dass bei Nutzung der Galeriefunktion alle Bilder die gleiche Größe, bzw. mindestens das gleiche Seitenverhältnis haben müssen!
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(form.imageFile2, {'label' : 'Foto2/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
+                {%  if entity.img2 is not null %}
+                    {% set strImgPrev2 = '<img class="dfx-image" alt="" src="'~ asset('/images/dfx/' ~ konf.id ~ '/' ~ entity.img2) | imagine_filter('thumb') ~ '" />' %}
+                {% else %}
+                    {% set strImgPrev2 = NULL %}
+                {%  endif %}
+                {{ strImgPrev2|raw }}
+            </div>
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(form.imageFile3, {'label' : 'Foto3/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
+                {%  if entity.img3 is not null %}
+                    {% set strImgPrev3 = '<img class="dfx-image" alt="" src="'~ asset('/images/dfx/' ~ konf.id ~ '/' ~ entity.img3) | imagine_filter('thumb') ~ '" />' %}
+                {% else %}
+                    {% set strImgPrev3 = NULL %}
+                {%  endif %}
+                {{ strImgPrev3|raw }}
+            </div>
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(form.imageFile4, {'label' : 'Foto4/Raumplan/Sitzplan - nur jpg, png und gif erlaubt' }) }}
+                {%  if entity.img4 is not null %}
+                    {% set strImgPrev4 = '<img class="dfx-image" alt="" src="'~ asset('/images/dfx/' ~ konf.id ~ '/' ~ entity.img4) | imagine_filter('thumb') ~ '" />' %}
+                {% else %}
+                    {% set strImgPrev4 = NULL %}
+                {%  endif %}
+                {{ strImgPrev4|raw }}
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            {{ form_row(form.imageFile5, {'label' : 'Logo - nur jpg, png und gif erlaubt' }) }}
+            {%  if entity.img5 is not null %}
+                {% set strImgPrev5 = '<img class="dfx-image" alt="" src="'~ asset('/images/dfx/' ~ konf.id ~ '/' ~ entity.img5) | imagine_filter('thumb') ~ '" />' %}
+            {% else %}
+                {% set strImgPrev5 = NULL %}
+            {%  endif %}
+            {{ strImgPrev5|raw }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <br>{{ form_row(form.imgtext) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            {{ form_row(form.imgcopycheck) }}
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <br>{{ form_row(form.imgcopyright) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+             {{ form_row(form.veranstalter) }}
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+          <div class="col-6">
+          {{ form_row(form.submit) }}
+          </div>
+          <div class="col-6">
+          {{ form_row(form.reset) }}
+          </div>
+
+    </div>
+    {{ form_row(form._token) }}
+    {{ form_end(form, {'render_rest': false}) }}
+    <div><br /><a href="{{ path('admin_locations') }}">Zurück zur Liste ohne zu speichern</a></div>
+{% endblock body %}

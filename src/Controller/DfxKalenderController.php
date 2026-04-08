@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Service\Frontend\FrontendContentRenderer;
 use App\Service\Calendar\CalendarScope;
 use App\Service\Calendar\CalendarPublicationQueryHelper;
 use App\Service\Calendar\KalenderFilterData;
@@ -36,6 +37,7 @@ class DfxKalenderController extends AbstractController
         private readonly TemplatePathResolver $templatePathResolver,
         private readonly HtmlResponseService $htmlResponseService,
         private readonly UsageTrackingService $usageTrackingService,
+        private readonly FrontendContentRenderer $frontendContentRenderer,
         private readonly EntityManagerInterface $em,
     )
     {
@@ -44,83 +46,10 @@ class DfxKalenderController extends AbstractController
     #[Route(path: '/js/kalender/{kid}', name: 'kalender', methods: ['GET', 'POST'])]
     public function index(string $kid, Request $request, PaginatorInterface $paginator): Response
     {
-        $cfgMonths = ['1' => 'januar', '2' => 'februar', '3' => 'märz', '4' => 'april', '5' => 'mai', '6' => 'juni', '7' => 'juli', '8' => 'august', '9' => 'september', '10' => 'oktober', '11' => 'november', '12' => 'dezember'];
         $konf = $this->loadKonf((int) $kid);
+        $result = $this->frontendContentRenderer->renderCalendarList($konf, $request);
 
-        $calendarScope = $this->calendarScopeResolver->resolveReadScope($konf);
-        $repository = $this->em->getRepository(DfxTermine::class);
-        $query = $repository->createQueryBuilder('t')->select(['t']);
-        $queryKal = $repository->createQueryBuilder('t')->select(['t.datumVon']);
-
-        if ($calendarScope->restrictsResults()) {
-            $query->where('t.datefix IN (:kids)')->setParameter('kids', $calendarScope->ids());
-            $queryKal->where('t.datefix IN (:kids)')->setParameter('kids', $calendarScope->ids());
-        }
-
-        $this->calendarPublicationQueryHelper->applyPublishedVisibility($query, 't', $konf);
-        $this->calendarPublicationQueryHelper->applyPublishedVisibility($queryKal, 't', $konf);
-
-        $form = $this->createFilterForm($konf, $calendarScope);
-        $form->handleRequest($request);
-        $filterData = $this->createKalenderFilterDataFromForm($request, $form);
-
-        $this->kalenderFilterQueryApplier->applySharedFilters($query, $filterData);
-        $this->kalenderFilterQueryApplier->applySharedFilters($queryKal, $filterData);
-        $this->kalenderFilterQueryApplier->applyListDateWindow($query, $filterData);
-        if (!$filterData->hasExplicitDateSelection()) {
-            $queryKal->andWhere('t.datumVon >= CURRENT_DATE()');
-        }
-        $monthSelection = $this->kalenderFilterQueryApplier->applyCalendarMonth($queryKal, $filterData);
-
-        if ($request->query->get('cb') == 'all') {
-            $filterForm = $form->createView();
-        }
-
-        $queryKal->groupBy('t.datumVon')
-            ->orderBy('t.datumVon', 'ASC');
-        $tageKal = $queryKal->getQuery()->getArrayResult();
-
-        $kalJahr = $monthSelection['year'] ?? (int) date('Y');
-        $kalMonat = $monthSelection['month'] ?? (int) date('m');
-
-        $monthView = $this->kalenderMonthViewBuilder->build(
-            $tageKal,
-            $kalJahr,
-            $kalMonat,
-            $konf->getFrontendUrl(),
-            $request->query->all()
-        );
-
-        $query->orderBy('t.datumVon, t.zeit')->getQuery();
-        $termine = $paginator->paginate(
-            $query,
-            $request->query->getInt('dfxp', 1),
-            $konf->getItemsListe()
-        );
-
-        $termine->setUsedRoute($konf->getFrontendUrl());
-        $termine->setParam('filter', $this->buildPaginationFilter($this->buildKalenderFilterParams($filterData)));
-
-        $this->usageTrackingService->track($konf);
-
-        $tpl = $this->templatePathResolver->resolveKalenderList($konf);
-        $tplform = $this->templatePathResolver->resolveFormTemplatePrefix('Kalender', (int) $kid);
-        $custom = $this->templatePathResolver->resolveCustomBasePrefix('Kalender', (int) $kid, 'termine');
-        $options = [
-            'termine' => $termine,
-            'konf' => $konf,
-            'nav' => $konf->getNavListe(),
-            'headline' => $this->buildKalenderHeadline($filterData, $cfgMonths),
-            'kaldata' => $monthView['kaldata'],
-            'calendar' => $monthView['calendar'],
-            'custom' => $custom,
-            'tplform' => $tplform,
-        ];
-        if (isset($filterForm)) {
-            $options['filter_form'] = $filterForm;
-        }
-
-        return $this->htmlResponseService->render($tpl, $options);
+        return $this->htmlResponseService->raw($result['content']);
     }
 
     #[Route(path: '/js/kalender/widget/{kid}', name: 'kalender_widget', methods: ['GET'])]
@@ -424,27 +353,9 @@ class DfxKalenderController extends AbstractController
     public function terminShow(int $kid, int $id, Request $request): Response
     {
         $konf = $this->loadKonf($kid);
-        $termin = $this->loadReadableTermin($konf, $kid, $id);
+        $result = $this->frontendContentRenderer->renderCalendarDetail($konf, $request, $id);
 
-        if ($request->query->get('cb') == 'all') {
-            $form = $this->createFilterForm($konf);
-            $filterForm = $form->createView();
-            $cb = 'all';
-            $monthView = $this->kalenderDetailMonthContextBuilder->build($konf, $kid, $termin, $request->query->all());
-            $strJson = $monthView['kaldata'];
-            $calendar = $monthView['calendar'];
-        } else {
-            $cb = null;
-            $filterForm = null;
-            $strJson = '{}';
-            $calendar = null;
-        }
-
-        $detailView = $this->kalenderDetailViewBuilder->build($konf, $termin, $kid, $cb, $filterForm, $strJson, $calendar);
-
-        // zähle Aufruf
-        $this->usageTrackingService->track($konf, $termin);
-        return $this->htmlResponseService->render($detailView['template'], $detailView['options']);
+        return $this->htmlResponseService->raw($result['content']);
 
     }
 

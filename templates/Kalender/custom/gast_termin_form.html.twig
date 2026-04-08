@@ -111,6 +111,7 @@
 		    		<p>Geben Sie ein Start- und Enddatum an und markieren dann die Tage, an denen der Termin stattfindet. Die ermittelten Tage werden automatisch in das in der nächsten Zeile erscheinende Listenfeld für die regelmäßigen Serientermine eingetragen und können ggf. von Hand nachbearbeitet werden.</p>
 		    		<h4>Unregelmäßiger Termin</h4>
 		    		<p>Unregelmäßig stattfindende Termine können über den mit dem Listenfeld verknüpften Kalender erfasst werden. Klicken Sie auf die Tage, an denen der Termin erscheinen soll. Sie können die Eingabe auch über Monatsgrenzen hinweg fortsetzen, indem Sie mit den &lt;&lt; &gt;&gt; Tasten die Monate wechseln.</p>
+		    
 		    	</div>
 		    </div>
      </div>
@@ -188,11 +189,11 @@
 				</div>
 				{%  if konf.feldPlz == 1 %}
 					<div class="col-sm-4 col-md-2">
-						{{ form_row(form.plz) }}
+						{{ form_row(form.plz, {'attr' : {'required' : true, 'placeholder': 'PLZ *' }}) }}
 					</div>
 				{% endif %}
 				<div class="col-sm-8 col-md-3">
-					{{ form_row(form.ort, {'attr' : {'readonly' : true }} ) }}
+					{{ form_row(form.ort, {'attr' : {'readonly' : true, 'required' : true, 'placeholder': 'Ort *' }} ) }}
 				</div>
 			{% else %}
 				{%  if konf.feldNat == 1 %}
@@ -202,7 +203,7 @@
 				{% endif %}
 				{%  if konf.feldPlz == 1 %}
 					<div class="col-sm-2 col-md-2">
-						{{ form_row(form.plz) }}
+						{{ form_row(form.plz, {'attr' : {'required' : true, 'placeholder': 'PLZ *' }}) }}
 					</div>
 				{% endif %}
 				{%  if konf.feldRegion == 1 %}
@@ -211,7 +212,7 @@
 					</div>
 				{% endif %}
 				<div class="col-sm-12 col-md-6">
-					{{ form_row(form.ort) }}
+					{{ form_row(form.ort, {'attr' : {'required' : true, 'placeholder': 'Ort *' }}) }}
 				</div>
 			{% endif %}
 		</div>
@@ -414,7 +415,7 @@
                {{ form_row(form.datenschutz) }}
         </div>
         <div class="col-11" style="padding-top: 10px">
-	 		{{ 'datenschutz_1'|trans }} ( <a class="dfx-nojson" href="{{ konf.datenschutzUrl }}" target="_blank">{{ 'datenschutz_linktext'|trans }}</a> ) {{ 'datenschutz_2'|trans }}
+			Ja, ich habe die <a class="dfx-nojson" href="{{ konf.datenschutzUrl }}" target="_blank">Datenschutzerklärung</a> und <a class="dfx-nojson" href="https://kulturbuero-soest.de/agbs-veranstaltungs-kalender/" target="_blank">Allgemeinen Geschäftsbedingungen</a> zur Kenntnis genommen. Ich stimme den Allgemeinen Geschäftsbedingungen zu und bin damit einverstanden, dass die von mir angegebenen Daten elektronisch erhoben und gespeichert werden.
         </div>
     </div>
     <div class="row">
@@ -657,8 +658,6 @@
 		})();
 	{% endblock %}
 {% block javascript_functions %}{% endblock %}
-
-
 
 
 

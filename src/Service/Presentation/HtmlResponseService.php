@@ -14,13 +14,18 @@ final class HtmlResponseService
 
     public function render(string $tpl, array $options): Response
     {
+        return $this->raw($this->twig->render($tpl, $options));
+    }
+
+    public function raw(string $content): Response
+    {
         $sender = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_HOST'];
         $response = new Response();
         $response->headers->add([
             'Access-Control-Allow-Methods' => 'GET, POST, OPTIONS',
             'Access-Control-Allow-Origin' => $sender,
         ]);
-        $response->setContent($this->twig->render($tpl, $options));
+        $response->setContent($content);
 
         return $response;
     }

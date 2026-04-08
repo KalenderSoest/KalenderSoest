@@ -181,6 +181,31 @@ function dfxEnsureUrl() {
 	}
 }
 
+function dfxFocusFirstIn(element) {
+	if (!element) return;
+	var candidates = Array.prototype.slice.call(element.querySelectorAll('h1, h2, h3, [role="heading"], button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+	var target = candidates.find(function (candidate) {
+		return candidate.offsetParent !== null;
+	});
+	if (target) {
+		if (!target.matches('button, [href], input, select, textarea, [tabindex]')) {
+			target.setAttribute('tabindex', '-1');
+		}
+		target.focus();
+		return;
+	}
+	if (typeof element.focus === 'function') {
+		element.focus();
+	}
+}
+
+function dfxGetFocusableElements(container) {
+	if (!container) return [];
+	return Array.prototype.slice.call(container.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')).filter(function (element) {
+		return element.offsetParent !== null || element === document.activeElement;
+	});
+}
+
 function dfxSetGalleryIndex(gallery, nextIndex) {
 	var slides = Array.prototype.slice.call(gallery.querySelectorAll('[data-dfx-gallery-slide]'));
 	var thumbs = Array.prototype.slice.call(gallery.querySelectorAll('[data-dfx-gallery-thumb]'));
@@ -219,9 +244,12 @@ function dfxOpenGalleryLightbox(gallery) {
 
 	if (!lightbox) return;
 
+	gallery.__dfxLastFocus = document.activeElement;
 	dfxRenderGalleryLightbox(gallery);
 	lightbox.hidden = false;
+	lightbox.setAttribute('aria-hidden', 'false');
 	document.body.classList.add('dfx-lightbox-open');
+	dfxFocusFirstIn(lightbox);
 }
 
 function dfxCloseGalleryLightbox(gallery) {
@@ -230,7 +258,11 @@ function dfxCloseGalleryLightbox(gallery) {
 	if (!lightbox) return;
 
 	lightbox.hidden = true;
+	lightbox.setAttribute('aria-hidden', 'true');
 	document.body.classList.remove('dfx-lightbox-open');
+	if (gallery.__dfxLastFocus && typeof gallery.__dfxLastFocus.focus === 'function') {
+		gallery.__dfxLastFocus.focus();
+	}
 }
 
 function dfxInitGallery(gallery) {
@@ -296,6 +328,48 @@ function dfxInitGallery(gallery) {
 				dfxCloseGalleryLightbox(gallery);
 			}
 		});
+		lightbox.addEventListener('keydown', function (event) {
+			var key = event.key;
+			var currentIndex;
+			var focusables;
+			var first;
+			var last;
+			if (key === 'Escape') {
+				event.preventDefault();
+				dfxCloseGalleryLightbox(gallery);
+				return;
+			}
+			if (key === 'ArrowLeft') {
+				event.preventDefault();
+				currentIndex = parseInt(gallery.getAttribute('data-gallery-index') || '0', 10);
+				dfxSetGalleryIndex(gallery, currentIndex - 1);
+				dfxRenderGalleryLightbox(gallery);
+				return;
+			}
+			if (key === 'ArrowRight') {
+				event.preventDefault();
+				currentIndex = parseInt(gallery.getAttribute('data-gallery-index') || '0', 10);
+				dfxSetGalleryIndex(gallery, currentIndex + 1);
+				dfxRenderGalleryLightbox(gallery);
+				return;
+			}
+			if (key === 'Tab') {
+				focusables = dfxGetFocusableElements(lightbox);
+				if (!focusables.length) {
+					event.preventDefault();
+					return;
+				}
+				first = focusables[0];
+				last = focusables[focusables.length - 1];
+				if (event.shiftKey && document.activeElement === first) {
+					event.preventDefault();
+					last.focus();
+				} else if (!event.shiftKey && document.activeElement === last) {
+					event.preventDefault();
+					first.focus();
+				}
+			}
+		});
 	}
 
 	gallery.addEventListener('keydown', function (event) {
@@ -340,6 +414,18 @@ function dfxInitFrontendHandlers() {
 			e.preventDefault();
 			dfxEnsureUrl();
 			showKarteSet(setBtn.getAttribute('data-formname'));
+			return;
+		}
+		var mapOpenBtn = e.target.closest('.dfx-map-open');
+		if (mapOpenBtn && mapOpenBtn.tagName === 'BUTTON') {
+			e.preventDefault();
+			showKarte(mapOpenBtn.getAttribute('data-tid'), mapOpenBtn.getAttribute('data-bg'), mapOpenBtn.getAttribute('data-lg'), mapOpenBtn.getAttribute('data-lokal'));
+			return;
+		}
+		var mapCloseBtn = e.target.closest('.dfx-map-close');
+		if (mapCloseBtn && mapCloseBtn.tagName === 'BUTTON') {
+			e.preventDefault();
+			closeKarte(mapCloseBtn.getAttribute('data-tid'));
 		}
 	});
 

@@ -11,6 +11,7 @@ use App\Service\Calendar\NewsFrontendFilterData;
 use App\Service\Calendar\NewsFrontendQueryFactory;
 use App\Service\Messaging\MailDeliveryService;
 use App\Service\Frontend\CodeChallengeService;
+use App\Service\Frontend\FrontendContentRenderer;
 use App\Service\Presentation\HtmlResponseService;
 use App\Service\Presentation\PdfResponseService;
 use App\Service\Presentation\TemplatePathResolver;
@@ -43,6 +44,7 @@ class DfxNewsFrontendController extends AbstractController
         private readonly NewsFrontendQueryFactory $newsFrontendQueryFactory,
         private readonly TemplatePathResolver $templatePathResolver,
         private readonly UsageTrackingService $usageTrackingService,
+        private readonly FrontendContentRenderer $frontendContentRenderer,
         private readonly EntityManagerInterface $em,
     ) {
     }
@@ -51,40 +53,9 @@ class DfxNewsFrontendController extends AbstractController
     public function index(int $kid, Request $request, PaginatorInterface $paginator): Response
     {
         $konf = $this->loadKonf($kid);
-        $calendarScope = $this->calendarScopeResolver->resolveReadScope($konf);
-        $form = $this->createFilterForm($konf, $calendarScope->ids());
-        $form->handleRequest($request);
-        $data = $form->isSubmitted() && $form->isValid() ? (array) $form->getData() : [];
-        $filterData = new NewsFrontendFilterData(
-            rubrik: ($data['rubrik'] ?? null) ?: null,
-            zielgruppe: ($data['zielgruppe'] ?? null) ?: null,
-            filter1: (bool) ($data['filter1'] ?? false),
-            filter2: (bool) ($data['filter2'] ?? false),
-            filter3: (bool) ($data['filter3'] ?? false),
-            filter4: (bool) ($data['filter4'] ?? false),
-            filter5: (bool) ($data['filter5'] ?? false),
-            suche: ($data['suche'] ?? null) ?: null,
-            datumVon: $data['datum_von'] ?? null,
-            datumBis: $data['datum_bis'] ?? null,
-        );
-        $queryConfig = $this->newsFrontendQueryFactory->build($konf, $filterData);
+        $result = $this->frontendContentRenderer->renderNewsList($konf, $request);
 
-        $filterForm = $form->createView();
-
-        /** @var SlidingPagination $news */
-        $news = $paginator->paginate($queryConfig['query'], $request->query->getInt('nfxp', 1), $konf->getItemsListe());
-        $news->setParam('filter', $this->buildPaginationFilter($queryConfig['filter']));
-        $this->usageTrackingService->track($konf);
-        $tpl = $this->templatePathResolver->resolveNewsList($konf);
-        $tplform = $this->templatePathResolver->resolveFormTemplatePrefix('News', $kid);
-        return $this->htmlResponseService->render($tpl, [
-            'news' => $news,
-            'konf' => $konf,
-            'nav' => $konf->getNavListe(),
-            'headline' => $queryConfig['header'],
-            'tplform' => $tplform,
-            'filter_form' => $filterForm,
-        ]);
+        return $this->htmlResponseService->raw($result['content']);
     }
 
     #[Route(path: '/js/news/widget/{kid}', name: 'kalender_widget', methods: ['GET'])]
@@ -114,38 +85,9 @@ class DfxNewsFrontendController extends AbstractController
     public function artikelShow(int $kid, int $id, Request $request): Response
     {
         $konf = $this->loadKonf($kid);
-        $artikel = $this->loadArtikel($id);
-        if ($artikel->getDatefix()->getId() != $kid && $konf->getIsMeta() != 1 && $konf->getIsGroup() != 1) {
-            throw $this->createNotFoundException('Artikel gehört nicht zu diesem Kalender.');
-        }
+        $result = $this->frontendContentRenderer->renderNewsDetail($konf, $request, $id);
 
-        if ($request->query->get('cb') == 'all') {
-            $form = $this->createFilterForm($konf);
-            $filterForm = $form->createView();
-            $cb = 'all';
-        } else {
-            $cb = null;
-            $filterForm = null;
-        }
-
-        $imgPath = $this->getParameter('kernel.project_dir') . "/web/images/dfx/" . $artikel->getDatefix()->getId() . '/';
-        if ($artikel->getImg() && !file_exists($imgPath . $artikel->getImg())) {
-            $artikel->setImg(null);
-        }
-
-        $tplDetail = 'detail';
-        $tplOwnDetail = 'detail';
-        $tpl = $this->templatePathResolver->resolveNewsDetail($konf, $tplDetail, $tplOwnDetail);
-        $tplform = $this->templatePathResolver->resolveFormTemplatePrefix('News', $kid);
-        $custom = $this->templatePathResolver->resolveCustomBasePrefix('News', $kid, 'base_detail');
-
-        $options = ['konf' => $konf, 'artikel' => $artikel,  'nav' => $konf->getNavDetail(), 'cb' => $cb, 'tplform' => $tplform, 'custom' => $custom];
-        if ($filterForm != null) {
-            $options['filter_form'] = $filterForm;
-        }
-
-        $this->usageTrackingService->track($konf, null, $artikel);
-        return $this->htmlResponseService->render($tpl, $options);
+        return $this->htmlResponseService->raw($result['content']);
     }
 
     #[Route(path: '/js/news/pdf/{id}', name: 'artikel_fe_pdf', methods: ['GET'])]

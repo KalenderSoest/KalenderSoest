@@ -78,6 +78,7 @@
 
         .app-nav-bar .w3-button,
         .app-sidebar a,
+        .app-sidebar button,
         .app-nav-link,
         .app-accent {
             color: var(--webapp-primary-contrast) !important;
@@ -85,12 +86,30 @@
 
         .app-nav-bar .w3-button:hover,
         .app-sidebar a:hover,
+        .app-sidebar button:hover,
         .app-nav-link:hover,
         .app-nav-link:focus,
         .app-accent:hover,
         .app-accent:focus {
             background-color: var(--webapp-primary-hover) !important;
             color: var(--webapp-primary-contrast) !important;
+        }
+
+        .app-nav-bar .w3-button:focus-visible,
+        .app-sidebar a:focus-visible,
+        .app-sidebar button:focus-visible,
+        .app-nav-link:focus-visible,
+        .app-accent:focus-visible,
+        .dfx-gallery-nav:focus-visible,
+        .dfx-gallery-lightbox-close:focus-visible,
+        .dfx-gallery-lightbox-nav:focus-visible,
+        .dfx-gallery-slide:focus-visible,
+        .dfx-gallery-thumb:focus-visible,
+        .app-calendar-day:focus-visible,
+        .app-calendar-filters input:focus-visible,
+        .app-calendar-filters select:focus-visible {
+            outline: 3px solid #111;
+            outline-offset: 2px;
         }
 
         .app-nav-link.app-nav-link-active,
@@ -100,11 +119,73 @@
         }
 
         .app-sidebar {
-            z-index: 9;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 70;
+            height: 100vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            padding-top: 3.5rem;
         }
 
         .app-sidebar a {
             border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .app-sidebar a,
+        .app-sidebar button {
+            font-weight: 700;
+        }
+
+        .app-sidebar-home {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .app-sidebar-home-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.4rem;
+            height: 1.4rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+
+        .app-sidebar-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.75rem;
+            height: 2.75rem;
+            margin: 0;
+            padding: 0;
+            border: 2px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 800;
+            line-height: 1;
+            text-align: center;
+            float: none !important;
+            vertical-align: middle;
+        }
+
+        .app-nav-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            border: 0;
+            padding: 0;
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .app-nav-inner {
@@ -664,7 +745,15 @@
     <div class="w3-bar app-nav-bar">
         <div class="app-nav-inner">
             <div class="w3-hide-medium w3-hide-large">
-                <a class="w3-bar-item w3-button w3-opennav" href="javascript:void(0)" onclick="openSideNav()" title="Seitenmenü öffnen">&#9776;</a>
+                <button
+                    type="button"
+                    class="w3-bar-item w3-button w3-opennav"
+                    id="nav-toggle"
+                    aria-label="Seitenmenü öffnen"
+                    aria-controls="side-nav"
+                    aria-expanded="false"
+                    title="Seitenmenü öffnen"
+                >&#9776;</button>
             </div>
             <div class="w3-hide-small app-nav-desktop">
                 <a href="#kalender" class="w3-bar-item w3-button app-nav-link" data-app-view="calendar">Kalender</a>
@@ -675,40 +764,43 @@
     </div>
 </div>
 
-<nav id="side-nav" class="w3-sidenav app-sidebar w3-animate-left" style="display: none; z-index: 9">
-    <a href="javascript:void(0)" onclick="closeSideNav()" class="w3-closenav w3-right-align w3-padding-right">&times;</a>
-    <a href="{{ path('webapp_index_kid', { kid: webappConfig.kid }) }}" id="home">Home</a>
+<nav id="side-nav" class="w3-sidenav app-sidebar w3-animate-left" style="display: none;" aria-hidden="true">
+    <button type="button" id="side-nav-close" class="app-sidebar-close" aria-label="Seitenmenü schließen">&times;</button>
+    <a href="{{ path('webapp_index_kid', { kid: webappConfig.kid }) }}" id="home" class="app-sidebar-home">
+        <span class="app-sidebar-home-icon" aria-hidden="true">⌂</span>
+        <span>Home</span>
+    </a>
     <a href="#kalender" class="app-nav-link" data-app-view="calendar">Kalender</a>
     <a href="#liste" id="liste" class="app-nav-link" data-app-view="events">Veranstaltungen</a>
     <a href="#news" class="app-nav-link" data-app-view="news">News</a>
 </nav>
 
-<div id="nav-overlay" class="w3-overlay" onclick="closeSideNav()" style="cursor: pointer"></div>
+<button type="button" id="nav-overlay" class="w3-overlay app-nav-overlay" aria-label="Seitenmenü schließen" hidden></button>
 
-<div class="w3-content" style="max-width: 1000px; padding-top: calc(105px + 1.5rem) !important; min-height: 750px">
+<main id="main-content" class="w3-content" style="max-width: 1000px; padding-top: calc(105px + 1.5rem) !important; min-height: 750px" tabindex="-1">
 
-<div id="component-home" class="app-component">
+<div id="component-home" class="app-component" tabindex="-1">
     Willkommen in der Datefix WebApp
 </div>
 
-<div id="component-calendar" class="app-component">
+<div id="component-calendar" class="app-component" tabindex="-1">
     <div class="app-calendar-shell">
         <div class="app-calendar-card">
             <div class="app-calendar-controls">
                 <button type="button" id="calendar-prev" class="w3-button app-accent" aria-label="Vorheriger Monat">&lt;</button>
-                <div id="calendar-month-label" class="app-calendar-month"></div>
+                <div id="calendar-month-label" class="app-calendar-month" aria-live="polite"></div>
                 <button type="button" id="calendar-next" class="w3-button app-accent" aria-label="Nächster Monat">&gt;</button>
             </div>
-            <div class="app-calendar-grid">
-                <div class="app-calendar-head">Mo</div>
-                <div class="app-calendar-head">Di</div>
-                <div class="app-calendar-head">Mi</div>
-                <div class="app-calendar-head">Do</div>
-                <div class="app-calendar-head">Fr</div>
-                <div class="app-calendar-head">Sa</div>
-                <div class="app-calendar-head">So</div>
+            <div class="app-calendar-grid" role="row">
+                <div class="app-calendar-head" role="columnheader" aria-label="Montag">Mo</div>
+                <div class="app-calendar-head" role="columnheader" aria-label="Dienstag">Di</div>
+                <div class="app-calendar-head" role="columnheader" aria-label="Mittwoch">Mi</div>
+                <div class="app-calendar-head" role="columnheader" aria-label="Donnerstag">Do</div>
+                <div class="app-calendar-head" role="columnheader" aria-label="Freitag">Fr</div>
+                <div class="app-calendar-head" role="columnheader" aria-label="Samstag">Sa</div>
+                <div class="app-calendar-head" role="columnheader" aria-label="Sonntag">So</div>
             </div>
-            <div id="calendar-days" class="app-calendar-grid"></div>
+            <div id="calendar-days" class="app-calendar-grid" role="grid" aria-label="Kalender"></div>
 
             <div class="app-calendar-filters">
                 {% if webappCalendarFilters.showDate %}
@@ -826,11 +918,11 @@
     </div>
 </div>
 
-<div id="component-eventliste" class="app-component">
-    <div id="spinner-loading-events">
-        <div class="spinner" style="margin: auto"></div>
+<div id="component-eventliste" class="app-component" tabindex="-1">
+    <div id="spinner-loading-events" role="status" aria-live="polite" aria-label="Veranstaltungen werden geladen">
+        <div class="spinner" style="margin: auto" aria-hidden="true"></div>
     </div>
-    <h5 id="label-eventliste-empty" class="margin-top-64 w3-center">Noch keine Veranstaltungen geladen!</h5>
+    <h5 id="label-eventliste-empty" class="margin-top-64 w3-center" role="status" aria-live="polite">Noch keine Veranstaltungen geladen!</h5>
     <div id="container-events" class="">
         <h1 style="text-align: center">Veranstaltungen</h1>
         <hr class="app-pagination-divider">
@@ -854,7 +946,9 @@
                         <span class="plz"></span> <span class="ort"></span>, <span class="strasse"></span>
                     </span>
                 </div>
-                <div class="liste-detail-button app-accent w3-button w3-right w3-padding">&gt;</div>
+                <button type="button" class="liste-detail-button app-accent w3-button w3-right w3-padding" aria-label="Details anzeigen">
+                    <span aria-hidden="true">&gt;</span>
+                </button>
             </div>
         </div>
         <div id="container-events-rows"></div>
@@ -867,11 +961,11 @@
     </div>
 </div>
 
-<div id="component-event" class="app-component">
-    <div id="spinner-loading-event">
-        <div class="spinner" style="margin: auto"></div>
+<div id="component-event" class="app-component" tabindex="-1">
+    <div id="spinner-loading-event" role="status" aria-live="polite" aria-label="Veranstaltung wird geladen">
+        <div class="spinner" style="margin: auto" aria-hidden="true"></div>
     </div>
-    <h5 id="label-event-empty" class="margin-top-64 w3-center">Noch keine Veranstaltung geladen!</h5>
+    <h5 id="label-event-empty" class="margin-top-64 w3-center" role="status" aria-live="polite">Noch keine Veranstaltung geladen!</h5>
     <div id="container-event">
         <div id="template-event" itemscope itemtype="http://schema.org/Event" class="app-detail-shell" hidden>
             <a href="#liste" class="app-detail-back back-button app-accent w3-button w3-padding" aria-label="Zurück">&lt;</a>
@@ -930,11 +1024,11 @@
     <div id="container-event-card"></div>
 </div>
 
-<div id="component-news" class="app-component">
-    <div id="spinner-loading-news">
-        <div class="spinner" style="margin: auto"></div>
+<div id="component-news" class="app-component" tabindex="-1">
+    <div id="spinner-loading-news" role="status" aria-live="polite" aria-label="News werden geladen">
+        <div class="spinner" style="margin: auto" aria-hidden="true"></div>
     </div>
-    <h5 id="label-news-empty" class="margin-top-64 w3-center">Noch keine News geladen!</h5>
+    <h5 id="label-news-empty" class="margin-top-64 w3-center" role="status" aria-live="polite">Noch keine News geladen!</h5>
     <div id="container-news">
         <h1 style="text-align: center">News</h1>
         <hr class="app-pagination-divider">
@@ -953,7 +1047,9 @@
                 <div class="news-subtitle"></div>
                 <div class="news-excerpt"></div>
                 <div class="app-news-row-date"><span class="news-date"></span></div>
-                <div class="news-detail-button app-accent w3-button w3-right w3-padding">&gt;</div>
+                <button type="button" class="news-detail-button app-accent w3-button w3-right w3-padding" aria-label="News-Details anzeigen">
+                    <span aria-hidden="true">&gt;</span>
+                </button>
             </div>
         </div>
         <div id="container-news-rows"></div>
@@ -966,11 +1062,11 @@
     </div>
 </div>
 
-<div id="component-news-detail" class="app-component">
-    <div id="spinner-loading-news-detail">
-        <div class="spinner" style="margin: auto"></div>
+<div id="component-news-detail" class="app-component" tabindex="-1">
+    <div id="spinner-loading-news-detail" role="status" aria-live="polite" aria-label="News-Artikel wird geladen">
+        <div class="spinner" style="margin: auto" aria-hidden="true"></div>
     </div>
-    <h5 id="label-news-detail-empty" class="margin-top-64 w3-center">Noch kein News-Artikel geladen!</h5>
+    <h5 id="label-news-detail-empty" class="margin-top-64 w3-center" role="status" aria-live="polite">Noch kein News-Artikel geladen!</h5>
     <div id="container-news-detail">
         <div id="template-news-detail" class="app-news-detail-shell" hidden>
             <a href="#news" class="app-detail-back news-back-button app-accent w3-button w3-padding" aria-label="Zurück">&lt;</a>
@@ -997,8 +1093,7 @@
     </div>
     <div id="container-news-detail-card"></div>
 </div>
-
-</div>
+</main>
 
 <script>
     window.DFX_WEBAPP_CONFIG = {{ webappConfig|json_encode|raw }};
@@ -1006,12 +1101,16 @@
 
     function closeSideNav() {
         document.getElementById('side-nav').style.display = 'none';
-        document.getElementById('nav-overlay').style.display = 'none';
+        document.getElementById('side-nav').setAttribute('aria-hidden', 'true');
+        document.getElementById('nav-overlay').hidden = true;
+        document.getElementById('nav-toggle').setAttribute('aria-expanded', 'false');
     }
 
     function openSideNav() {
         document.getElementById('side-nav').style.display = 'block';
-        document.getElementById('nav-overlay').style.display = 'block';
+        document.getElementById('side-nav').setAttribute('aria-hidden', 'false');
+        document.getElementById('nav-overlay').hidden = false;
+        document.getElementById('nav-toggle').setAttribute('aria-expanded', 'true');
     }
 </script>
 <script src="{{ asset('js/leaflet/leaflet.js') }}"></script>

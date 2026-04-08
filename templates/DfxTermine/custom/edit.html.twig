@@ -1,0 +1,596 @@
+{% extends 'Admin/' ~ backend ~ 'base_admin.html.twig' %}
+{% block title 'Termin bearbeiten' %}
+{% block pageheader 'Termin bearbeiten' %}
+{% block subheader entity.titel  %}
+{% block footer %}
+    {% if konf.useMap == 1 %}
+    	<link href="{{ asset('js/leaflet/leaflet.css') }}" rel="stylesheet">
+        <script src="{{ asset('js/leaflet/leaflet.js') }}" type="text/javascript"></script>
+    {% endif %}
+
+{% endblock footer %}
+{% block javascript_onload %}
+	(function() {
+		var form = document.querySelector('form[name="termine"]');
+		var beschreibung = document.getElementById('termine_beschreibung');
+		var lead = document.getElementById('termine_lead');
+		var online = document.getElementById('termine_online');
+		var imageInfo = document.getElementById('imageInfoBlock');
+		var imgCopyCheck = document.getElementById('termine_imgcopycheck');
+		var imageDelete = document.getElementById('termine_imageFileDelete');
+		var imageFile = document.getElementById('termine_imageFile');
+		var imageFileInput = document.getElementById('termine_imageFile_file');
+
+		function toggleOnline() {
+			var hideEls = document.querySelectorAll('.hideOnline');
+			var showEls = document.querySelectorAll('.showOnline');
+			if (online && online.checked) {
+				hideEls.forEach(function(el){ el.style.display = 'none'; });
+				showEls.forEach(function(el){ el.style.display = ''; });
+			} else {
+				hideEls.forEach(function(el){ el.style.display = ''; });
+				showEls.forEach(function(el){ el.style.display = 'none'; });
+			}
+		}
+
+		{% if konf.maxLengthBeschreibung > 0 %}
+		if (form) {
+			form.addEventListener('submit', function(e) {
+				if (beschreibung && beschreibung.value.length > {{ konf.maxLengthBeschreibung }} + 10) {
+					alert("Der Text für die Beschreibung ist mit " + beschreibung.value.length + " Zeichen lünger als die erlaubten {{ konf.maxLengthBeschreibung }} Zeichen.\n\nVor dem erneuten Absenden ist ein Klick ein anderes Formularfeld nütig !.");
+					e.preventDefault();
+					return false;
+				}
+			});
+		}
+		{% endif %}
+
+		{% if konf.maxLengthLead > 0 %}
+		if (lead) {
+			lead.addEventListener('blur', function() {
+				if (lead.value.length > {{ konf.maxLengthlead }} ) {
+					alert("Der Text für die Kurzfassung ist mit " + lead.value.length + " Zeichen lünger als die erlaubten {{ konf.maxLengthLead }} Zeichen");
+				}
+			});
+		}
+		if (form) {
+			form.addEventListener('submit', function(e) {
+				if (lead && lead.value.length > {{ konf.maxLengthlead }} ) {
+					alert("Der Text für die Kurzfassung ist mit " + lead.value.length + " Zeichen lünger als die erlaubten {{ konf.maxLengthLead }} Zeichen.\n\nVor dem erneuten Absenden ist ein Klick ein anderes Formularfeld nütig !.");
+					e.preventDefault();
+					return false;
+				}
+			});
+		}
+		{% endif %}
+
+
+		{%  if konf.feldRegion == 1 %}
+		var region = document.getElementById('termine_region');
+		if (region) {
+			region.addEventListener('change', function(){
+				var rid = region.value ? region.value : 0;
+				fetch(url + "/js/kalender/json/region/" + rid)
+					.then(function(res){ return res.json(); })
+					.then(function (jdata) {
+						var idOrt = document.getElementById('termine_idOrt');
+						var ort = document.getElementById('termine_ort');
+						if (!idOrt) return;
+						idOrt.innerHTML = '';
+						var arrlen = jdata.length;
+						if (arrlen === 1) {
+							var opt = document.createElement('option');
+							opt.value = jdata[0].id;
+							opt.textContent = jdata[0].ort;
+							idOrt.appendChild(opt);
+							if (ort) ort.value = jdata[0].ort;
+						} else {
+							var optEmpty = document.createElement('option');
+							optEmpty.value = '';
+							optEmpty.textContent = 'Ort wühlen';
+							idOrt.appendChild(optEmpty);
+							for (var i = 0; i < arrlen; i++) {
+								var opt2 = document.createElement('option');
+								opt2.value = jdata[i].id;
+								opt2.textContent = jdata[i].ort;
+								idOrt.appendChild(opt2);
+							}
+						}
+					});
+			});
+		}
+		{% endif %}
+
+		{%  if konf.feldOrtdb == 1 %}
+		var idOrtSel = document.getElementById('termine_idOrt');
+		if (idOrtSel) {
+			idOrtSel.addEventListener('change', function(){
+				var regionVal = document.getElementById('termine_region');
+				if (parseInt(idOrtSel.value || '0', 10) > 0 && regionVal && regionVal.value !== null) {
+					fetch(url + "/js/kalender/json/ort/" + idOrtSel.value)
+						.then(function(res){ return res.json(); })
+						.then(function (jdata) {
+							var regionEl = document.getElementById('termine_region');
+							var plzEl = document.getElementById('termine_plz');
+							var ortEl = document.getElementById('termine_ort');
+							if (regionEl) regionEl.value = jdata.rid;
+							if (plzEl) plzEl.value = jdata.plz;
+							if (ortEl) ortEl.value = jdata.ort;
+						});
+				}
+			});
+		}
+		{% endif %}
+
+		if (online) {
+			toggleOnline();
+			online.addEventListener('click', toggleOnline);
+		}
+
+		{%  if entity.img is not null %}
+		if (imageInfo) imageInfo.style.display = '';
+		if (imgCopyCheck) imgCopyCheck.required = true;
+		{% endif %}
+
+		if (imageDelete) {
+			imageDelete.addEventListener('change', function() {
+				if (imageDelete.checked) {
+					if (imageInfo) imageInfo.style.display = 'none';
+					if (imgCopyCheck) imgCopyCheck.required = false;
+				} else {
+					if (imageInfo) imageInfo.style.display = '';
+					if (imgCopyCheck) imgCopyCheck.required = true;
+				}
+			});
+		}
+		if (imageFile) {
+			imageFile.addEventListener('change', function(){
+				if (imageFile.value !== null) {
+					if (imageInfo) imageInfo.style.display = '';
+					if (imgCopyCheck) imgCopyCheck.required = true;
+				} else {
+					if (imageInfo) imageInfo.style.display = 'none';
+					if (imgCopyCheck) imgCopyCheck.required = false;
+				}
+			});
+		}
+
+		if (form) {
+			form.addEventListener('reset', function(){
+				if (imageFileInput && imageFileInput.value !== null) {
+					if (imageInfo) imageInfo.style.display = 'none';
+					if (imgCopyCheck) imgCopyCheck.required = false;
+				}
+			});
+		}
+	})();
+{% endblock %}
+{% block javascript_functions %}{% endblock %}
+
+{% block body -%}
+	<div id="dfx" data-kid="{{ konf.id }}" data-dfx-url="{{ datefix_url }}" style="display:none"></div>
+	{{ form_start(form) }}
+<fieldset class="step-1">
+	<legend>Datum & Zeit</legend>
+    <div class="row">
+    	{% if serie == 1 %}
+    		<div class="col-sm-12 col-md-8">
+	    		{{ 'Hinweis Serie Datumseingabe'|trans }}<br><br>
+	    	</div>
+	    {% else %}
+	       	<div class="col-sm-6 col-md-3">
+	    		{{ form_row(form.datum_von) }}
+	    	</div>
+	    	<div class="col-sm-6 col-md-3">
+	    	    {{ form_row(form.datum) }}
+	    	</div>
+     
+   		{% endif %}
+   	</div>
+    <div class="row">
+    	<div class="col-sm-6 col-md-3">
+    		{{ form_row(form.zeit) }}
+    	</div>
+    	<div class="col-sm-6 col-md-3">
+    	 	{{ form_row(form.zeitBis) }}
+    	</div>
+   </div>
+</fieldset>
+<fieldset class="step-2">
+    <legend>Was & wo</legend>
+   <div class="row">
+    	<div class="col-sm-12 col-md-9">
+    		 {{ form_row(form.titel) }}
+    	</div>
+    </div>
+    {%  if konf.feldSubtitel == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-9">
+    		{{ form_row(form.subtitel) }}
+    	</div>
+    </div>
+{% endif %}
+        {%  if konf.feldOnlinetermin == 1 %}
+            <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(form.online) }}
+            </div>
+        </div>
+        <div class="row showOnline">
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(form.konferenzlink) }}
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <br>{{ form_row(form.konferenzlinktext) }}
+            </div>
+        </div>
+        {% endif %}
+    
+    {%  if konf.feldLocation == 1 %} 
+    <div class="row hideOnline">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.idLocation) }}
+    	</div>
+    	<div class="col-sm-12 col-md-5">
+    		{{ form_row(form.lokal) }}
+    	</div>
+    </div>
+    <div class="row hideOnline">
+      	<div class="col-sm-12 col-md-9">
+    		 {{ form_row(form.lokalStrasse) }}
+    	</div>
+    </div>
+    {% endif %}
+    {%  if konf.feldOrt == 1 %}
+    <div class="row hideOnline">
+        {%  if konf.feldOrtdb == 1 %}
+            {%  if konf.feldNat == 1 %}
+                <div class="col-sm-2 col-md-1">
+                    {{ form_row(form.nat) }}
+                </div>
+            {% endif %}
+            {%  if konf.feldRegion == 1 %}
+                <div class="col-sm-5 col-md-3">
+                    {{ form_row(form.region) }}
+                </div>
+            {% endif %}
+            <div class="col-sm-5 col-md-3">
+                {{ form_row(form.idOrt) }}
+            </div>
+            {%  if konf.feldPlz == 1 %}
+                <div class="col-sm-4 col-md-2">
+                 {{ form_row(form.plz) }}
+                </div>
+                {% endif %}
+            <div class="col-sm-8 col-md-3">
+                {{ form_row(form.ort, {'attr' : {'readonly' : true }} ) }}
+            </div>
+        {% else %}
+            {%  if konf.feldNat == 1 %}
+                <div class="col-sm-4 col-md-1">
+                    {{ form_row(form.nat) }}
+                </div>
+            {% endif %}
+            {%  if konf.feldPlz == 1 %}
+                <div class="col-sm-2 col-md-2">
+                 {{ form_row(form.plz, {'attr' : {'required' : true, 'placeholder': 'PLZ *' }}) }}
+                </div>
+            {% endif %}
+            {%  if konf.feldRegion == 1 %}
+                <div class="col-sm-5 col-md-3">
+                    {{ form_row(form.region) }}
+                </div>
+            {% endif %}
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(form.ort, {'attr' : {'required' : true, 'placeholder': 'Ort *' }}) }}
+            </div>
+        {% endif %}  
+        </div>
+    {% endif %}
+    {% if konf.useMap == true %}
+        <div class="row hideOnline">
+            <div class="col-sm-6 col-md-2">
+                {{ form_row(form.bg) }}
+
+            </div>
+            <div class="col-sm-6 col-md-2">
+                {{ form_row(form.lg) }}
+            </div>
+            <div class="col-sm-12 col-md-5">
+                <a id="getgeodata" data-formname="termine" data-feldstrasse="lokalStrasse" href="#">Hole Geodaten aus Adressdaten</a> | <a id="setgeodata" data-formname="termine" data-feldstrasse="lokalStrasse" href="#">Hole Geodaten aus Karte</a>
+            </div>
+
+        </div>
+        <div class="dfx-map-window" id="dfxMap" data-mapkey="{{ mapkey }}" data-tileserver="{{ tileserver }}" data-mapset="{{ mapset }}" data-copyright="{{ copyright }}" data-initbg="{{ initbg }}" data-initlg="{{ initlg }}" data-initzoom="{{ initzoom }}"></div>
+    {% endif %}
+</fieldset>
+{%  if konf.rubriken|length > 0 %}
+ <fieldset class="step-3">
+    <legend>Rubriken</legend>
+     <div class="row">
+    	<div class="col-sm-12">
+            {% for checkbox in form.rubrik.children  %}
+                <div class="form-check form-check-inline">
+                    {{ form_label(checkbox) }}
+                    {{ form_widget(checkbox) }}
+                    {{ form_errors(checkbox) }}
+                </div>
+            {% endfor %}
+    	</div>
+    </div>
+</fieldset>
+{%  endif %}
+{%  if konf.zielgruppen|length > 0 %}
+ <fieldset class="step-3">
+    <legend>Zielgruppen</legend>
+     <div class="row">
+    	<div class="col-sm-12">
+            {% for checkbox in form.zielgruppe.children  %}
+                <div class="form-check form-check-inline">
+                    {{ form_label(checkbox) }}
+                    {{ form_widget(checkbox) }}
+                    {{ form_errors(checkbox) }}
+                </div>
+            {% endfor %}
+    	</div>
+    </div>
+</fieldset>
+{%  endif %}
+<fieldset class="step-4">
+    <legend>Texte & Medien</legend>
+    {%  if konf.feldLead == 1 %}
+    <div class="row">
+    	<div class="col-sm-12">
+    		{{ form_row(form.lead) }}
+    		{%  if konf.maxLengthLead > 0 %}
+    		<p>Die Eingabe ist vom Administrator auf max. {{ konf.maxLengthLead }} Zeichen incl. Leerzeichen und HTML-Quellcode begrenzt.<br><br></p>
+     		{% endif %}
+    	</div>
+    </div>
+    {% endif %}
+    {%  if konf.feldBeschreibung == 1 %}
+    <div class="row">
+    	<div class="col-sm-12">
+    		{{ form_row(form.beschreibung) }}
+    		{%  if konf.maxLengthBeschreibung > 0 %}
+    		<p>Die Eingabe ist vom Administrator auf max. {{ konf.maxLengthBeschreibung }} Zeichen incl. Leerzeichen und HTML-Quellcode begrenzt.<br><br></p>
+     		{% endif %}
+    	</div>
+    </div>
+    {% endif %}
+     {%  if konf.feldEintritt == 1 %}
+    <div class="row">
+    	<div class="col-sm-12">
+    		{{ form_row(form.eintritt) }}
+    	</div>
+    </div>
+    {%  endif %}
+    {%  if konf.feldImg == 1 %}
+        <div class="row">
+            <div class="col-sm-12 col-md-4">
+                {{ form_row(form.imageFile) }}
+                {%  if entity.img is not null %}
+                    {{ form_row(form.imageFileDelete) }}
+                {% endif %}
+            </div>
+            <div class="col-sm-12 col-md-2">
+                {%  if entity.img is not null %}
+                    {% set strImgPrev = '<img class="dfx-image" src="'~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img) | imagine_filter('thumb') ~ '" />' %}
+                {% else %}
+                    {% set strImgPrev = NULL %}
+                {%  endif %}
+                {{ strImgPrev|raw }}
+            </div>
+
+        </div>
+
+        {%  if konf.feldGalerie == 1 %}
+            <div class="row">
+                <div class="col-12">
+                    <h4>Weitere Bilder für Galeriefunktion</h4>
+                </div>
+                <div class="col-12 col-md-4">
+                    {{ form_row(form.imageFile2) }}
+                    {%  if entity.img2 is not null %}
+                        {% set strImgPrev2 = '<img class="dfx-image" src="'~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img2) | imagine_filter('thumb') ~ '" />' %}
+                    {% else %}
+                        {% set strImgPrev2 = NULL %}
+                    {%  endif %}
+                    {{ strImgPrev2|raw }}
+                </div>
+                <div class="col-12 col-md-4">
+                    {{ form_row(form.imageFile3) }}
+                    {%  if entity.img3 is not null %}
+                        {% set strImgPrev3 = '<img class="dfx-image" src="'~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img3) | imagine_filter('thumb') ~ '" />' %}
+                    {% else %}
+                        {% set strImgPrev3 = NULL %}
+                    {%  endif %}
+                    {{ strImgPrev3|raw }}
+
+                </div>
+                <div class="col-12 col-md-4">
+                    {{ form_row(form.imageFile4) }}
+                    {%  if entity.img4 is not null %}
+                        {% set strImgPrev4 = '<img class="dfx-image" src="'~ asset('/images/dfx/' ~ entity.datefix.id ~ '/' ~ entity.img4) | imagine_filter('thumb') ~ '" />' %}
+                    {% else %}
+                        {% set strImgPrev4 = NULL %}
+                    {%  endif %}
+                    {{ strImgPrev4|raw }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12">
+                <br>{{ form_row(form.imgtext) }}
+            </div>
+        </div>
+        <div class="row" id="imageInfoBlock">
+            <div class="col-sm-12 col-md-6">
+                {{ form_row(form.imgcopycheck) }}
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <br>{{ form_row(form.imgcopyright) }}
+            </div>
+        </div>
+    {% endif %}
+    {%  if konf.feldPdf == 1 %}
+     <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.pdfFile) }}
+    	</div>
+    	<div class="col-sm-12 col-md-2">
+            {{ form_row(form.pdfFileDelete) }}
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		<br>{{ form_row(form.pdflinktext) }}
+    	</div>
+    	
+    </div>
+    {% endif %}
+    {%  if konf.feldMedia == 1 %}
+     <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.media) }}
+    	</div>
+    	<div class="col-sm-12 col-md-2">
+            {{ form_row(form.mediaFileDelete) }}
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		<br>{{ form_row(form.medialinktext) }}
+    	</div>
+    	
+    </div>
+    {% endif %}
+    {%  if konf.feldVideo == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.video) }}
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		<br>Geben Sie hier den vollstündigen HTML-Einbettungscode ein, den die Videoprtale zur Verfügung stelllen. 
+    	</div>
+    </div>
+    {% endif %}
+</fieldset>
+<fieldset class="step-5">
+    <legend>Veranstalter, Kontakt, Karten, Anmeldungen</legend>
+    {%  if konf.feldVeranstalter == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.idVeranstalter) }}
+    	</div>
+    	<div class="col-sm-12 col-md-6">
+    		{{ form_row(form.veranstalter, {'attr' : {'required' : true, 'placeholder' : 'Veranstalter *'}}) }}
+    	</div>
+    </div>
+    {%  endif %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.mail) }}
+    	</div>
+     </div>
+     <div class="row">
+    	<div class="col-sm-12 col-md-9">
+    		{{ form_row(form.mailTyp) }}
+    	</div>
+    </div>
+    {%  if konf.feldPlatzlimit == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-2">
+    		{{ form_row(form.plaetzeGesamt) }}
+    	</div>
+    	<div class="col-sm-12 col-md-2">
+    		{{ form_row(form.plaetzeAktuell) }}
+    	</div>
+    </div>
+    {% endif %}
+    {%  if konf.feldLink == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.link) }}
+    	</div>
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.linktext) }}
+    	</div>
+    </div>
+    {% endif %}
+    {%  if konf.feldTicketlink == 1 %}
+    <div class="row">
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.ticketlink) }}
+    	</div>
+    	<div class="col-sm-12 col-md-4">
+    		{{ form_row(form.ticketlinktext) }}
+    	</div>
+    </div>
+    {% endif %}
+    </fieldset>
+<fieldset class="step-6">
+    <legend>Eigenschaften & Status</legend>
+    <div class="row">
+        <div class="col-sm-12 col-md-3">
+            {{ form_row(form.optionsMenue, {'label' : 'Termin- und Verkaufsstatus'}) }}
+            <br>&nbsp;<br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <label>Verarbeitung</label><br>
+            {% for radio in form.optionsRadio.children %}
+                <div class="form-check form-check-inline">
+                    {{ form_label(radio) }}
+                    {{ form_widget(radio) }}
+                    {{ form_errors(radio) }}
+                </div>
+            {% endfor %}
+            <br>&nbsp;<br>
+        </div>
+    </div>
+    <legend>Verüffentlichen & archivieren</legend>
+
+    <div class="row">
+    	{% if is_granted('ROLE_DFX_PUB')  %}
+    	<div class="col-sm-12 col-md-3">
+    		{{ form_row(form.pub, {'checked' : true }) }}
+    	</div>
+    	{% endif %}
+    	<div class="col-sm-12 col-md-3">
+    		{{ form_row(form.archiv) }}
+    	</div>
+		{% set metaAll = konf.pubMetaAll == 1 ? true : false %}
+		{% if is_granted('ROLE_DFX_META') %}
+    	<div class="col-sm-12 col-md-3">
+    		{{ form_row(form.pubMeta, {'checked' : metaAll }) }}
+    	</div>
+    	{% elseif metaAll %}
+    	<div style="display:none">
+    		{{ form_widget(form.pubMeta, {'checked' : true }) }}
+    	</div>
+    	{%  endif %}
+    	{% set groupAll = konf.pubGroupAll == 1 ? true : false %}
+    	{% if is_granted('ROLE_DFX_GROUP') %}
+    	<div class="col-sm-12 col-md-3">
+    		{{ form_row(form.pubGroup, {'checked' : groupAll }) }}
+    	</div>
+    	{% elseif groupAll %}
+    	<div style="display:none">
+    		{{ form_widget(form.pubGroup, {'checked' : true }) }}
+    	</div>
+    	{% endif %}
+    </div>
+    </fieldset>
+    <hr>
+    <div class="row">
+		  <div class="col-6">
+		  {{ form_row(form.submit) }}
+		  </div>
+		  <div class="col-6">
+		  {{ form_row(form.reset) }}
+		  </div>
+	</div>
+    {{ form_row(form._token) }}
+    {{ form_end(form, {'render_rest': false}) }}
+    <div><br /><a href="{{ path('admin_termine') }}">Zurück zur Liste ohne zu speichern</a></div>
+
+{% endblock body %}
+            

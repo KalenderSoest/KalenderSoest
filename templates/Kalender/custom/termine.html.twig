@@ -38,7 +38,7 @@
 	{% set rowCount = 0 %}
 	{% if termine|length > 0 %}
 	{% for termin in termine %}
-		{% set titel = termin.titel %}
+		{% set titel = termin.optionsMenue is not null ? termin.titel ~ ' (' ~ optionsMenue[termin.optionsMenue] ~ ')' : termin.titel %}
 		{% set daynr =  termin.datumVon|date('w') %}
 		{% set daynrto =  termin.datum|date('w') %}
 		{% set monthnr =  termin.datumVon|date('n') %}
@@ -89,8 +89,8 @@
 			{% set strLokal = 'Online-Veranstaltung' %}
 			{% set strLokalText = 'Online-Veranstaltung'  %}
 			{% set konferenzlinktext = termin.konferenzlinktext is not null ? termin.konferenzlinktext : termin.konferenzlink %}
-			{% set strStrasse = termin.konferenzlink is not null ? 'Link zur Online-Veranstaltung: <a href = "' ~ termin.konferenzlink  ~ '" title="' ~ konferenzlinktext ~ '" target="_blank">' ~ konferenzlinktext ~ '</a>' : null%}
-			{% set strOrt = NULL %}
+			{% set strOrt = termin.konferenzlink is not null ? 'Link zur Videokonferenz: <a href = "' ~ termin.konferenzlink  ~ '" title="' ~ konferenzlinktext ~ '" target="_blank">' ~ konferenzlinktext ~ '</a>' : null%}
+			{% set strStrasse = NULL %}
 		{% else %}
 			{%  if termin.lokal and konf.showLokal == 1 %}
 				{% set strLokal = termin.idLocation.id is defined ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~ path('location_show', { 'id': termin.idLocation.id } ) ~ '">' ~ termin.idLocation.name ~ '</a>' : termin.lokal %}
@@ -129,14 +129,21 @@
 			{% elseif termin.img != NULL and konf.dfxTplVersion == 'lang'  %}
 				{% set strImgPrev = '<img title="' ~ altText ~ '" alt="' ~ altText ~ '" class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img) | imagine_filter('thumb', vorschau)  ~ '" />' %}
 				{% set strImgPrev = termin.imgtext is not null ? strImgPrev  ~ "<br><em>" ~ termin.imgtext  ~ "</em><br><br>" : strImgPrev %}
-		{% elseif termin.img == NULL and konf.dfxTplVersion != 'lang' and konf.imgListe ==1 %}
+		{% elseif termin.imgSerie != NULL and konf.dfxTplVersion != 'lang' %}
+			{% set strImgPrev = '<img title="' ~ altText ~ '" alt="' ~ altText ~ '" class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+		{% elseif termin.img == NULL and termin.imgSerie == NULL and konf.dfxTplVersion != 'lang' and konf.imgListe ==1 %}
 				{% set strImgPrev = "&nbsp;"  %}
+		{% elseif termin.imgSerie != NULL and konf.dfxTplVersion == 'lang'  %}
+			{% set strImgPrev = '<img title="' ~ altText ~ '" alt="' ~ altText ~ '" class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+			{% set strImgPrev = termin.imgtext is not null ? strImgPrev  ~ "<br><em>" ~ termin.imgtext  ~ "</em><br><br>" : strImgPrev %}
 		{% else %}
 				{% set strImgPrev = NULL %}
 				{% set strImg = NULL %}
 		{%  endif %}
 		{% if termin.img5 != NULL %}
 				{% set strImg5 = '<img class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img5) | imagine_filter('thumb', vorschau)  ~ '" />' %}
+		{% elseif termin.imgSerie5 != NULL %}
+			{% set strImg5 = '<img class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie5) | imagine_filter('thumb', vorschau)  ~ '" />' %}
 		{% else %}
 			{% set strImg5 = NULL %}
 		{%  endif %}
@@ -154,31 +161,42 @@
 			{% set strVeranstalter = NULL %}
 		{% endif %}
 
+		{% set rowKartenInfo = NULL %}
 		{% if termin.mailTyp == 'anmeldung' or termin.mailTyp == 'karten' %}
 			{% if termin.plaetzeGesamt > 0 %}
 					{% if termin.plaetzeAktuell > 0 and konf.showPlatzlimit == 1 %}
-						{% set rowInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~ path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i> (' ~ termin.plaetzeAktuell ~  ')</a>' : '' %}
+						{% set rowKartenInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~ path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i> (' ~ termin.plaetzeAktuell ~  ')</a>' : NULL %}
+						{% set rowInfo = termin.mailTyp == 'karten' ? '' : rowInfo %}
 						{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '" title="' ~ 'anmelden'|trans ~ '"><i class="fa-solid fa-pen-to-square"></i> (' ~ termin.plaetzeAktuell ~  ')</a>' : rowInfo %}
 					{% elseif termin.plaetzeAktuell <= 0 and konf.showPlatzlimit == 1 %}
-						{% set rowInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> (0)' : '' %}
+						{% set rowKartenInfo = termin.mailTyp == 'karten' ? '<i class="fa-solid fa-ticket"></i> (0)' : '' %}
+						{% set rowInfo = termin.mailTyp == 'karten' ? '' : rowInfo %}
 						{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' <i class="fa-solid fa-pen-to-square"></i> (0)' : rowInfo %}
 					{% else %}
-						{% set rowInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i></a>' : '' %}
+						{% set rowKartenInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i></a>' : NULL %}
+						{% set rowInfo = termin.mailTyp == 'karten' ? '' : rowInfo %}
 						{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '" title="' ~ 'anmelden'|trans ~ '"><i class="fa-solid fa-pen-to-square"></i></a>' : rowInfo %}
 					{% endif %}
 			{% else %}
-				{% set rowInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i></a>' : '' %}
+				{% set rowKartenInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i></a>' : NULL %}
+				{% set rowInfo = termin.mailTyp == 'karten' ? '' : rowInfo %}
 				{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '" title="' ~ 'anmelden'|trans ~ '"><i class="fa-solid fa-pen-to-square"></i></a>' : rowInfo %}
 			{% endif %}
 		{% else %}
 			{% set rowInfo ='' %}
 		{% endif %}
 
-		{% set ticketlinktext = termin.ticketlinktext is not null ? termin.ticketlinktext : termin.ticketlink %}
-		{% set rowInfo = termin.ticketlink is not null ? rowInfo  ~ ' ' ~ '<a href="' ~ termin.ticketlink  ~ '" title="' ~ ticketlinktext ~ '" target="_blank"><i class="fa-solid fa-ticket"></i></a>' : rowInfo %}
+		{% set ticketlinktext = termin.ticketlinktext is not null ? termin.ticketlinktext : 'karten'|trans %}
+		{% set rowKartenInfo = termin.ticketlink is not null ? '<a href="' ~ termin.ticketlink  ~ '" title="' ~ ticketlinktext ~ '" target="_blank"><i class="fa-solid fa-ticket"></i></a>' : rowKartenInfo %}
+		{% if termin.optionsMenue is not null and optionsMenue[termin.optionsMenue] == 'ausverkauft' %}
+			{% set rowKartenInfo = NULL %}
+		{% endif %}
+		{% set rowInfo = rowKartenInfo is not null ? rowInfo ~ ' ' ~ rowKartenInfo : rowInfo %}
 		{% set rowInfo = termin.mailTyp == 'kontakt' ? rowInfo  ~ ' ' ~ '<a href="mailto:' ~ termin.mail  ~ '" title="' ~ 'mail senden'|trans ~ '"><i class="fa-solid fa-message"></i></a>' : rowInfo %}
 
-		{% if termin.pdf is not null %}
+		{% if termin.pdfSerie is not null %}
+			{% set rowInfo = rowInfo  ~ ' ' ~ '<a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ termin.pdfSerie ~ '" class="dfx-nojson" target="_blank" title="' ~ 'pdf download'|trans ~ '"><i class="fa-solid fa-download" aria-hidden="true"></i></a>' %}
+		{% elseif termin.pdf is not null %}
 			{% set rowInfo = rowInfo  ~ ' ' ~ '<a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ termin.pdf ~ '" class="dfx-nojson" target="_blank" title="' ~ 'pdf download'|trans ~ '" aria-label="' ~ 'PDF herunterladen'|trans ~ ': ' ~ termin.titel ~ '"><i class="fa-solid fa-download" aria-hidden="true"></i></a>' %}
 		{% endif %}
 
