@@ -2,10 +2,11 @@
 
 namespace App\Service\Presentation;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use App\Service\Support\ParameterBagService;
-use Spipu\Html2Pdf\Exception\Html2PdfException;
-use Spipu\Html2Pdf\Html2Pdf;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 use Twig\Environment;
 
 final class PdfResponseService
@@ -19,29 +20,36 @@ final class PdfResponseService
     public function render(string $html, ?string $filename = null): Response
     {
         try {
-            $options = $this->parameterBagService->get('html2pdf');
+            $options = $this->parameterBagService->get('dompdf');
             if (!is_array($options)) {
                 $options = [];
             }
 
-            $orientation = $options['orientation'] ?? 'P';
+            $projectDir = (string) $this->parameterBagService->get('kernel.project_dir');
+            $orientation = $options['orientation'] ?? 'portrait';
             $format = $options['format'] ?? 'A4';
-            $lang = $options['lang'] ?? 'de';
-            $unicode = $options['unicode'] ?? true;
             $encoding = $options['encoding'] ?? 'UTF-8';
-            $margins = $options['margins'] ?? [10, 10, 10, 10];
             $defaultFont = $options['default_font'] ?? null;
-            $displayMode = $options['display_mode'] ?? 'fullpage';
+            $margins = $options['margins'] ?? [10, 10, 10, 10];
+            $chroot = $options['chroot'] ?? [$projectDir];
+            $isRemoteEnabled = (bool) ($options['remote_enabled'] ?? true);
 
-            $html2pdf = new Html2Pdf($orientation, $format, $lang, $unicode, $encoding, $margins);
-            if ($defaultFont) {
-                $html2pdf->setDefaultFont($defaultFont);
+            $dompdfOptions = new Options();
+            $dompdfOptions->setIsRemoteEnabled($isRemoteEnabled);
+            $dompdfOptions->setIsHtml5ParserEnabled(true);
+            $dompdfOptions->setChroot($chroot);
+
+            if (is_string($defaultFont) && $defaultFont !== '') {
+                $dompdfOptions->setDefaultFont($defaultFont);
             }
 
-            $html2pdf->pdf->SetDisplayMode($displayMode);
-            $html2pdf->writeHTML($html);
+            $dompdf = new Dompdf($dompdfOptions);
+            $dompdf->setPaper($format, $this->normalizeOrientation($orientation));
+            $dompdf->loadHtml($this->applyPageMargins($html, $margins), $encoding);
+            $dompdf->render();
+
             $safeFilename = $filename ?? 'document.pdf';
-            $pdfContent = $html2pdf->output($safeFilename, 'S');
+            $pdfContent = $dompdf->output();
 
             return new Response(
                 $pdfContent,
@@ -51,12 +59,39 @@ final class PdfResponseService
                     'Content-Disposition' => 'inline; filename="' . $safeFilename . '"',
                 ]
             );
-        } catch (Html2PdfException $e) {
+        } catch (Throwable $e) {
             $content = $this->twig->render('pdf/error.html.twig', [
                 'error' => $e->getMessage(),
             ]);
 
             return new Response($content, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private function normalizeOrientation(string $orientation): string
+    {
+        return strtoupper($orientation) === 'L' ? 'landscape' : 'portrait';
+    }
+
+    private function applyPageMargins(string $html, mixed $margins): string
+    {
+        if (!is_array($margins) || count($margins) !== 4) {
+            return $html;
+        }
+
+        [$top, $right, $bottom, $left] = array_map(
+            static fn (mixed $margin): int => max(0, (int) $margin),
+            array_values($margins)
+        );
+
+        $pageStyle = sprintf(
+            '<style>@page { margin: %dmm %dmm %dmm %dmm; }</style>',
+            $top,
+            $right,
+            $bottom,
+            $left
+        );
+
+        return $pageStyle . $html;
     }
 }

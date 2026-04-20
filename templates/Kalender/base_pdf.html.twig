@@ -70,15 +70,16 @@
 	{% else %}
 		{% set strVeranstalter = NULL %}
 	{% endif %}
-    {% set strLogo = konf.imgLogo is not null ? '<img class="pdf-logo" src="'  ~   kernelProjectDir ~ '/web/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo ~ '" />':NULL %}
     {% set strLogoUrl = konf.imgLogo is not null ? '<img class="pdf-logo" src="'  ~ absolute_url(asset('/images/dfx/' ~ konf.id ~ '/' ~ konf.imgLogo)) ~ '" />':NULL %}
+    {% set strLogo = strLogoUrl %}
 	{% set strAdresse = konf.adresse is not null ? konf.adresse|nl2br : NULL %}
 	{% set detailbild = {"thumbnail": {"size": [konf.imgWidth,konf.imgHeight] }} %}
 	{% if termin.img != NULL %}
-		{% set strImg = '<img class="dfx-image dfx-detail-image" src="'  ~ kernelProjectDir ~ '/web/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img  ~ '" />' %}
         {% set strImgUrl = '<img class="dfx-image dfx-detail-image" src="' ~ absolute_url(asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img)) ~ '" />' %}
+		{% set strImg = strImgUrl %}
 	{% else %}
 		{% set strImg = NULL %}
+		{% set strImgUrl = NULL %}
 	{%  endif %}
 	{% set strImg = termin.imgtext is not null ? strImg  ~ '<p class="pdf-bu">' ~ termin.imgtext  ~ '</p>' : strImg %}
     {% set strImgUrl = termin.imgtext is not null ? strImgUrl  ~ '<p class="pdf-bu">' ~ termin.imgtext  ~ '</p>' : strImgUrl %}

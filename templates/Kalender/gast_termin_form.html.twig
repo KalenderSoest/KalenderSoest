@@ -1,6 +1,8 @@
 {% extends 'Kalender/base_gast_termin.html.twig' %}
-{% form_theme form '@Tinymce/form/tinymce_type.html.twig' %}
 {% block dfx_termin_detail %}
+    <link href="https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/css/suneditor.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/suneditor.min.js"></script>
+    <script src="{{ asset('js/suneditor-init.js') }}" type="text/javascript"></script>
 	{% set skins = {'#818181':'gra', '#FF9900':'org','#F05513':'hro','#c63d4e':'dro','#996600':'brn','#5e95cc':'hbl','#4182C2':'dbl', '#84b231':'hgr', '#839636':'olv'} %}
 	{% set radius = {'0':'k','1':'r' } %}
 	{% if konf.dfxFarbeEigen is not null or konf.dfxFarbeRasterEigen is not null or konf.dfxFontSize is not null or konf.dfxFontColor is not null or konf.dfxFontType is not null  %}

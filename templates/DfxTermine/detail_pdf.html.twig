@@ -1,12 +1,14 @@
 {% extends 'Kalender/base_pdf.html.twig' %}
 {% block dfx_termin_detail %}
 <style>
-  page{
+  .pdf-document{
   	font-size: 11pt;
   	color: #333;
+    font-family: DejaVu Sans, sans-serif;
   }
   a{
   	color: #999;
+    text-decoration: none;
   }
   .pdf-terminid{
     font-size: 14pt;
@@ -33,11 +35,8 @@
   
 
 </style>
-<page backbottom="10mm">
-    <page_footer>
-        <div style="text-align: right">Seite [[page_cu]]/[[page_nb]]</div>
-    </page_footer>
-    <h1 class="pdf-titel" style="margin-top:8mm>{{ termin.titel|raw }}</h1>
+<div class="pdf-document">
+    <h1 class="pdf-titel" style="margin-top:8mm">{{ termin.titel|raw }}</h1>
 	{% if termin.subtitel != NULL %}
 		<h3 class="pdf-subtitel blockende"> {{ termin.subtitel }}</h3>
 	{% endif %}
@@ -58,5 +57,5 @@
 	{% if pdfInfo != NULL %}<div class="pdf-pdfinfo blockende"> {{ pdfInfo|raw }}</div>{% endif %}
 	{% if infolink != NULL %}<div class="pdf-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
 	{{ strImg|raw }}
-	</page>
+</div>
 {% endblock %}

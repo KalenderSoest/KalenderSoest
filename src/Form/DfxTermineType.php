@@ -5,7 +5,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Parameter;
 use App\Entity\DfxTermine;
-use EmilePerron\TinymceBundle\Form\Type\TinymceType;
+use App\Form\Type\SuneditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -155,7 +155,7 @@ class DfxTermineType extends AbstractType
             ->add('titel', TextType::class, ['label' => false, 'required' => true, 'attr' => ['placeholder' => 'Titel der Veranstaltung *', 'aria-label' => 'Titel der Veranstaltung']])
             ->add('subtitel', TextType::class, ['label' => false, 'required' => false, 'attr' => ['placeholder' => 'Untertitel der Veranstaltung', 'aria-label' => 'Untertitel der Veranstaltung']])
             ->add('lead', TextareaType::class, ['label' => 'Kurzfassung der Beschreibung', 'required' => false, 'attr' => ['rows'=>'2', 'placeholder' => 'Maximal 200 Zeichen empfohlen']])
-            ->add('beschreibung', TinymceType::class, ['label' => 'Beschreibung der Veranstaltung', 'required' => false])
+            ->add('beschreibung', SuneditorType::class, ['label' => 'Beschreibung der Veranstaltung', 'required' => false])
             ->add('link', UrlType::class, ['label' => false, 'required' => false, 'default_protocol' => 'https', 'attr' => ['placeholder' => 'Link "Mehr Informationen" https://...', 'aria-label' => 'URL zu mehr Informationen mit https://']])
             ->add('linktext', TextType::class, ['label' => false, 'required' => false, 'attr' => ['placeholder' => 'Text für Link "Mehr Informationen"', 'aria-label' => 'Text für Veranstaltungslink']])
             ->add('konferenzlink', UrlType::class, ['label' => false, 'required' => false, 'default_protocol' => 'https', 'attr' => ['placeholder' => 'Link zur Online-Veranstaltung https://...', 'aria-label' => 'URL zur Online-Veranstaltung mit https://']])

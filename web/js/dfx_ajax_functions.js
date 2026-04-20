@@ -22,8 +22,7 @@ var $dfxKalender
 var $dfx;
 var $datefix
 var $getgeodata;
-var dfxTinymceLoading = false;
-var dfxTinymceInited = false;
+var dfxSuneditorLoading = false;
 
 function dfxLoadScriptOnce(src, opts, cb) {
 	if (!src) { if (cb) cb(); return; }
@@ -39,89 +38,32 @@ function dfxLoadScriptOnce(src, opts, cb) {
 	document.head.appendChild(script);
 }
 
-function dfxEnsureTinymce() {
-	var hasEditor = document.querySelector('tinymce-editor');
-	if (!hasEditor) return;
-	if (window.customElements && window.customElements.get('tinymce-editor')) return;
-	if (dfxTinymceLoading) return;
-	dfxTinymceLoading = true;
-	var base = url || window.location.origin || '';
-	var baseOrigin = base;
-	try { baseOrigin = new URL(base, window.location.href).origin; } catch (e) {}
-	var sameOrigin = baseOrigin === window.location.origin;
-	var tinymceMin = base + '/bundles/tinymce/ext/tinymce/tinymce.min.js';
-	var tinymceSrc = base + '/bundles/tinymce/ext/tinymce/tinymce.js';
-	var webcomponentSrc = base + '/bundles/tinymce/ext/tinymce-webcomponent.js';
-	window.tinymceAdditionalConfig = window.tinymceAdditionalConfig || {};
-
-	if (!sameOrigin) {
-		// Fallback for cross-origin: replace <tinymce-editor> with <textarea> and init classic TinyMCE
-		dfxLoadScriptOnce(tinymceMin, {}, function (err) {
-			var loadClassic = function () {
-				dfxLoadScriptOnce(tinymceSrc, {}, function () {
-					dfxInitTinymceClassic();
-					dfxTinymceLoading = false;
-				});
-			};
-			if (err) {
-				loadClassic();
-				return;
-			}
-			dfxInitTinymceClassic();
-			dfxTinymceLoading = false;
-		});
-		return;
-	}
-
-	dfxLoadScriptOnce(tinymceMin, {}, function (err) {
-		if (err) {
-			dfxLoadScriptOnce(tinymceSrc, {}, function () {
-				dfxLoadScriptOnce(webcomponentSrc, { type: 'module' }, function () {
-					dfxTinymceLoading = false;
-				});
-			});
-			return;
-		}
-		dfxLoadScriptOnce(webcomponentSrc, { type: 'module' }, function () {
-			dfxTinymceLoading = false;
-		});
-	});
+function dfxLoadStylesheetOnce(href) {
+	if (!href) return;
+	if (document.querySelector('link[data-dfx-href="' + href + '"]')) return;
+	var link = document.createElement('link');
+	link.rel = 'stylesheet';
+	link.href = href;
+	link.setAttribute('data-dfx-href', href);
+	document.head.appendChild(link);
 }
 
-function dfxInitTinymceClassic() {
-	if (dfxTinymceInited) return;
-	if (!window.tinymce) return;
-	var editors = Array.prototype.slice.call(document.querySelectorAll('tinymce-editor'));
-	if (!editors.length) return;
-	editors.forEach(function (el) {
-		if (el.getAttribute('data-dfx-tinymce') === '1') return;
-		var textarea = document.createElement('textarea');
-		var id = el.getAttribute('id');
-		if (id) textarea.id = id;
-		var name = el.getAttribute('name');
-		if (name) textarea.name = name;
-		var cls = el.getAttribute('class');
-		if (cls) textarea.className = cls;
-		textarea.value = el.textContent || '';
-		el.setAttribute('data-dfx-tinymce', '1');
-		el.parentNode.replaceChild(textarea, el);
+function dfxEnsureSuneditor() {
+	var hasEditor = document.querySelector('textarea[data-suneditor="1"]');
+	if (!hasEditor) return;
+	if (dfxSuneditorLoading) return;
+	dfxSuneditorLoading = true;
 
-		var cfg = window.tinymceAdditionalConfig ? Object.assign({}, window.tinymceAdditionalConfig) : {};
-		var plugins = textarea.getAttribute('plugins') || el.getAttribute('plugins');
-		var menubar = textarea.getAttribute('menubar') || el.getAttribute('menubar');
-		var toolbar = textarea.getAttribute('toolbar') || el.getAttribute('toolbar');
-		var height = textarea.getAttribute('height') || el.getAttribute('height');
-		var skin = textarea.getAttribute('skin') || el.getAttribute('skin');
+	var cssHref = 'https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/css/suneditor.min.css';
+	var scriptHref = 'https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/suneditor.min.js';
+	var initHref = (url || '') + '/js/suneditor-init.js';
 
-		if (plugins) cfg.plugins = plugins;
-		if (typeof menubar !== 'undefined' && menubar !== null) cfg.menubar = menubar === 'true';
-		if (toolbar) cfg.toolbar = toolbar;
-		if (height) cfg.height = height;
-		if (skin) cfg.skin = skin;
-		cfg.target = textarea;
-		window.tinymce.init(cfg);
+	dfxLoadStylesheetOnce(cssHref);
+	dfxLoadScriptOnce(scriptHref, {}, function () {
+		dfxLoadScriptOnce(initHref, {}, function () {
+			dfxSuneditorLoading = false;
+		});
 	});
-	dfxTinymceInited = true;
 }
 
 function dfxCancelFade(el) {
@@ -1266,7 +1208,7 @@ function dfxContent(data,callback) {
 	$dfxWrapper = document.getElementById("dfx_wrapper");
 	$dfxDetailWrapper = document.getElementById("dfx_detail_wrapper");
 	$dfxKonf = document.getElementById("dfx_konf");
-	dfxEnsureTinymce();
+	dfxEnsureSuneditor();
 	document.querySelectorAll(".dfx-nav").forEach(function (el) { ensureVisible(el); });
 	if (scriptloaded === false) {
 		var konfEl = document.getElementById('dfx_konf');
@@ -1328,7 +1270,7 @@ function dfxDetail(data) {
 	$dfxDetailWrapper = document.getElementById("dfx_detail_wrapper");
 	$dfxKonf = document.getElementById("dfx_konf");
 	document.querySelectorAll(".dfx-nav").forEach(function (el) { ensureVisible(el); });
-	dfxEnsureTinymce();
+	dfxEnsureSuneditor();
 	dfxPostRender();
 	if((!document.querySelector('.dfx-map-open') || document.querySelector('.dfx-map-open-self')) && $dfxDetailWrapper && $dfxDetailWrapper.getAttribute('data-bg') > 0){
             showKarte('', $dfxDetailWrapper.getAttribute('data-bg'), $dfxDetailWrapper.getAttribute('data-lg'), $dfxDetailWrapper.getAttribute('data-lokal'));

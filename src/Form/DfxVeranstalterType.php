@@ -2,11 +2,11 @@
 
 namespace App\Form;
 
+use App\Form\Type\SuneditorType;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Parameter;
 use App\Entity\DfxVeranstalter;
-use EmilePerron\TinymceBundle\Form\Type\TinymceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -43,7 +43,7 @@ class DfxVeranstalterType extends AbstractType
             ->add('www', UrlType::class, ['label' => false,'required' => false, 'default_protocol' => 'https', 'attr' => ['placeholder' => 'Link zur Homepage https://...', 'aria-label'=>'Link zur Homepage']])
             ->add('email', EmailType::class, ['label' => false,'required' => false, 'attr' => ['placeholder' => 'E-Mail-Adresse', 'aria-label'=>'E-Mail-Adresse']])
             ->add('ansprech', TextType::class, ['label' => false, 'required' => false, 'attr' => ['placeholder' => 'Name Ansprechpartner', 'aria-label'=>'Name Ansprechpartner']])
-            ->add('zusatz', TinymceType::class, ['label' => 'Beschreibung des Veranstalters', 'required' => false])
+            ->add('zusatz', SuneditorType::class, ['label' => 'Beschreibung des Veranstalters', 'required' => false])
             ->add('imageFile', FileType::class, ['mapped' => false, 'label' => 'Foto/Grafik - nur jpg, png und gif erlaubt', 'required' => false, 'attr' => ['accept' => 'image/*','noFormControl' => true]])
             ->add('imageFile2', FileType::class, ['mapped' => false, 'label' => 'Foto/Grafik - nur jpg, png und gif erlaubt', 'required' => false, 'attr' => ['accept' => 'image/*','noFormControl' => true]])
             ->add('imageFile3', FileType::class, ['mapped' => false, 'label' => 'Foto/Grafik - nur jpg, png und gif erlaubt', 'required' => false, 'attr' => ['accept' => 'image/*','noFormControl' => true]])

@@ -1,12 +1,14 @@
 {% extends 'News/base_pdf.html.twig' %}
 {% block dfx_news_detail %}
 <style>
-  page{
+  .pdf-document{
   	font-size: 11pt;
   	color: #333;
+    font-family: DejaVu Sans, sans-serif;
   }
   a{
   	color: #999;
+    text-decoration: none;
   }
   .pdf-terminid{
     font-size: 14pt;
@@ -32,18 +34,15 @@
   }
 
 </style>
-<page backbottom="10mm">
-    <page_footer>
-        <div style="text-align: right">Seite [[page_cu]]/[[page_nb]]</div>
-    </page_footer>
-    <h1 class="pdf-titel" style="margin-top:8mm>{{ news.titel|raw }}</h1>
-	{% if news.subtitel != NULL %}
-		<h3 class="pdf-subtitel blockende"> {{ news.subtitel }}</h3>
+<div class="pdf-document">
+    <h1 class="pdf-titel" style="margin-top:8mm">{{ artikel.titel|raw }}</h1>
+	{% if artikel.subtitel != NULL %}
+		<h3 class="pdf-subtitel blockende"> {{ artikel.subtitel }}</h3>
 	{% endif %}
 	<div class="pdf-datumszeile">{% if strDate !='' %}<span class="pdf-datum">{{ strDate }}</span>{% endif %}</div>
 	{% if strKurztext != NULL %}<div class="pdf-lead blockende">{{ strKurztext|raw }}</div> {% endif %}
     {% if strText != NULL %}<div class="pdf-beschreibung blockende">{{ strText|raw }}<br></div> {% endif %}
     {% if infolink != NULL %}<div class="pdf-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
 	{{ strImg|raw }}
-	</page>
+</div>
 {% endblock %}

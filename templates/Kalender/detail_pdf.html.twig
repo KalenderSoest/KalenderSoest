@@ -1,12 +1,14 @@
 {% extends 'Kalender/base_pdf.html.twig' %}
 {% block dfx_termin_detail %}
 <style>
-  page{
+  .pdf-document{
   	font-size: 11pt;
   	color: #333;
+    font-family: DejaVu Sans, sans-serif;
   }
   a{
   	color: #999;
+    text-decoration: none;
   }
 
 
@@ -37,7 +39,7 @@
       max-width: 100%;
   }
 </style>
-<page backbottom="10mm">
+<div class="pdf-document">
     <table style="width: 100%">
     	<tr>
     	<td class="pdf-logo">{{ strLogo|raw }}</td>
@@ -66,5 +68,5 @@
 	{% if pdfInfo != NULL %}<div class="pdf-pdfinfo blockende"> {{ pdfInfo|raw }}</div>{% endif %}
 	{% if infolink != NULL %}<div class="pdf-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
 	{{ strImg|raw }}
-	</page>
+</div>
 {% endblock %}

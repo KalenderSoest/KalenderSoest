@@ -1,12 +1,14 @@
 {% extends 'News/base_pdf.html.twig' %}
 {% block dfx_news_detail %}
 <style>
-  page{
+  .pdf-document{
   	font-size: 11pt;
   	color: #333;
+    font-family: DejaVu Sans, sans-serif;
   }
   a{
   	color: #999;
+    text-decoration: none;
   }
   .pdf-subtitel, .pdf-lead {
   	font-weight: bold;
@@ -29,7 +31,7 @@
       max-width: 100%;
   }
 </style>
-<page backbottom="10mm">
+<div class="pdf-document">
     <table style="width: 100%">
     	<tr>
     	<td class="pdf-logo">{{ strLogo|raw }}</td>
@@ -47,5 +49,5 @@
 	{% if infolink != NULL %}<div class="pdf-infolink blockende"> {{ infolink|raw }}</div><br>{% endif %}
     {% if strDate !='' %}<div class="pdf-datumszeile blockende">{{ strDate }}</div>{% endif %}
     {{ strImg|raw }}
-	</page>
+</div>
 {% endblock %}

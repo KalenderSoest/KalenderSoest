@@ -15,6 +15,7 @@
     <link href="{{ asset('css/datefix_fe.css') }}" rel="stylesheet">
     <link href="{{ asset('fontawesome/css/all.min.css') }}" rel="stylesheet" >
     <link href="{{ asset('fontawesome/css/v4-shims.min.css') }}" rel="stylesheet" >
+    <link href="https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/css/suneditor.min.css" rel="stylesheet">
     <style>
         .dfx-nav .navbar-brand img{
             margin-top: -12px;
@@ -186,12 +187,6 @@
     <script src="{{ asset('js/dfx_functions.js') }}"  type="text/javascript"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}" type="text/javascript"></script>
 
-    <script type="text/javascript">
-        window.tinymceAdditionalConfig = window.tinymceAdditionalConfig || {};
-        window.tinymceAdditionalConfig.paste_as_text = true;
-    </script>
-
-
     {% block footer %}{% endblock %}
     <script type="text/javascript">
 	    {% block javascript_var %}{% endblock %}
@@ -211,6 +206,8 @@
 
 	    {% block javascript_functions %}{% endblock %}
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/suneditor.min.js"></script>
+    <script src="{{ asset('js/suneditor-init.js') }}" type="text/javascript"></script>
 
     <!-- Script to Activate the Carousel -->
 
@@ -218,7 +215,6 @@
 </body>
 
 </html>
-
 
 
 

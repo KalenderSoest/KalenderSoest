@@ -2,8 +2,6 @@
 {% block title 'Termin hinzufügen' %}
 {% block pageheader 'Termin hinzufügen' %}
 {% block subheader ''  %}
-{% form_theme form '@Tinymce/form/tinymce_type.html.twig' %}
-
 {% block footer %}
     {% if konf.useMap == 1 %}
     	<link href="{{ asset('js/leaflet/leaflet.css') }}" rel="stylesheet">
@@ -662,6 +660,5 @@ if (window.bootstrap && window.bootstrap.Popover) {
         </div>
     </div>
 {% endblock body %}
-
 
 

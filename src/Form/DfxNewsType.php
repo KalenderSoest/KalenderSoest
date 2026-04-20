@@ -2,7 +2,7 @@
 namespace App\Form;
 
 use App\Entity\DfxNews;
-use EmilePerron\TinymceBundle\Form\Type\TinymceType;
+use App\Form\Type\SuneditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -58,7 +58,7 @@ class DfxNewsType extends AbstractType
             ->add('kurztitel', TextType::class, ['label' => 'Kurztitel für Menüeintrag von Seiten', 'required' => false, 'attr' => ['placeholder' => 'Kurztitel/Menüeintrag']])
             ->add('subtitel', TextType::class, ['label' => false, 'required' => false, 'attr' => ['placeholder' => 'Untertitel des Artikels']])
             ->add('kurztext', TextareaType::class, ['label' => 'Kurzfassung Artikels', 'required' => false, 'attr' => ['rows'=>'2', 'placeholder' => 'Maximal 200 Zeichen empfohlen']])
-            ->add('beschreibung', TinymceType::class, ['required' => false])
+            ->add('beschreibung', SuneditorType::class, ['required' => false])
             ->add('link', UrlType::class, ['label' => false, 'required' => false, 'default_protocol' => 'https', 'attr' => ['placeholder' => 'Link "Mehr Informationen" https://...']])
             ->add('linktext', TextType::class, ['label' => false, 'required' => false, 'attr' => ['placeholder' => 'Text für Link "Mehr Informationen"']])
             ->add('imageFile', FileType::class, ['mapped' => false, 'label' => 'Foto/Grafik - nur jpg, png und gif erlaubt, maximal 2 MB', 'required' => false, 'attr' => ['accept' => 'image/*']])
