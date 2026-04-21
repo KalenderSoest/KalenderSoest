@@ -30,6 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_SUPER_ADMIN')]
 class SuperAdminController extends AbstractController
 {
+    private const CSS_BATCH_LIMIT = 10;
 
     public function __construct(private readonly ConsoleCommandService $consoleCommandService, private readonly OwnCssBuilderService $ownCssBuilderService, private readonly NightlyMaintenanceService $nightlyMaintenanceService, private readonly EntityManagerInterface $em)
     {
@@ -199,8 +200,10 @@ class SuperAdminController extends AbstractController
      */
     #[Template("SuperAdmin/generatecss.html.twig")]
     #[Route(path: '/admin/superadmin/writecss', name: 'superadmin_writecss', methods: ['GET'])]
-    public function writecss(): array{
+    public function writecss(Request $request): array{
         $cfgSkins =["#6c757d"=>"gra","#FF9900"=>"org","#F05513"=>"hro","#c63d4e"=>"dro","#996600"=>"brn","#007bff"=>"hbl","#4182C2"=>"dbl","#84b231"=>"hgr","#839636"=>"olv"];
+        $offset = max(0, $request->query->getInt('offset', 0));
+        $limit = self::CSS_BATCH_LIMIT;
         $msg = '<h3>Schreibe SCSS-Dateien mit Variablen für Farbe und Ecken</h3>';
         $scssPath = $this->getParameter('kernel.project_dir') . '/web/scss/';
         $cssPath = $this->getParameter('kernel.project_dir') . '/web/css/';
@@ -208,41 +211,72 @@ class SuperAdminController extends AbstractController
         $compiler = new ScssCompiler();
         $compiler->setImportPaths([$scssPath, $scssPath . 'scss_org/'] );
         $compiler->setOutputStyle(OutputStyle::COMPRESSED);
-        $css = $compiler->compileFile($scssPath . 'scss_org/bootstrap.scss')->getCss();
-        file_put_contents($cssPath . 'bootstrap.css', $css);
+        $arVar = [
+            '#dfx-color#',
+            '#dfx-border-radius#',
+            '#dfx-border-radius-large#',
+            '#dfx-border-radius-small#',
+        ];
+        $tasks = [
+            [
+                'source' => $scssPath . 'scss_org/bootstrap.scss',
+                'target' => $cssPath . 'bootstrap.css',
+                'label' => 'bootstrap.css',
+            ],
+        ];
+
         foreach ($cfgSkins AS $farbe => $kuerzel) {
-            $arVal = [$farbe, '3px', '4px', '2px'];
-            $arVar = [
-                '#dfx-color#',
-                '#dfx-border-radius#',
-                '#dfx-border-radius-large#',
-                '#dfx-border-radius-small#',
+            $tasks[] = [
+                'farbe' => $farbe,
+                'kuerzel' => $kuerzel,
+                'radius' => ['3px', '4px', '2px'],
+                'scss' => $scssPath . 'datefix.' . $kuerzel . '-r.scss',
+                'source' => $scssPath . 'datefix.' . $kuerzel . '-r.scss',
+                'target' => $cssPath . 'datefix.' . $kuerzel . '-r.css',
+                'label' => 'datefix.' . $kuerzel . '-r.css',
             ];
-            $skelR = str_replace($arVar, $arVal, $skel);
-            file_put_contents($scssPath . 'datefix.' . $kuerzel . '-r.scss', $skelR);
-            $msg .= 'Farbe'.$farbe.' / Datei '.$scssPath . 'datefix.'.$kuerzel.'-r.scss geschrieben<br />';
-
-            $arVal = [$farbe,'0px','0px','0px'];
-            $skelK = str_replace($arVar, $arVal, $skel);
-            file_put_contents($scssPath . 'datefix.' . $kuerzel . '-k.scss', $skelK);
-            $msg .= 'Farbe'.$farbe.' / Datei '.$scssPath . 'datefix.'.$kuerzel.'-k.scss geschrieben<br />';
-
-
+            $tasks[] = [
+                'farbe' => $farbe,
+                'kuerzel' => $kuerzel,
+                'radius' => ['0px', '0px', '0px'],
+                'scss' => $scssPath . 'datefix.' . $kuerzel . '-k.scss',
+                'source' => $scssPath . 'datefix.' . $kuerzel . '-k.scss',
+                'target' => $cssPath . 'datefix.' . $kuerzel . '-k.css',
+                'label' => 'datefix.' . $kuerzel . '-k.css',
+            ];
         }
 
-        foreach ($cfgSkins AS $kuerzel){
+        $total = count($tasks);
+        $batch = array_slice($tasks, $offset, $limit);
+        if ($batch === []) {
+            $msg .= 'Keine CSS-Dateien in diesem Block.<br />';
+        } else {
+            $msg .= sprintf('Block %d bis %d von %d CSS-Dateien.<br />', $offset + 1, min($offset + count($batch), $total), $total);
+        }
+
+        foreach ($batch as $task) {
             try {
-                $cssR = $compiler->compileFile($scssPath . 'datefix.' . $kuerzel . '-r.scss')->getCss();
-                $cssK = $compiler->compileFile($scssPath . 'datefix.' . $kuerzel . '-k.scss')->getCss();
-                file_put_contents($cssPath . 'datefix.' . $kuerzel . '-r.css', $cssR);
-                $msg .= 'Datei bootstrap.' . $kuerzel . '-r.css geschrieben<br />';
-                file_put_contents($cssPath . 'datefix.' . $kuerzel . '-k.css', $cssK);
-                $msg .= 'Datei bootstrap.' . $kuerzel . '-k.css geschrieben<br />';
+                if (isset($task['scss'])) {
+                    $skelContent = str_replace($arVar, array_merge([$task['farbe']], $task['radius']), $skel);
+                    file_put_contents($task['scss'], $skelContent);
+                    $msg .= 'Farbe'.$task['farbe'].' / Datei '.$task['scss'].' geschrieben<br />';
+                }
+
+                $css = $compiler->compileFile($task['source'])->getCss();
+                file_put_contents($task['target'], $css);
+                $msg .= 'Datei ' . $task['label'] . ' geschrieben<br />';
             } catch (SassException $e) {
                 // Fehler-Handling
-                $msg .= 'Fehler beim Schreiben der CSS-Datei für Farbschema: ' . $kuerzel.'. SCSS compile error: ' . $e->getMessage();
-                error_log('Fehler beim Schreiben der CSS-Datei für Farbschema: ' . $kuerzel.'. SCSS compile error: ' . $e->getMessage());
+                $msg .= 'Fehler beim Schreiben der CSS-Datei ' . $task['label'] . '. SCSS compile error: ' . $e->getMessage();
+                error_log('Fehler beim Schreiben der CSS-Datei ' . $task['label'] . '. SCSS compile error: ' . $e->getMessage());
             }
+        }
+
+        $nextOffset = $offset + count($batch);
+        if ($nextOffset < $total) {
+            $msg .= '<p><a href="' . $this->generateUrl('superadmin_writecss', ['offset' => $nextOffset]) . '">Nächsten Block schreiben</a></p>';
+        } else {
+            $msg .= '<p>Alle CSS-Dateien wurden geschrieben.</p>';
         }
         return [
             'msg' => $msg
@@ -269,16 +303,39 @@ class SuperAdminController extends AbstractController
 
    #[Template("SuperAdmin/generateowncss.html.twig")]
    #[Route(path: '/admin/superadmin/writeowncss', name: 'superadmin_writeowncss')]
-   public function ownCss(): array{
+   public function ownCss(Request $request): array{
    	    $msg = '<h3>Schreibe CSS-Dateien für Accounts mit eigenen CSS-Dateien </h3>';
+        $offset = max(0, $request->query->getInt('offset', 0));
+        $limit = self::CSS_BATCH_LIMIT;
    		$repository = $this->em->getRepository(DfxKonf::class);
    		$query = $repository->createQueryBuilder('k')
    		->select(['k']);
    	    $query ->where('k.dfxFarbeEigen IS NOT NULL OR k.dfxFarbeRaster IS NOT NULL OR k.dfxFarbeRasterEigen IS NOT NULL OR k.dfxFontSize IS NOT NULL OR k.dfxFontColor IS NOT NULL');
-   	    $entities = $query->getQuery()->getResult();
+        $total = (int) (clone $query)
+            ->select('COUNT(k.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $query
+            ->orderBy('k.id', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+        $entities = $query->getQuery()->getResult();
+
+        if ($entities === []) {
+            $msg .= 'Keine Accounts in diesem Block.<br />';
+        } else {
+            $msg .= sprintf('Block %d bis %d von %d Accounts.<br />', $offset + 1, min($offset + count($entities), $total), $total);
+        }
    		foreach ($entities AS $entity){
    	    	$msg .= $this->ownCssBuilderService->writeForKonf($entity);
    		}
+
+        $nextOffset = $offset + count($entities);
+        if ($nextOffset < $total) {
+            $msg .= '<p><a href="' . $this->generateUrl('superadmin_writeowncss', ['offset' => $nextOffset]) . '">Nächsten Block schreiben</a></p>';
+        } else {
+            $msg .= '<p>Alle Account-CSS-Dateien wurden geschrieben.</p>';
+        }
 
    		return [
    				'msg' => $msg

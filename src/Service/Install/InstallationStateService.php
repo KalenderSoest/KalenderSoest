@@ -61,7 +61,7 @@ final class InstallationStateService
             return true;
         }
 
-        return trim($this->installationExecutionService->runSchemaDiff()) !== '';
+        return $this->installationExecutionService->hasPendingSchemaChanges();
     }
 
     /**

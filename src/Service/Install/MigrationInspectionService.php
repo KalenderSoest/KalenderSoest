@@ -55,7 +55,7 @@ final class MigrationInspectionService
             'files' => $annotatedFiles,
             'pending_files' => $pendingFiles,
             'latest_pending' => $latestPending,
-            'schema_diff_pending' => trim($this->installationExecutionService->runSchemaDiff()) !== '',
+            'schema_diff_pending' => $this->installationExecutionService->hasPendingSchemaChanges(),
         ];
     }
 

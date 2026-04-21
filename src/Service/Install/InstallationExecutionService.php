@@ -4,7 +4,11 @@ namespace App\Service\Install;
 
 use App\Service\Calendar\TerminLegacyMediaMigrationService;
 use App\Service\Support\ConsoleCommandService;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Throwable;
 
 final class InstallationExecutionService
 {
@@ -17,12 +21,64 @@ final class InstallationExecutionService
         private readonly LegacyPasswordAuditService $legacyPasswordAuditService,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
+        private readonly ?ManagerRegistry $managerRegistry = null,
     ) {
     }
 
     public function runSchemaDiff(): string
     {
-        return $this->consoleCommandService->run([
+        $sql = $this->getPendingSchemaSql();
+        if ($sql !== []) {
+            return implode(";\n", $sql) . ';';
+        }
+
+        return $this->runSchemaDiffCommand();
+    }
+
+    public function hasPendingSchemaChanges(): bool
+    {
+        $sql = $this->getPendingSchemaSql();
+        if ($sql !== []) {
+            return true;
+        }
+
+        return trim($this->runSchemaDiffCommand()) !== '';
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getPendingSchemaSql(): array
+    {
+        if ($this->managerRegistry === null) {
+            return [];
+        }
+
+        try {
+            $entityManager = $this->managerRegistry->getManager();
+            if (!$entityManager instanceof EntityManagerInterface) {
+                return [];
+            }
+
+            $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
+            if ($metadata === []) {
+                return [];
+            }
+
+            $sql = (new SchemaTool($entityManager))->getUpdateSchemaSql($metadata);
+
+            return array_values(array_filter(
+                array_map(static fn (mixed $statement): string => trim((string) $statement), $sql),
+                static fn (string $statement): bool => $statement !== ''
+            ));
+        } catch (Throwable) {
+            return [];
+        }
+    }
+
+    private function runSchemaDiffCommand(): string
+    {
+        return $this->runConsoleCommand([
             'command' => 'doctrine:schema:update',
             '--dump-sql' => true,
             '--no-interaction' => true,
@@ -31,7 +87,7 @@ final class InstallationExecutionService
 
     public function runSchemaMigrate(): string
     {
-        return $this->consoleCommandService->run([
+        return $this->runConsoleCommand([
             'command' => 'doctrine:schema:update',
             '--force' => true,
             '--no-interaction' => true,
@@ -40,7 +96,7 @@ final class InstallationExecutionService
 
     public function runUpdateMigrate(): string
     {
-        return $this->consoleCommandService->run([
+        return $this->runConsoleCommand([
             'command' => 'doctrine:schema:update',
             '--force' => true,
             '--no-interaction' => true,
@@ -53,7 +109,7 @@ final class InstallationExecutionService
     public function generateMigrationDiff(): array
     {
         $before = glob($this->projectDir . '/migrations/Version*.php') ?: [];
-        $output = $this->consoleCommandService->run([
+        $output = $this->runConsoleCommand([
             'command' => 'doctrine:migrations:diff',
             '--no-interaction' => true,
         ]);
@@ -72,7 +128,7 @@ final class InstallationExecutionService
 
     public function migratePendingMigrations(): string
     {
-        return $this->consoleCommandService->run([
+        return $this->runConsoleCommand([
             'command' => 'doctrine:migrations:migrate',
             '--no-interaction' => true,
         ]);
@@ -80,7 +136,71 @@ final class InstallationExecutionService
 
     public function clearProdCache(): string
     {
-        return $this->consoleCommandService->run(['command' => 'cache:clear', '--env' => 'prod']);
+        return $this->runConsoleCommand(['command' => 'cache:clear', '--env' => 'prod']);
+    }
+
+    /**
+     * @param array<string, bool|string> $input
+     */
+    private function runConsoleCommand(array $input): string
+    {
+        $env = $this->environmentConfigReader->read();
+        $overrides = array_filter([
+            'APP_ENV' => $env['app_env'] ?? null,
+            'APP_SECRET' => $env['app_secret'] ?? null,
+            'DATABASE_URL' => $env['database_url'] ?? null,
+            'MAILER_DSN' => $env['mailer_dsn'] ?? null,
+        ], static fn (mixed $value): bool => is_string($value) && $value !== '');
+
+        return $this->withEnvironmentOverrides(
+            $overrides,
+            fn (): string => $this->consoleCommandService->run($input)
+        );
+    }
+
+    /**
+     * @param array<string, string> $overrides
+     * @param callable():string $callback
+     */
+    private function withEnvironmentOverrides(array $overrides, callable $callback): string
+    {
+        $previous = [];
+
+        foreach ($overrides as $key => $value) {
+            $previous[$key] = [
+                'server' => $_SERVER[$key] ?? null,
+                'env' => $_ENV[$key] ?? null,
+                'putenv' => getenv($key) === false ? null : (string) getenv($key),
+            ];
+            $_SERVER[$key] = $_ENV[$key] = $value;
+            putenv($key . '=' . $value);
+        }
+
+        try {
+            return $callback();
+        } finally {
+            foreach ($overrides as $key => $_value) {
+                $snapshot = $previous[$key] ?? ['server' => null, 'env' => null, 'putenv' => null];
+
+                if ($snapshot['server'] === null) {
+                    unset($_SERVER[$key]);
+                } else {
+                    $_SERVER[$key] = (string) $snapshot['server'];
+                }
+
+                if ($snapshot['env'] === null) {
+                    unset($_ENV[$key]);
+                } else {
+                    $_ENV[$key] = (string) $snapshot['env'];
+                }
+
+                if ($snapshot['putenv'] === null) {
+                    putenv($key);
+                } else {
+                    putenv($key . '=' . $snapshot['putenv']);
+                }
+            }
+        }
     }
 
     /**
