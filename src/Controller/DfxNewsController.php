@@ -423,6 +423,7 @@ class DfxNewsController extends AbstractController
 	        $this->em->remove($entity);
 	        $this->em->flush();
         }else{
+            $this->sharedMediaDeletionService->deleteNewsFilesByCode((string) $code, $user->getDatefix()->getId());
         	 $this->em->createQueryBuilder()
         	 ->delete(DfxNews::class, 'n')
         	 ->where('n.code = :code')

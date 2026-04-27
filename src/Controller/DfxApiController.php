@@ -10,6 +10,8 @@ use App\Service\Calendar\CalendarPublicationQueryHelper;
 use App\Service\Calendar\CalendarScopeResolver;
 use App\Service\Calendar\KalenderFilterData;
 use App\Service\Calendar\KalenderFilterQueryApplier;
+use App\Service\Calendar\NewsFrontendFilterData;
+use App\Service\Calendar\NewsFrontendQueryFactory;
 use App\Service\Api\ApiPayloadRendererResolver;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,6 +29,7 @@ class DfxApiController extends AbstractController
         private readonly CalendarPublicationQueryHelper $calendarPublicationQueryHelper,
         private readonly CalendarScopeResolver $calendarScopeResolver,
         private readonly KalenderFilterQueryApplier $kalenderFilterQueryApplier,
+        private readonly NewsFrontendQueryFactory $newsFrontendQueryFactory,
         private readonly ApiPayloadRendererResolver $apiPayloadRendererResolver,
         private readonly EntityManagerInterface $em,
     ) {
@@ -115,25 +118,8 @@ class DfxApiController extends AbstractController
 
         $this->incrementApiCounter($konf);
 
-        $calendarScope = $this->calendarScopeResolver->resolveReadScope($konf);
-        $arParams = [];
-        $query = $this->em->getRepository(DfxNews::class)->createQueryBuilder('n')
-            ->select(['n']);
-
-        $query->where('n.newsTyp = :newstyp');
-        $arParams['newstyp'] = 'beitrag';
-
-        if ($calendarScope->restrictsResults()) {
-            $query->andWhere('n.datefix IN (:kids)');
-            $arParams['kids'] = $calendarScope->ids();
-        }
-
-        $this->calendarPublicationQueryHelper->applyPublishedVisibility($query, 'n', $konf);
-
-        foreach ($arParams as $name => $value) {
-            $query->setParameter($name, $value);
-        }
-
+        $queryConfig = $this->newsFrontendQueryFactory->build($konf, $this->buildNewsFilterData($request));
+        $query = $queryConfig['query'];
         $query->orderBy('n.datumVon', 'DESC');
         $this->applyApiPagination($query, $request, $konf);
 
@@ -141,6 +127,36 @@ class DfxApiController extends AbstractController
         $entities = $query->getQuery()->getResult();
 
         return new JsonResponse($this->apiPayloadRendererResolver->forKonf($konf)->renderNewsList($entities, $konf));
+    }
+
+    private function buildNewsFilterData(Request $request): NewsFrontendFilterData
+    {
+        $formValues = $request->query->all('form');
+        if (!is_array($formValues)) {
+            $formValues = [];
+        }
+
+        $value = static function (string $name) use ($request, $formValues): mixed {
+            $direct = $request->query->get($name);
+            if ($direct !== null) {
+                return $direct;
+            }
+
+            return $formValues[$name] ?? null;
+        };
+
+        return new NewsFrontendFilterData(
+            $this->normalizeString($value('rubrik')),
+            $this->normalizeString($value('zielgruppe')),
+            $this->toBool($value('filter1')),
+            $this->toBool($value('filter2')),
+            $this->toBool($value('filter3')),
+            $this->toBool($value('filter4')),
+            $this->toBool($value('filter5')),
+            $this->normalizeString($value('suche')),
+            $this->toDate($value('datum_von')),
+            $this->toDate($value('datum_bis')),
+        );
     }
 
     #[Route(path: '/api/news/detail/{nfxid}', name: 'api_news_detail', methods: ['GET'])]

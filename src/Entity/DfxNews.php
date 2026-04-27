@@ -73,6 +73,13 @@ class DfxNews
         return $this->datumBis;
     }
 
+    public function setDatumBis(?DateTime $datumBis): static
+    {
+        $this->datumBis = $datumBis;
+
+        return $this;
+    }
+
     public function setDatumVon(?DateTime $datumVon): static
     {
         $this->datumVon = $datumVon;

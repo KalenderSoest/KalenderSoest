@@ -468,6 +468,7 @@ class DfxTermineController extends AbstractController
         $orgDatum = $entity->getDatum();
         $orgDatumVon = $entity->getdatumVon();
         $orgDatumSerie = $entity->getDatumSerie();
+        $orgMediaState = $this->adminTerminSeriesMediaService->captureMediaState($entity);
 
         $calendarIds = $this->calendarScopeResolver->resolveAssignmentScope($konf)->ids();
 
@@ -492,6 +493,7 @@ class DfxTermineController extends AbstractController
                     $orgDatumVon,
                     $orgDatumSerie,
                 );
+                $this->adminMediaFileService->applyUploadedFiles($request, 'termine', $entity, $kid);
                 $entity->setDatum($orgDatum);
                 $entity->setDatumVon($orgDatumVon);
                 $entity->setDatumSerie($orgDatumSerie);
@@ -499,6 +501,7 @@ class DfxTermineController extends AbstractController
                     $entity,
                     fn (DfxTermine $termin, DfxTermine $source): null => $this->terminWriteWorkflowService->copyAdminSeriesFields($termin, $source, $now)
                 );
+                $this->adminTerminSeriesMediaService->cleanupReplacedSeriesMedia($orgMediaState, $entity, $kid);
             }
 
             $this->adminTerminNotificationService->notifyWrite(
@@ -660,6 +663,7 @@ class DfxTermineController extends AbstractController
 	        $this->em->remove($entity);
 	        $this->em->flush();
         }else{
+            $this->sharedMediaDeletionService->deleteTerminFilesByCode((string) $code, $user->getDatefix()->getId());
         	 $this->em->createQueryBuilder()
         	 ->delete(DfxTermine::class, 't')
         	 ->where('t.code = :code')
@@ -776,6 +780,7 @@ class DfxTermineController extends AbstractController
                 $this->adminPublicationWriteService->bulkSetFieldByCode(DfxTermine::class, 'pubGroup', $code, true);
                 return;
             case 'delete':
+                $this->sharedMediaDeletionService->deleteTerminFilesByCode($code, $konf->getId());
                 $this->em->createQueryBuilder()
                     ->delete(DfxTermine::class, 't')
                     ->where('t.code = :code')

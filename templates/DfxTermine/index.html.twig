@@ -140,15 +140,15 @@
                 {% if konf.isMeta == true or is_granted('ROLE_DFX_META') %}
                 	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}"
 						data-state="{{ termin.pubMeta ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubMeta == 1 %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif %} 
                 {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
                 	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}"
 						data-state="{{ termin.pubGroup ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif%}
 				<td><a href="{{ path('termine_edit', { 'id': termin.id }) }}" title="Datensatz {{ termin.titel }} bearbeiten"><i class="fa-solid fa-pen-to-square"> </i></a></td>
@@ -231,15 +231,15 @@
 		{% if is_granted('ROLE_DFX_META') %}
                 	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}"
 						data-state="{{ termin.pubMeta ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubMeta == 1 %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif %} 
                 {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
                 	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}"
 						data-state="{{ termin.pubGroup ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif%}
 				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
@@ -319,8 +319,8 @@
                 {% if is_granted('ROLE_DFX_META') %}
                 	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}"
 						data-state="{{ termin.pubMeta ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubmeta', { 'id': termin.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubmeta', { 'id': termin.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubMeta == 1 %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif %}
                
@@ -399,8 +399,8 @@
                 {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
                 	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}"
 						data-state="{{ termin.pubGroup ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubgroup', { 'id': termin.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubgroup', { 'id': termin.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubGroup == 1 %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif%}
 				<td><a title="Datensatz bearbeiten" href="{{ path('termine_edit', { 'id': termin.id }) }}"><i class="fa-solid fa-pen-to-square"> </i></a></td>
@@ -542,15 +542,15 @@
                 {% if is_granted('ROLE_DFX_META') %}
                 	<td class="pub" id="meta_{{ termin.id }}_{{ termin.pubMeta }}_{{ termin.code }}"
 						data-state="{{ termin.pubMeta ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubmeta', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubmeta', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubmeta', { 'id': termin.id, 'code' : termin.code }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubmeta', { 'id': termin.id, 'code' : termin.code }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubMeta == true %}<a href="{{ path('termine_unpubmeta', { 'id': termin.id, 'code' : termin.code   }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubmeta', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif %} 
                 {% if konf.isGroup == true or (konf.toGroup is not empty and is_granted('ROLE_DFX_GROUP')) %}
                 	<td class="pub" id="group_{{ termin.id }}_{{ termin.pubGroup }}_{{ termin.code }}"
 						data-state="{{ termin.pubGroup ? 1 : 0 }}"
-						data-html-on="{{ ('<a href=\"' ~ path('termine_unpubgroup', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('termine_pubgroup', { 'id': termin.id, 'code' : termin.code }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('termine_unpubgroup', { 'id': termin.id, 'code' : termin.code }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('termine_pubgroup', { 'id': termin.id, 'code' : termin.code }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if termin.pubGroup == true %}<a href="{{ path('termine_unpubgroup', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a> {% else %} <a href="{{ path('termine_pubgroup', { 'id': termin.id, 'code' : termin.code  }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  endif %}</td>
                 {% endif%}
                 

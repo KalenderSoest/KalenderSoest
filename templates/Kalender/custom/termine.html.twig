@@ -129,21 +129,14 @@
 			{% elseif termin.img != NULL and konf.dfxTplVersion == 'lang'  %}
 				{% set strImgPrev = '<img title="' ~ altText ~ '" alt="' ~ altText ~ '" class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img) | imagine_filter('thumb', vorschau)  ~ '" />' %}
 				{% set strImgPrev = termin.imgtext is not null ? strImgPrev  ~ "<br><em>" ~ termin.imgtext  ~ "</em><br><br>" : strImgPrev %}
-		{% elseif termin.imgSerie != NULL and konf.dfxTplVersion != 'lang' %}
-			{% set strImgPrev = '<img title="' ~ altText ~ '" alt="' ~ altText ~ '" class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie) | imagine_filter('thumb', vorschau)  ~ '" />' %}
-		{% elseif termin.img == NULL and termin.imgSerie == NULL and konf.dfxTplVersion != 'lang' and konf.imgListe ==1 %}
+		{% elseif termin.img == NULL and konf.dfxTplVersion != 'lang' and konf.imgListe ==1 %}
 				{% set strImgPrev = "&nbsp;"  %}
-		{% elseif termin.imgSerie != NULL and konf.dfxTplVersion == 'lang'  %}
-			{% set strImgPrev = '<img title="' ~ altText ~ '" alt="' ~ altText ~ '" class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie) | imagine_filter('thumb', vorschau)  ~ '" />' %}
-			{% set strImgPrev = termin.imgtext is not null ? strImgPrev  ~ "<br><em>" ~ termin.imgtext  ~ "</em><br><br>" : strImgPrev %}
 		{% else %}
 				{% set strImgPrev = NULL %}
 				{% set strImg = NULL %}
 		{%  endif %}
 		{% if termin.img5 != NULL %}
 				{% set strImg5 = '<img class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.img5) | imagine_filter('thumb', vorschau)  ~ '" />' %}
-		{% elseif termin.imgSerie5 != NULL %}
-			{% set strImg5 = '<img class="dfx-image" src="' ~ asset('/images/dfx/' ~ termin.datefix.id ~ '/' ~ termin.imgSerie5) | imagine_filter('thumb', vorschau)  ~ '" />' %}
 		{% else %}
 			{% set strImg5 = NULL %}
 		{%  endif %}
@@ -160,7 +153,7 @@
 		{% else %}
 			{% set strVeranstalter = NULL %}
 		{% endif %}
-
+        {% set rowInfo = NULL %}
 		{% set rowKartenInfo = NULL %}
 		{% if termin.mailTyp == 'anmeldung' or termin.mailTyp == 'karten' %}
 			{% if termin.plaetzeGesamt > 0 %}
@@ -179,7 +172,7 @@
 					{% endif %}
 			{% else %}
 				{% set rowKartenInfo = termin.mailTyp == 'karten' ? '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('karten_new', { 'id': termin.id } ) ~ '" title="' ~ 'karten'|trans ~ '"><i class="fa-solid fa-ticket"></i></a>' : NULL %}
-				{% set rowInfo = termin.mailTyp == 'karten' ? '' : rowInfo %}
+				{% set rowInfo = termin.mailTyp == 'karten' ? '' : rowKartenInfo %}
 				{% set rowInfo = termin.mailTyp == 'anmeldung' ? rowInfo  ~ ' ' ~ '<a href="' ~ frontendUrlQ ~ 'dfxpath=' ~  path('anmeldungen_new', { 'id': termin.id } ) ~ '" title="' ~ 'anmelden'|trans ~ '"><i class="fa-solid fa-pen-to-square"></i></a>' : rowInfo %}
 			{% endif %}
 		{% else %}
@@ -194,9 +187,7 @@
 		{% set rowInfo = rowKartenInfo is not null ? rowInfo ~ ' ' ~ rowKartenInfo : rowInfo %}
 		{% set rowInfo = termin.mailTyp == 'kontakt' ? rowInfo  ~ ' ' ~ '<a href="mailto:' ~ termin.mail  ~ '" title="' ~ 'mail senden'|trans ~ '"><i class="fa-solid fa-message"></i></a>' : rowInfo %}
 
-		{% if termin.pdfSerie is not null %}
-			{% set rowInfo = rowInfo  ~ ' ' ~ '<a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ termin.pdfSerie ~ '" class="dfx-nojson" target="_blank" title="' ~ 'pdf download'|trans ~ '"><i class="fa-solid fa-download" aria-hidden="true"></i></a>' %}
-		{% elseif termin.pdf is not null %}
+		{% if termin.pdf is not null %}
 			{% set rowInfo = rowInfo  ~ ' ' ~ '<a href="' ~ datefix_url ~ '/pdf/dfx/' ~ konf.id ~ '/' ~ termin.pdf ~ '" class="dfx-nojson" target="_blank" title="' ~ 'pdf download'|trans ~ '" aria-label="' ~ 'PDF herunterladen'|trans ~ ': ' ~ termin.titel ~ '"><i class="fa-solid fa-download" aria-hidden="true"></i></a>' %}
 		{% endif %}
 

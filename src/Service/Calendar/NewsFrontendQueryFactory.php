@@ -13,6 +13,7 @@ final class NewsFrontendQueryFactory
         private readonly EntityManagerInterface $em,
         private readonly CalendarPublicationQueryHelper $calendarPublicationQueryHelper,
         private readonly CalendarScopeResolver $calendarScopeResolver,
+        private readonly NewsDateWindowQueryApplier $newsDateWindowQueryApplier,
     ) {
     }
 
@@ -74,16 +75,13 @@ final class NewsFrontendQueryFactory
 
         if ($filterData->datumVon !== null && $filterData->datumBis === null) {
             $header .= 'ab ' . $filterData->datumVon->format('d.m.Y');
-            $query->andWhere('n.datumVon >= :tag_von');
-            $params['tag_von'] = $filterData->datumVon;
         } elseif ($filterData->datumVon !== null && $filterData->datumBis !== null) {
             $header .= 'vom ' . $filterData->datumVon->format('d.m.Y') . ' bis ' . $filterData->datumBis->format('d.m.Y');
-            $query->andWhere('n.datumVon BETWEEN :tag_von AND :tag_bis');
-            $params['tag_von'] = $filterData->datumVon;
-            $params['tag_bis'] = $filterData->datumBis;
-        } else {
-            $query->andWhere('n.datumBis IS NULL OR n.datumBis >= CURRENT_DATE()');
+        } elseif ($filterData->datumBis !== null) {
+            $header .= 'bis ' . $filterData->datumBis->format('d.m.Y');
         }
+
+        $this->newsDateWindowQueryApplier->apply($query, 'n', $filterData->datumVon, $filterData->datumBis);
 
         if ($filterData->datumVon !== null) {
             $filter['datum_von'] = $filterData->datumVon->format('Y-m-d');

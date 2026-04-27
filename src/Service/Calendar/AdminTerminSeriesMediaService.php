@@ -8,6 +8,16 @@ use Symfony\Component\Form\FormInterface;
 
 final class AdminTerminSeriesMediaService
 {
+    private const MEDIA_CONFIG = [
+        'img' => ['path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+        'img2' => ['path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+        'img3' => ['path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+        'img4' => ['path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+        'img5' => ['path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+        'pdf' => ['path' => 'pdf/dfx', 'referenceFields' => ['pdf']],
+        'media' => ['path' => 'media/dfx', 'referenceFields' => ['media']],
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly SharedMediaDeletionService $sharedMediaDeletionService,
@@ -35,6 +45,32 @@ final class AdminTerminSeriesMediaService
     }
 
     /**
+     * @param array{img:?string,img2:?string,img3:?string,img4:?string,img5:?string,pdf:?string,media:?string} $originalMediaState
+     */
+    public function cleanupReplacedSeriesMedia(array $originalMediaState, DfxTermine $entity, string|int $kid): void
+    {
+        $currentMediaState = $this->captureMediaState($entity);
+
+        foreach (self::MEDIA_CONFIG as $field => $config) {
+            $oldFile = $originalMediaState[$field] ?? null;
+            $newFile = $currentMediaState[$field] ?? null;
+
+            if (!is_string($oldFile) || $oldFile === '' || $oldFile === $newFile) {
+                continue;
+            }
+
+            $this->sharedMediaDeletionService->deleteIfUnused(
+                DfxTermine::class,
+                $kid,
+                null,
+                $oldFile,
+                $config['path'],
+                $config['referenceFields'],
+            );
+        }
+    }
+
+    /**
      * @param iterable<DfxTermine> $termine
      */
     public function applyMediaToSeriesOccurrences(iterable $termine, array $mediaState): ?DfxTermine
@@ -59,11 +95,11 @@ final class AdminTerminSeriesMediaService
     private function deleteSeriesMediaIfMarked(DfxTermine $entity, FormInterface $form, string|int $kid): void
     {
         $map = [
-            ['deleteField' => 'imageFileDelete', 'value' => $entity->getImg(), 'path' => 'images/dfx', 'referenceFields' => ['img']],
-            ['deleteField' => 'imageFileDelete2', 'value' => $entity->getImg2(), 'path' => 'images/dfx', 'referenceFields' => ['img2']],
-            ['deleteField' => 'imageFileDelete3', 'value' => $entity->getImg3(), 'path' => 'images/dfx', 'referenceFields' => ['img3']],
-            ['deleteField' => 'imageFileDelete4', 'value' => $entity->getImg4(), 'path' => 'images/dfx', 'referenceFields' => ['img4']],
-            ['deleteField' => 'imageFileDelete5', 'value' => $entity->getImg5(), 'path' => 'images/dfx', 'referenceFields' => ['img5']],
+            ['deleteField' => 'imageFileDelete', 'value' => $entity->getImg(), 'path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+            ['deleteField' => 'imageFileDelete2', 'value' => $entity->getImg2(), 'path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+            ['deleteField' => 'imageFileDelete3', 'value' => $entity->getImg3(), 'path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+            ['deleteField' => 'imageFileDelete4', 'value' => $entity->getImg4(), 'path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
+            ['deleteField' => 'imageFileDelete5', 'value' => $entity->getImg5(), 'path' => 'images/dfx', 'referenceFields' => ['img', 'img2', 'img3', 'img4', 'img5']],
             ['deleteField' => 'pdfFileDelete', 'value' => $entity->getPdf(), 'path' => 'pdf/dfx', 'referenceFields' => ['pdf']],
             ['deleteField' => 'mediaFileDelete', 'value' => $entity->getMedia(), 'path' => 'media/dfx', 'referenceFields' => ['media']],
         ];

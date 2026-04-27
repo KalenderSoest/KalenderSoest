@@ -15,6 +15,7 @@ final class WidgetNewsQueryFactory
         private readonly EntityManagerInterface $em,
         private readonly CalendarPublicationQueryHelper $calendarPublicationQueryHelper,
         private readonly CalendarScopeResolver $calendarScopeResolver,
+        private readonly NewsDateWindowQueryApplier $newsDateWindowQueryApplier,
     ) {
     }
 
@@ -33,6 +34,7 @@ final class WidgetNewsQueryFactory
         }
 
         $this->calendarPublicationQueryHelper->applyPublishedVisibility($query, 'n', $konf);
+        $this->newsDateWindowQueryApplier->apply($query, 'n', null, null);
 
         $rubrik = $this->normalizeString($request->query->all('form')['rubrik'] ?? null);
         if ($rubrik !== null) {

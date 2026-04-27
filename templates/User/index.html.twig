@@ -51,16 +51,16 @@
                 	{% set isRoleM = 'ROLE_DFX_META' in entity.roles ? 1 : 0 %}
                 	<td class="setrole" id="meta_{{ entity.id }}_{{ isRoleM }}"
 						data-state="{{ isRoleM }}"
-						data-html-on="{{ ('<a href=\"' ~ path('user_unsetmeta', { 'id': entity.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('user_setmeta', { 'id': entity.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('user_unsetmeta', { 'id': entity.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('user_setmeta', { 'id': entity.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if isRoleM == 1 %}<a href="{{ path('user_unsetmeta', { 'id': entity.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{%  else %}<a href="{{ path('user_setmeta', { 'id': entity.id }) }}"><i class="text-danger fa-solid fa-square-check"></i>  <i class="fa-solid fa-right-left"></i></a>{% endif %}</td>
                     {% set isRoleG = 'ROLE_DFX_GROUP' in entity.roles ? 1 : 0 %}	
                    	<td class="setrole" id="group_{{ entity.id }}_{{ isRoleG }}"
 						data-state="{{ isRoleG }}"
 						data-disabled="{{ isRoleM == 1 ? 1 : 0 }}"
 						data-html-disabled="&nbsp;"
-						data-html-on="{{ ('<a href=\"' ~ path('user_unsetgroup', { 'id': entity.id }) ~ '\"><i class=\"text-success fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
-						data-html-off="{{ ('<a href=\"' ~ path('user_setgroup', { 'id': entity.id }) ~ '\"><i class=\"text-danger fa-solid fa-square-check\"></i> <i class=\"fa-solid fa-right-left\"></i></a>')|e('html_attr') }}"
+						data-html-on="{{ ('<a href="' ~ path('user_unsetgroup', { 'id': entity.id }) ~ '"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
+						data-html-off="{{ ('<a href="' ~ path('user_setgroup', { 'id': entity.id }) ~ '"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>')|e('html_attr') }}"
 					>{% if isRoleM == 1 %}&nbsp;{% elseif isRoleG == 1 %}<a href="{{ path('user_unsetgroup', { 'id': entity.id }) }}"><i class="text-success fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{% else %}<a href="{{ path('user_setgroup', { 'id': entity.id }) }}"><i class="text-danger fa-solid fa-square-check"></i> <i class="fa-solid fa-right-left"></i></a>{% endif %}</td>
                {% else %} 
                		<td colspan="2"></td>

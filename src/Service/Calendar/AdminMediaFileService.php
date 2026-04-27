@@ -8,14 +8,16 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class AdminMediaFileService
 {
+    private const IMAGE_REFERENCE_FIELDS = ['img', 'img2', 'img3', 'img4', 'img5'];
+
     private const FIELD_CONFIG = [
-        'imageFile' => ['getter' => 'getImg', 'setter' => 'setImg', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete', 'referenceFields' => ['img']],
-        'imageFile2' => ['getter' => 'getImg2', 'setter' => 'setImg2', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete2', 'referenceFields' => ['img2']],
-        'imageFile3' => ['getter' => 'getImg3', 'setter' => 'setImg3', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete3', 'referenceFields' => ['img3']],
-        'imageFile4' => ['getter' => 'getImg4', 'setter' => 'setImg4', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete4', 'referenceFields' => ['img4']],
-        'imageFile5' => ['getter' => 'getImg5', 'setter' => 'setImg5', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete5', 'referenceFields' => ['img5']],
+        'imageFile' => ['getter' => 'getImg', 'setter' => 'setImg', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete', 'referenceFields' => self::IMAGE_REFERENCE_FIELDS],
+        'imageFile2' => ['getter' => 'getImg2', 'setter' => 'setImg2', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete2', 'referenceFields' => self::IMAGE_REFERENCE_FIELDS],
+        'imageFile3' => ['getter' => 'getImg3', 'setter' => 'setImg3', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete3', 'referenceFields' => self::IMAGE_REFERENCE_FIELDS],
+        'imageFile4' => ['getter' => 'getImg4', 'setter' => 'setImg4', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete4', 'referenceFields' => self::IMAGE_REFERENCE_FIELDS],
+        'imageFile5' => ['getter' => 'getImg5', 'setter' => 'setImg5', 'path' => 'images/dfx', 'deleteField' => 'imageFileDelete5', 'referenceFields' => self::IMAGE_REFERENCE_FIELDS],
         'pdfFile' => ['getter' => 'getPdf', 'setter' => 'setPdf', 'path' => 'pdf/dfx', 'deleteField' => 'pdfFileDelete', 'referenceFields' => ['pdf']],
-        'mediaFile' => ['getter' => 'getMedia', 'setter' => 'setMedia', 'path' => 'media/dfx', 'deleteField' => 'mediaFileDelete', 'referenceFields' => ['media']],
+        'media' => ['getter' => 'getMedia', 'setter' => 'setMedia', 'path' => 'media/dfx', 'deleteField' => 'mediaFileDelete', 'referenceFields' => ['media']],
     ];
 
     public function __construct(
