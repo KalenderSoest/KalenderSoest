@@ -187,6 +187,10 @@ final class FrontendBridgeService
             $server
         );
 
+        if ($request->hasSession()) {
+            $subRequest->setSession($request->getSession());
+        }
+
         if ($method === 'POST') {
             $subRequest->query->set('cb', 'all');
         }
