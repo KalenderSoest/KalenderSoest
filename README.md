@@ -69,13 +69,13 @@ Bestandsupdate:
 ## Entwicklerdoku
 
 Die ausführlichere technische Dokumentation liegt in:
-- [docs/development.md](/mnt/c/htdocs/datefixDemoMulti/docs/development.md)
+- [docs/development.md]
 
 ## Relevante Einstiegspunkte
 
-- Frontend-Kalender: [src/Controller/DfxKalenderController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxKalenderController.php)
-- Frontend-Termineingabe: [src/Controller/DfxKalenderTermineController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxKalenderTermineController.php)
-- Admin-Termine: [src/Controller/DfxTermineController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxTermineController.php)
-- Admin-News: [src/Controller/DfxNewsController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxNewsController.php)
-- API: [src/Controller/DfxApiController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxApiController.php)
-- Installer: [src/Controller/DfxInstallController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxInstallController.php)
+- Frontend-Kalender: [src/Controller/DfxKalenderController.php]
+- Frontend-Termineingabe: [src/Controller/DfxKalenderTermineController.php]
+- Admin-Termine: [src/Controller/DfxTermineController.php]
+- Admin-News: [src/Controller/DfxNewsController.php]
+- API: [src/Controller/DfxApiController.php]
+- Installer: [src/Controller/DfxInstallController.php]
