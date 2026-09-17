@@ -11,6 +11,7 @@
 !/web/cache/.gitkeep
 /web/images/custom/**
 !/web/images/custom/.gitkeep
+!/web/images/custom/fusszeile.png
 /web/images/dfx/**
 !/web/images/dfx/.gitkeep
 /web/pdf/dfx/**

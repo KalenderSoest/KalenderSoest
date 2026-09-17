@@ -2,7 +2,7 @@
 
 ## Überblick
 
-Datefix ist eine Symfony-7.4-Anwendung mit klassischem Twig-Frontend, Adminbereich und mehreren Funktionsblöcken:
+Kalender Soest ist eine Symfony-7.4-Anwendung mit klassischem Twig-Frontend, Adminbereich und mehreren Funktionsblöcken basierend auf dem Datefix Veranstaltungskalender:
 
 - Kalender / Termine
 - News
@@ -55,7 +55,7 @@ Alternativ mit vorhandenem Webserver:
 
 ## Konfiguration
 
-Datefix nutzt zwei Konfigurationsebenen:
+Kalender Soest nutzt zwei Konfigurationsebenen:
 
 1. Symfony-Umgebung
 - `.env`
@@ -68,12 +68,12 @@ Relevante Werte:
 - `MAILER_DSN`
 
 Die Standardvorlage für die vom Installer erzeugte `.env` liegt in
-- [web/install/env_dist.yml](/mnt/c/htdocs/datefixDemoMulti/web/install/env_dist.yml)
+- [web/install/env_dist.yml]
 
 Der Installer schreibt daraus die konkrete `.env` für die Zielinstallation.
 Insbesondere `MAILER_DSN` sollte bei produktiven Installationen gegen die tatsächlichen Vorgaben des Mail-Accounts oder Hosters geprüft werden. `sendmail://default` ist nur ein pragmatischer Hosting-Default, kein universell richtiger Wert.
 
-2. Datefix-spezifische Parameter
+2. Kalender Soest spezifische Parameter
 - `config/datefix.yaml`
 
 Diese Datei enthält die projektspezifischen Parameter, die früher teilweise in `services.yaml` lagen.
@@ -94,7 +94,7 @@ Der Einstieg läuft bewusst zweistufig:
 Fehlt etwas davon, wird auf `web/install/index.php` umgeleitet.
 
 Danach läuft der eigentliche Status- und Schrittprozess über:
-- [src/Controller/DfxInstallController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxInstallController.php)
+- [src/Controller/DfxInstallController.php]
 - Route `/installer/status`
 
 ## Install-/Update-Strategie
@@ -127,43 +127,10 @@ Aktueller Updatepfad:
 6. Cache leeren
 
 Wichtige Services:
-- [src/Service/Install/InstallationStateService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Install/InstallationStateService.php)
-- [src/Service/Install/InstallationPlanService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Install/InstallationPlanService.php)
-- [src/Service/Install/InstallationExecutionService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Install/InstallationExecutionService.php)
-- [src/Service/Install/MigrationInspectionService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Install/MigrationInspectionService.php)
-
-## Wichtige Migrationssonderfälle
-
-### Legacy-Medien in `pool_dfx_termine`
-
-Frühere Spalten wie `imgSerie*`, `pdfSerie`, `mediaSerie` werden vor einem Schema-Update in die aktuellen Felder übernommen oder bereinigt.
-
-Service:
-- [src/Service/Calendar/TerminLegacyMediaMigrationService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Calendar/TerminLegacyMediaMigrationService.php)
-
-### `toGroup`
-
-`toGroup` wurde von Altformaten auf JSON überführt.
-
-Services:
-- [src/Service/Install/KonfToGroupMigrationService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Install/KonfToGroupMigrationService.php)
-- [src/Service/Calendar/CalendarScopeResolver.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Calendar/CalendarScopeResolver.php)
-
-### Array- auf JSON-Felder
-
-Mehrere frühere Doctrine-`array`-Felder wurden auf `json` umgestellt.
-
-Migration:
-- [src/Service/Install/ArrayJsonMigrationService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Install/ArrayJsonMigrationService.php)
-
-Bereits angepasste Kernfelder:
-- `DfxKonf.toGroup`
-- `DfxKonf.rubriken`
-- `DfxKonf.zielgruppen`
-- `DfxTermine.rubrik`
-- `DfxTermine.zielgruppe`
-- `DfxNews.rubrik`
-- `DfxNfxUser.roles`
+- [src/Service/Install/InstallationStateService.php]
+- [src/Service/Install/InstallationPlanService.php]
+- [src/Service/Install/InstallationExecutionService.php]
+- [src/Service/Install/MigrationInspectionService.php]
 
 ## Architekturhinweise
 
@@ -182,25 +149,25 @@ Typische Aufteilung:
 ### Kalender / Termine
 
 Wichtige Komponenten:
-- [src/Controller/DfxKalenderController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxKalenderController.php)
-- [src/Controller/DfxKalenderTermineController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxKalenderTermineController.php)
-- [src/Controller/DfxTermineController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxTermineController.php)
-- [src/Service/Calendar/TerminWriteWorkflowService.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Calendar/TerminWriteWorkflowService.php)
+- [src/Controller/DfxKalenderController.php]
+- [src/Controller/DfxKalenderTermineController.php]
+- [src/Controller/DfxTermineController.php]
+- [src/Service/Calendar/TerminWriteWorkflowService.php]
 
 ### News
 
 Wichtige Komponenten:
-- [src/Controller/DfxNewsController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxNewsController.php)
-- [src/Controller/DfxNewsFrontendController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxNewsFrontendController.php)
+- [src/Controller/DfxNewsController.php]
+- [src/Controller/DfxNewsFrontendController.php]
 
 ### API
 
 Die API-Ausgabe läuft nicht mehr nur direkt aus dem Controller, sondern über Renderer.
 
 Wichtige Komponenten:
-- [src/Controller/DfxApiController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxApiController.php)
-- [src/Service/Api/SchemaOrgApiPayloadRenderer.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Api/SchemaOrgApiPayloadRenderer.php)
-- [src/Service/Api/ApiPayloadRendererResolver.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Api/ApiPayloadRendererResolver.php)
+- [src/Controller/DfxApiController.php]
+- [src/Service/Api/SchemaOrgApiPayloadRenderer.php]
+- [src/Service/Api/ApiPayloadRendererResolver.php]
 
 Custom-Renderer sind möglich über:
 - `App\\Service\\Api\\Custom\\ApiPayloadRenderer`
@@ -211,7 +178,7 @@ Custom-Renderer sind möglich über:
 Nahezu alle Frontend-, Admin- und Mail-Templates können durch eigene Templates ersetzt werden.
 
 Die Auflösung läuft zentral über:
-- [src/Service/Presentation/TemplatePathResolver.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Presentation/TemplatePathResolver.php)
+- [src/Service/Presentation/TemplatePathResolver.php]
 
 Grundprinzip:
 - es gibt Standard-Templates unter dem normalen Domainpfad, z. B. `Kalender/...`, `News/...`, `DfxTermine/...`
@@ -302,7 +269,7 @@ Damit sind sowohl globale Mail-Overrides als auch kalenderspezifische Mail-Templ
 
 - Wenn nur ein globales Override gewünscht ist, Template unter `custom/` ablegen.
 - Wenn nur ein einzelner Kalender angepasst werden soll, zuerst prüfen, ob der jeweilige Resolver einen `{kid}`-Pfad oder `{kid}_datei` unterstützt.
-- Nicht jeder Pfad folgt exakt derselben Suchreihenfolge; maßgeblich ist immer der konkrete Resolver in [src/Service/Presentation/TemplatePathResolver.php](/mnt/c/htdocs/datefixDemoMulti/src/Service/Presentation/TemplatePathResolver.php).
+- Nicht jeder Pfad folgt exakt derselben Suchreihenfolge; maßgeblich ist immer der konkrete Resolver in [src/Service/Presentation/TemplatePathResolver.php].
 - Bei neuen Controllerpfaden sollte nach Möglichkeit immer der `TemplatePathResolver` verwendet werden, damit der Custom-Mechanismus konsistent bleibt.
 
 ## Datenbank und Doctrine
@@ -339,9 +306,3 @@ Wichtige Rollen:
   - `web/img/`
   - `web/pdf/`
 
-## Nächste Dokumente
-
-Auf Basis dieser Entwicklerdoku können anschließend getrennt ergänzt werden:
-- Installationshandbuch
-- Anwendungshandbuch
-- Betriebsdokumentation

@@ -2,7 +2,7 @@
 
 ## Zielgruppe
 
-Dieses Handbuch richtet sich an Redakteure und Administratoren, die Datefix im laufenden Betrieb verwenden.
+Dieses Dokument richtet sich an Redakteure und Administratoren, die den Kalender Soest im laufenden Betrieb verwenden. Dieses Dokument ist eine Kurzfassung des Handbuches [multi_handbuch_installation_betrieb.pdf] (multi_handbuch_installation_betrieb.pdf), dessen Lektüre für eine erfolgreiche Arbeit mit dem Veranstaltungskalender erforderlich ist.
 
 Es beschreibt die tägliche Arbeit mit:
 - Kalendern und Terminen
@@ -31,7 +31,7 @@ Die empfohlene Variante ist die JavaScript-Einbindung. Ein `iframe` sollte nur v
 Typischer JavaScript-Einbau:
 
 ```html
-<script id="dfx" data-kid="IhreKalendernummer" data-dfx-url="https://ihre-datefix-url" src="https://ihre-datefix-url/js/dfx_ajax.js"></script>
+<script id="dfx" data-kid="IhreKalendernummer" data-dfx-url="https://ihre-kalender-url" src="https://ihre-kalender-url/js/dfx_ajax.js"></script>
 <div id="datefix"></div>
 ```
 
@@ -47,7 +47,7 @@ Für eine kompakte Vorschau kommender Veranstaltungen steht eine Terminbox zur V
 Beispiel:
 
 ```html
-<script id="dfxbox" data-kid="IhreKalendernummer" data-dfx-url="https://ihre-datefix-url" src="https://ihre-datefix-url/js/dfx_terminbox.js"></script>
+<script id="dfxbox" data-kid="IhreKalendernummer" data-dfx-url="https://ihre-kalender-url" src="https://ihre-kalender-url/js/dfx_terminbox.js"></script>
 ```
 
 Die Terminbox eignet sich besonders für:
@@ -390,7 +390,7 @@ Für Anwender wichtig:
 - Änderungen daran sind keine normale Redaktionsarbeit, sondern eine technische Anpassung
 
 Die technische Programmlogik dazu ist beschrieben in:
-- [docs/development.md](/mnt/c/htdocs/datefixDemoMulti/docs/development.md)
+- [docs/development.md]
 
 ## Import / Export
 
@@ -624,5 +624,5 @@ Mögliche Ursachen:
 Dieses Handbuch beschreibt die Bedienung der Anwendung im laufenden Betrieb.
 
 Für technische Bereitstellung und Updates siehe:
-- [docs/handbuch-installation.md](/mnt/c/htdocs/datefixDemoMulti/docs/handbuch-installation.md)
-- [docs/development.md](/mnt/c/htdocs/datefixDemoMulti/docs/development.md)
+- [docs/handbuch-installation.md]
+- [docs/development.md]

@@ -1,6 +1,17 @@
-# Datefix
+# Kalender Soest
 
-Datefix ist eine Symfony-7.4-Anwendung für Veranstaltungs- und News-Kalender mit Adminbereich, Frontend-Ausgabe, API, Import/Export und Install-/Update-Assistent.
+Kalender Soest ist eine Symfony-7.4-Anwendung für Veranstaltungs- und News-Kalender mit Adminbereich, Frontend-Ausgabe, API, Import/Export und Install-/Update-Assistent.
+
+## Lizenz
+
+Der eigene Anwendungscode steht unter der GNU Affero General Public License,
+Version 3 oder später (`AGPL-3.0-or-later`). Der vollständige Lizenztext steht
+in [LICENSE](LICENSE).
+
+Das Förderbanner und die darin enthaltenen Namen und Logos sind nicht unter
+der AGPL lizenziert. Für sie gelten die gesonderten Marken- und
+Förderhinweise in [NOTICE.md](NOTICE.md). Drittanbieter-Komponenten behalten
+ihre jeweiligen Lizenzen.
 
 ## Schnellstart
 
@@ -68,4 +79,3 @@ Die ausführlichere technische Dokumentation liegt in:
 - Admin-News: [src/Controller/DfxNewsController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxNewsController.php)
 - API: [src/Controller/DfxApiController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxApiController.php)
 - Installer: [src/Controller/DfxInstallController.php](/mnt/c/htdocs/datefixDemoMulti/src/Controller/DfxInstallController.php)
-

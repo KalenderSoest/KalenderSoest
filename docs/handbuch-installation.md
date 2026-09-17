@@ -1,8 +1,14 @@
 # Installationshandbuch
 
+Hinweis: Für das Förderbanner mit den Logos von Bundesministerium/Bundestag,
+KfW, Stadt Soest und Für Südwestfalen gelten die gesonderten Marken- und
+Förderhinweise in [NOTICE.md](../NOTICE.md). Bei Ausgaben, die weiterhin unter
+dem Namen oder Erscheinungsbild „Kalender Soest“ verbreitet werden, darf das
+Banner weder entfernt noch inhaltlich verändert werden.
+
 ## Zweck
 
-Dieses Dokument beschreibt die Installation und Aktualisierung einer Datefix-Instanz aus Betreiber-/Administrator-Sicht.
+Dieses Dokument beschreibt die Installation und Aktualisierung einer Instanz des Kalender Soest aus Betreiber-/Administrator-Sicht. Dieses Dokument ist eine Kurzfassung des Handbuches [multi_handbuch_installation_betrieb.pdf] (multi_handbuch_installation_betrieb.pdf), dessen Lektüre für eine erfolgreiche Arbeit mit dem Veranstaltungskalender erforderlich ist.
 
 Es geht dabei nicht um die Weiterentwicklung des Projekts, sondern um:
 - Bereitstellung auf einem Server
@@ -18,7 +24,7 @@ Vor der Installation müssen folgende Voraussetzungen erfüllt sein:
 - Datenbankserver MySQL oder MariaDB
 - Zugriff auf die Zieldatenbank
 - Schreibrechte für relevante Verzeichnisse
-- der vollständige Datefix-Codebestand liegt bereits auf dem Server
+- der vollständige Codebestand liegt bereits auf dem Server
 
 Wichtige Verzeichnisse mit Schreibrechten:
 - `var/`
@@ -96,11 +102,11 @@ Die ausgelieferte Vorlage für die Symfony-Umgebung liegt in
 Sie wird vom Installer als Basis für die erzeugte `.env` verwendet.
 Die dort gesetzten Standardwerte sind für typische Hosting-Umgebungen ausgelegt, müssen aber bei Bedarf an den tatsächlichen Server angepasst werden.
 
-### 2. Datefix-Konfiguration
+### 2. Donfiguration
 
 - `config/datefix.yaml`
 
-Diese Datei enthält die Datefix-spezifischen Parameter.
+Diese Datei enthält die spezifischen Parameter für Kalender Soest.
 
 ## Erstinstallation
 
@@ -178,7 +184,7 @@ Nach erfolgreichem Speichern werden geschrieben:
 - `config/datefix.yaml`
 
 Hinweis zum Mailversand:
-- die erzeugte `.env` basiert auf [web/install/env_dist.yml](/mnt/c/htdocs/datefixDemoMulti/web/install/env_dist.yml)
+- die erzeugte `.env` basiert auf [web/install/env_dist.yml]
 - `MAILER_DSN=sendmail://default` ist ein sinnvoller Standard für viele klassische Hostings mit lokalem Mailversand
 - je nach Vorgaben des Mail-Accounts oder Hosters muss `MAILER_DSN` nach der Installation aber angepasst werden, zum Beispiel auf einen SMTP-Zugang
 
@@ -188,7 +194,7 @@ Danach läuft der eigentliche Installationsprozess über:
 
 - `/installer/status`
 
-Dort erkennt Datefix den Installationszustand und zeigt den Ablaufplan.
+Dort erkennt Kalender Soest den Installationszustand und zeigt den Ablaufplan.
 
 Bei einer Neuinstallation sind die typischen Schritte:
 
@@ -242,7 +248,7 @@ Dieser erste Datensatz ist wichtig, weil er:
 
 ## Kalenderhierarchie
 
-Datefix unterstützt drei funktionale Ebenen:
+Kalender Soest unterstützt drei funktionale Ebenen:
 
 - Standard-Kalender
 - Gruppen-Kalender

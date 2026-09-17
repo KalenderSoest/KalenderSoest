@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Der Veranstaltungskalender für Städte, Gemeinden, Theater, Kulturveranstalter, Vereine und Jedermann.">
 <meta name="author" content="Pool Online Internetservice">
-<meta name="copyright" content="Pool Online Internetservice, Nördlingen">
+<meta name="copyright" content="KulturBüro Soest im Kulturhaus Alter Schlachthof Soest e.V.">
 <meta name="keywords" content="Veranstaltungskalender, Eventkalender, Homepagetools, Webmastertools, Homepage, Webkalender">
 <meta NAME="robots" content="INDEX, FOLLOW">
 <title>Installation :: Datefix - Veranstaltungskalender</title>
@@ -314,7 +314,7 @@
         <footer>
             <div class="row">
                 <div class="col-12">
-                    <p>Copyright &copy; POOL ONLINE INTERNETSERVICE 1999 - <?php echo date('Y') ?></p>
+                    <p>Copyright &copy; KulturBüro Soest im Kulturhaus Alter Schlachthof Soest e.V.</p>
                 </div>
             </div>
         </footer>
