@@ -32,7 +32,6 @@
 /migrations/
 !templates/custom/**
 !templates/**/custom/**
-/tests/
 /phpstan.neon
 /rector.php
 /codex_server.txt
@@ -44,7 +43,6 @@
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
-/phpunit.xml.dist
 ###< symfony/phpunit-bridge ###
 
 ###> phpunit/phpunit ###

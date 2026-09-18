@@ -13,6 +13,14 @@ Kalender Soest ist eine Symfony-7.4-Anwendung mit klassischem Twig-Frontend, Adm
 
 Das Web-Root ist über Composer auf `web/` gesetzt.
 
+Ergänzende Dokumente:
+
+- [API und bekannte Zugriffseinschränkungen](api.md)
+- [OpenAPI-Beschreibung](openapi.yaml)
+- [Teststrategie](testing.md)
+- [Produktivbetrieb, Sicherheit und Wiederherstellung](betrieb.md)
+- [Drittanbieter-Komponenten](../THIRD_PARTY_NOTICES.md)
+
 ## Projektstruktur
 
 Wichtige Verzeichnisse:
@@ -68,7 +76,7 @@ Relevante Werte:
 - `MAILER_DSN`
 
 Die Standardvorlage für die vom Installer erzeugte `.env` liegt in
-- [web/install/env_dist.yml]
+- [web/install/env_dist.yml](../web/install/env_dist.yml)
 
 Der Installer schreibt daraus die konkrete `.env` für die Zielinstallation.
 Insbesondere `MAILER_DSN` sollte bei produktiven Installationen gegen die tatsächlichen Vorgaben des Mail-Accounts oder Hosters geprüft werden. `sendmail://default` ist nur ein pragmatischer Hosting-Default, kein universell richtiger Wert.
@@ -94,7 +102,7 @@ Der Einstieg läuft bewusst zweistufig:
 Fehlt etwas davon, wird auf `web/install/index.php` umgeleitet.
 
 Danach läuft der eigentliche Status- und Schrittprozess über:
-- [src/Controller/DfxInstallController.php]
+- [src/Controller/DfxInstallController.php](../src/Controller/DfxInstallController.php)
 - Route `/installer/status`
 
 ## Install-/Update-Strategie
@@ -127,10 +135,10 @@ Aktueller Updatepfad:
 6. Cache leeren
 
 Wichtige Services:
-- [src/Service/Install/InstallationStateService.php]
-- [src/Service/Install/InstallationPlanService.php]
-- [src/Service/Install/InstallationExecutionService.php]
-- [src/Service/Install/MigrationInspectionService.php]
+- [src/Service/Install/InstallationStateService.php](../src/Service/Install/InstallationStateService.php)
+- [src/Service/Install/InstallationPlanService.php](../src/Service/Install/InstallationPlanService.php)
+- [src/Service/Install/InstallationExecutionService.php](../src/Service/Install/InstallationExecutionService.php)
+- [src/Service/Install/MigrationInspectionService.php](../src/Service/Install/MigrationInspectionService.php)
 
 ## Architekturhinweise
 
@@ -149,25 +157,25 @@ Typische Aufteilung:
 ### Kalender / Termine
 
 Wichtige Komponenten:
-- [src/Controller/DfxKalenderController.php]
-- [src/Controller/DfxKalenderTermineController.php]
-- [src/Controller/DfxTermineController.php]
-- [src/Service/Calendar/TerminWriteWorkflowService.php]
+- [src/Controller/DfxKalenderController.php](../src/Controller/DfxKalenderController.php)
+- [src/Controller/DfxKalenderTermineController.php](../src/Controller/DfxKalenderTermineController.php)
+- [src/Controller/DfxTermineController.php](../src/Controller/DfxTermineController.php)
+- [src/Service/Calendar/TerminWriteWorkflowService.php](../src/Service/Calendar/TerminWriteWorkflowService.php)
 
 ### News
 
 Wichtige Komponenten:
-- [src/Controller/DfxNewsController.php]
-- [src/Controller/DfxNewsFrontendController.php]
+- [src/Controller/DfxNewsController.php](../src/Controller/DfxNewsController.php)
+- [src/Controller/DfxNewsFrontendController.php](../src/Controller/DfxNewsFrontendController.php)
 
 ### API
 
 Die API-Ausgabe läuft nicht mehr nur direkt aus dem Controller, sondern über Renderer.
 
 Wichtige Komponenten:
-- [src/Controller/DfxApiController.php]
-- [src/Service/Api/SchemaOrgApiPayloadRenderer.php]
-- [src/Service/Api/ApiPayloadRendererResolver.php]
+- [src/Controller/DfxApiController.php](../src/Controller/DfxApiController.php)
+- [src/Service/Api/SchemaOrgApiPayloadRenderer.php](../src/Service/Api/SchemaOrgApiPayloadRenderer.php)
+- [src/Service/Api/ApiPayloadRendererResolver.php](../src/Service/Api/ApiPayloadRendererResolver.php)
 
 Custom-Renderer sind möglich über:
 - `App\\Service\\Api\\Custom\\ApiPayloadRenderer`
@@ -178,7 +186,7 @@ Custom-Renderer sind möglich über:
 Nahezu alle Frontend-, Admin- und Mail-Templates können durch eigene Templates ersetzt werden.
 
 Die Auflösung läuft zentral über:
-- [src/Service/Presentation/TemplatePathResolver.php]
+- [src/Service/Presentation/TemplatePathResolver.php](../src/Service/Presentation/TemplatePathResolver.php)
 
 Grundprinzip:
 - es gibt Standard-Templates unter dem normalen Domainpfad, z. B. `Kalender/...`, `News/...`, `DfxTermine/...`
@@ -269,7 +277,7 @@ Damit sind sowohl globale Mail-Overrides als auch kalenderspezifische Mail-Templ
 
 - Wenn nur ein globales Override gewünscht ist, Template unter `custom/` ablegen.
 - Wenn nur ein einzelner Kalender angepasst werden soll, zuerst prüfen, ob der jeweilige Resolver einen `{kid}`-Pfad oder `{kid}_datei` unterstützt.
-- Nicht jeder Pfad folgt exakt derselben Suchreihenfolge; maßgeblich ist immer der konkrete Resolver in [src/Service/Presentation/TemplatePathResolver.php].
+- Nicht jeder Pfad folgt exakt derselben Suchreihenfolge; maßgeblich ist immer der konkrete Resolver in [src/Service/Presentation/TemplatePathResolver.php](../src/Service/Presentation/TemplatePathResolver.php).
 - Bei neuen Controllerpfaden sollte nach Möglichkeit immer der `TemplatePathResolver` verwendet werden, damit der Custom-Mechanismus konsistent bleibt.
 
 ## Datenbank und Doctrine
@@ -303,6 +311,10 @@ Wichtige Rollen:
   - Datenbank
   - `.env`
   - `config/datefix.yaml`
-  - `web/img/`
+  - `web/images/`
   - `web/pdf/`
 
+Neue oder geänderte Funktionen benötigen Tests gemäß der
+[Teststrategie](testing.md). Änderungen an HTTP-Endpunkten oder
+Custom-Renderern müssen zugleich in [api.md](api.md) und
+[openapi.yaml](openapi.yaml) nachgeführt werden.

@@ -21,6 +21,7 @@ Es geht dabei nicht um die Weiterentwicklung des Projekts, sondern um:
 Vor der Installation müssen folgende Voraussetzungen erfüllt sein:
 
 - PHP `>= 8.2`
+- PHP-Erweiterungen `ctype`, `curl`, `fileinfo`, `gd`, `iconv` und `zip`
 - Datenbankserver MySQL oder MariaDB
 - Zugriff auf die Zieldatenbank
 - Schreibrechte für relevante Verzeichnisse
@@ -28,7 +29,7 @@ Vor der Installation müssen folgende Voraussetzungen erfüllt sein:
 
 Wichtige Verzeichnisse mit Schreibrechten:
 - `var/`
-- `web/img/`
+- `web/images/`
 - `web/pdf/`
 - je nach Hosting zusätzlich weitere von `web/install` geprüfte Verzeichnisse
 
@@ -64,6 +65,11 @@ In diesem Fall gilt:
 
 Der Installer prüft genau diesen Punkt. Fehlt `vendor/autoload.php`, bleibt die Installation auf der Vorprüfung stehen.
 
+Vor der Freigabe muss zusätzlich `composer check-platform-reqs --no-dev`
+erfolgreich durchlaufen. Diese Prüfung berücksichtigt auch transitive
+Anforderungen des gesperrten Paketstands, die der Installer nicht vollständig
+abbildet.
+
 ## Einstieg in die Installation
 
 Die Installation beginnt über:
@@ -97,12 +103,12 @@ Wichtige Werte:
 - `MAILER_DSN`
 
 Die ausgelieferte Vorlage für die Symfony-Umgebung liegt in
-- [web/install/env_dist.yml](/mnt/c/htdocs/datefixDemoMulti/web/install/env_dist.yml)
+- [web/install/env_dist.yml](../web/install/env_dist.yml)
 
 Sie wird vom Installer als Basis für die erzeugte `.env` verwendet.
 Die dort gesetzten Standardwerte sind für typische Hosting-Umgebungen ausgelegt, müssen aber bei Bedarf an den tatsächlichen Server angepasst werden.
 
-### 2. Donfiguration
+### 2. Datefix-Konfiguration
 
 - `config/datefix.yaml`
 
@@ -184,7 +190,7 @@ Nach erfolgreichem Speichern werden geschrieben:
 - `config/datefix.yaml`
 
 Hinweis zum Mailversand:
-- die erzeugte `.env` basiert auf [web/install/env_dist.yml]
+- die erzeugte `.env` basiert auf [web/install/env_dist.yml](../web/install/env_dist.yml)
 - `MAILER_DSN=sendmail://default` ist ein sinnvoller Standard für viele klassische Hostings mit lokalem Mailversand
 - je nach Vorgaben des Mail-Accounts oder Hosters muss `MAILER_DSN` nach der Installation aber angepasst werden, zum Beispiel auf einen SMTP-Zugang
 
@@ -413,7 +419,7 @@ Stattdessen leitet der Bootstrap auf `web/install/index.php` um, insbesondere we
 
 - den kompletten neuen Codebestand bereitstellen
 - alte `src/`- und `vendor/`-Bestände nicht weiterverwenden
-- `web/img/` und `web/pdf/` bleiben erhalten
+- `web/images/` und `web/pdf/` bleiben erhalten
 - die bestehende Datenbank wird übernommen und im Installer geprüft
 
 ## Typische Fehlerquellen
@@ -454,3 +460,8 @@ Nach erfolgreicher Installation oder Aktualisierung sollte geprüft werden:
 - Schreibzugriff auf Bild- und PDF-Verzeichnisse
 
 Dieses Dokument beschreibt den technischen Installationsprozess. Die eigentliche Bedienung der Anwendung wird im separaten Anwendungshandbuch beschrieben.
+
+Die verbindlichen betrieblichen Ergänzungen zu Produktionshärtung,
+Systemgrenzen, externen Diensten, Backup, Restore, Rollback, Monitoring,
+Kapazitätsplanung und Skalierung stehen in
+[Betrieb, Sicherheit und Wiederherstellung](betrieb.md).

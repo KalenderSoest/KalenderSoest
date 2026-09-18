@@ -1,0 +1,183 @@
+openapi: 3.1.0
+info:
+  title: Kalender Soest API
+  version: 1.0.0
+  description: >-
+    Dokumentation der öffentlichen Leseendpunkte. Fachliche Objekte sind wegen
+    kalenderbezogener Custom-Renderer erweiterbar. Details und aktuelle
+    Einschränkungen stehen in api.md.
+servers:
+  - url: /
+security: []
+paths:
+  /api/kalender/{kid}:
+    get:
+      summary: Termine eines Kalenders abrufen
+      operationId: listCalendarEvents
+      parameters:
+        - $ref: '#/components/parameters/Kid'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Items'
+        - $ref: '#/components/parameters/DateFrom'
+        - $ref: '#/components/parameters/DateTo'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          description: Liste erweiterbarer Schema.org-Ereignisobjekte
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExtensibleObject'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/detail/{tid}:
+    get:
+      summary: Einzelnen Termin abrufen
+      description: >-
+        Liefert den Termin nur bei aktivierter kalenderbezogener API und
+        passendem Veröffentlichungsstatus für Standard-, Gruppen- oder
+        Meta-Kalender.
+      operationId: getCalendarEvent
+      parameters:
+        - $ref: '#/components/parameters/Tid'
+      responses:
+        '200':
+          description: Erweiterbares Schema.org-Ereignisobjekt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtensibleObject'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/news/{kid}:
+    get:
+      summary: News eines Kalenders abrufen
+      operationId: listCalendarNews
+      parameters:
+        - $ref: '#/components/parameters/Kid'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Items'
+        - $ref: '#/components/parameters/DateFrom'
+        - $ref: '#/components/parameters/DateTo'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          description: Liste erweiterbarer Schema.org-NewsArticle-Objekte
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExtensibleObject'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/news/detail/{nfxid}:
+    get:
+      summary: Einzelnen veröffentlichten Newsbeitrag abrufen
+      operationId: getCalendarNews
+      parameters:
+        - $ref: '#/components/parameters/Nfxid'
+      responses:
+        '200':
+          description: Erweiterbares Schema.org-NewsArticle-Objekt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtensibleObject'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    Kid:
+      name: kid
+      in: path
+      required: true
+      description: Kalender-ID
+      schema:
+        type: integer
+        minimum: 1
+    Tid:
+      name: tid
+      in: path
+      required: true
+      description: Termin-ID
+      schema:
+        type: integer
+        minimum: 1
+    Nfxid:
+      name: nfxid
+      in: path
+      required: true
+      description: News-ID
+      schema:
+        type: integer
+        minimum: 1
+    Page:
+      name: page
+      in: query
+      required: false
+      description: Seite ab 1; aktiviert die Pagination
+      schema:
+        type: integer
+        minimum: 1
+    Items:
+      name: items
+      in: query
+      required: false
+      description: Elemente pro Seite, begrenzt durch die Kalenderkonfiguration
+      schema:
+        type: integer
+        minimum: 1
+    DateFrom:
+      name: datum_von
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    DateTo:
+      name: datum_bis
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    Search:
+      name: suche
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    Forbidden:
+      description: API oder Inhalt ist nicht freigegeben
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Ressource nicht gefunden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    ExtensibleObject:
+      type: object
+      additionalProperties: true
+    Error:
+      type: object
+      additionalProperties: true
+      properties:
+        error:
+          type: string

@@ -390,7 +390,7 @@ Für Anwender wichtig:
 - Änderungen daran sind keine normale Redaktionsarbeit, sondern eine technische Anpassung
 
 Die technische Programmlogik dazu ist beschrieben in:
-- [docs/development.md]
+- [docs/development.md](development.md)
 
 ## Import / Export
 
@@ -624,5 +624,5 @@ Mögliche Ursachen:
 Dieses Handbuch beschreibt die Bedienung der Anwendung im laufenden Betrieb.
 
 Für technische Bereitstellung und Updates siehe:
-- [docs/handbuch-installation.md]
-- [docs/development.md]
+- [docs/handbuch-installation.md](handbuch-installation.md)
+- [docs/development.md](development.md)

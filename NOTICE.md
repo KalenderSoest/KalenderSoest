@@ -60,7 +60,9 @@ Abhängigkeiten und eingebundene Drittanbieter-Komponenten unterliegen ihren
 jeweiligen Lizenzen. Dazu gehören insbesondere MIT-, BSD-3-Clause-,
 Apache-2.0- und LGPL-lizenzierte Bestandteile. Deren Urheberrechts- und
 Lizenzhinweise müssen bei einer Weitergabe erhalten bleiben. Die AGPL dieses
-Projekts ersetzt diese Drittanbieterlizenzen nicht.
+Projekts ersetzt diese Drittanbieterlizenzen nicht. Eine konkrete Übersicht
+der direkten Produktions- und Browserabhängigkeiten steht in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Von Benutzern hochgeladene Bilder, Dokumente und sonstige Inhalte sind nicht
 automatisch von der Projektlizenz erfasst.

@@ -167,11 +167,7 @@ class DfxApiController extends AbstractController
             return $this->apiForbiddenResponse();
         }
 
-        if (
-            $entity->getPub() !== true
-            || ($konf->getIsMeta() && $entity->getPubMeta() !== true)
-            || ($konf->getIsGroup() && $entity->getPubGroup() !== true)
-        ) {
+        if (!$this->isEntityPublishedForCalendar($entity, $konf)) {
             return $this->apiEntityForbiddenResponse('Artikel ist nicht freigegeben.');
         }
 
@@ -184,9 +180,24 @@ class DfxApiController extends AbstractController
     public function detail(#[MapEntity(id: 'tid')] DfxTermine $entity): JsonResponse
     {
         $konf = $entity->getDatefix();
+        if (!$konf->getAllowApi()) {
+            return $this->apiForbiddenResponse();
+        }
+
+        if (!$this->isEntityPublishedForCalendar($entity, $konf)) {
+            return $this->apiEntityForbiddenResponse('Termin ist nicht freigegeben.');
+        }
+
         $this->incrementApiCounter($konf);
 
         return new JsonResponse($this->apiPayloadRendererResolver->forKonf($konf)->renderTerminDetail($entity));
+    }
+
+    private function isEntityPublishedForCalendar(DfxTermine|DfxNews $entity, DfxKonf $konf): bool
+    {
+        return $entity->getPub() === true
+            && (!$konf->getIsMeta() || $entity->getPubMeta() === true)
+            && (!$konf->getIsGroup() || $entity->getPubGroup() === true);
     }
 
     private function buildKalenderFilterData(Request $request): KalenderFilterData

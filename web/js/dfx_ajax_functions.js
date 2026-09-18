@@ -54,9 +54,10 @@ function dfxEnsureSuneditor() {
 	if (dfxSuneditorLoading) return;
 	dfxSuneditorLoading = true;
 
-	var cssHref = 'https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/css/suneditor.min.css';
-	var scriptHref = 'https://cdn.jsdelivr.net/npm/suneditor@2.47.8/dist/suneditor.min.js';
-	var initHref = (url || '') + '/js/suneditor-init.js';
+	var assetBase = String(url || '').replace(/\/$/, '');
+	var cssHref = assetBase + '/vendor/suneditor/2.47.8/suneditor.min.css';
+	var scriptHref = assetBase + '/vendor/suneditor/2.47.8/suneditor.min.js';
+	var initHref = assetBase + '/js/suneditor-init.js';
 
 	dfxLoadStylesheetOnce(cssHref);
 	dfxLoadScriptOnce(scriptHref, {}, function () {

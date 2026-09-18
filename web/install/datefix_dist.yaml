@@ -11,10 +11,6 @@ parameters:
     zielgruppe: true
     isTicket: true
     isSeminar: false
-    PaypalClientId: ~
-    PaypalSecret: ~
-    PaypalDevClientId: ~
-    PaypalDevSecret: ~
     backend: ~
     mapkey: ~
     tileserver: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
